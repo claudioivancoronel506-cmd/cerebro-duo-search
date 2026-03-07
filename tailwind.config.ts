@@ -47,6 +47,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        duo: {
+          red: "hsl(var(--duo-red))",
+          "red-light": "hsl(var(--duo-red-light))",
+          "red-dark": "hsl(var(--duo-red-dark))",
+          gray: "hsl(var(--duo-gray))",
+          "gray-dark": "hsl(var(--duo-gray-dark))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
