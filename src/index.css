@@ -44,6 +44,14 @@ All colors MUST be HSL.
     --duo-gray: 0 0% 96%;
     --duo-gray-dark: 0 0% 60%;
 
+    /* App Madre — yellow/green supermarket theme */
+    --store-primary: 46 95% 50%;
+    --store-primary-foreground: 0 0% 10%;
+    --store-secondary: 145 50% 42%;
+    --store-secondary-foreground: 0 0% 100%;
+    --store-header: 46 95% 50%;
+    --store-header-foreground: 0 0% 10%;
+
     --sidebar-background: 0 0% 98%;
 
     --sidebar-foreground: 240 5.3% 26.1%;

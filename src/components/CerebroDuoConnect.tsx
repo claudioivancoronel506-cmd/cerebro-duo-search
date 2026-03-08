@@ -273,20 +273,19 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
   return (
     <>
-      {/* ── FAB — Glassmorphism, larger ── */}
+      {/* ── FAB — Dúo branding (red), floats as external plugin ── */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 right-4 z-50 w-20 h-20 rounded-3xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-2xl shadow-primary/40"
+        className="fixed bottom-6 right-4 z-50 w-16 h-16 rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
         style={{
-          background: "linear-gradient(135deg, hsla(var(--primary) / 0.75), hsla(var(--primary) / 0.55))",
-          backdropFilter: "blur(16px) saturate(180%)",
-          WebkitBackdropFilter: "blur(16px) saturate(180%)",
-          border: "1px solid hsla(var(--primary) / 0.3)",
+          background: "linear-gradient(135deg, hsl(var(--duo-red)), hsl(var(--duo-red-dark)))",
+          boxShadow: "0 8px 32px hsla(var(--duo-red) / 0.45), 0 2px 8px hsla(0, 0%, 0%, 0.15)",
+          border: "2px solid hsla(0, 0%, 100%, 0.2)",
         }}
-        aria-label="Abrir asistente Dúo"
+        aria-label="Abrir asistente Cerebro Dúo"
       >
-        <img src={duoRobot} alt="DÚO" className="w-14 h-14 rounded-2xl object-cover drop-shadow-lg" />
-        <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full border-2 border-background animate-pulse" />
+        <img src={duoRobot} alt="Cerebro Dúo" className="w-11 h-11 rounded-xl object-cover drop-shadow-lg" />
+        <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-background animate-pulse" style={{ background: "hsl(var(--duo-red-light))" }} />
       </button>
 
       {/* ── Bottom Sheet ── */}
@@ -395,7 +394,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   <img src={duoRobot} alt="DÚO" className="w-16 h-16 rounded-2xl animate-pulse" />
                   <Loader2 className="absolute -bottom-1 -right-1 w-5 h-5 text-primary animate-spin" />
                 </div>
-                <p className="text-sm text-muted-foreground animate-pulse">Analizando tu pedido...</p>
+                <p className="text-sm text-muted-foreground animate-pulse">Sincronizando con la tienda...</p>
               </div>
             )}
 
@@ -487,7 +486,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
                   <Check className="w-7 h-7 text-primary" />
                 </div>
-                <p className="text-sm font-semibold text-card-foreground">¡Agregado al carrito!</p>
+                <p className="text-sm font-semibold text-card-foreground">Sincronizando con la tienda...</p>
                 <p className="text-xs text-muted-foreground">
                   {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
                 </p>
