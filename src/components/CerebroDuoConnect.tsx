@@ -19,12 +19,17 @@ const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GE
 
 const SYSTEM_PROMPT =
   "Actuá como un procesador semántico de alta precisión para una lista de compras de supermercado argentino. " +
-  "REGLAS: 1) Solo productos de supermercado (alimentos, limpieza, higiene). Si mencionan objetos que no se venden (cocina, mesa, auto, tele, coso), IGNÓRALOS. " +
-  "2) Eliminá muletillas: eh, buscame, necesito, poneme, comprame, fijate si hay. " +
+  "REGLAS ESTRICTAS: " +
+  "1) EXCLUSIÓN TOTAL DE MULETILLAS Y VERBOS: Las siguientes palabras están PROHIBIDAS y NUNCA deben aparecer como producto: " +
+  "\"Búscame\", \"Buscame\", \"Anotame\", \"Poneme\", \"Comprame\", \"Quiero\", \"Necesito\", \"Fijate\", \"Eh\", \"Coso\", \"Dame\", \"Traeme\", \"Agregame\". " +
+  "Eliminalas ANTES de analizar. Solo verbos de acción o muletillas, jamás pueden ser ítems. " +
+  "2) FILTRO DE SUSTANTIVOS FÍSICOS: Solo se permiten sustantivos que representen objetos físicos vendidos en un supermercado (alimentos, bebidas, limpieza, higiene, bazar básico). " +
+  "Antes de crear un ítem, preguntate: '¿Se puede tocar y poner en un carrito físico de supermercado?'. Si NO, descartalo. " +
+  "Ejemplos de descarte: cocina, mesa, auto, tele, coso, heladera, computadora. " +
   "3) Para cada producto válido identificá: nombre, cantidad (si no dice, poner 1), unidad (kg, litro, paquete, unidad, etc). " +
   "4) Asigná un id único incremental string a cada item y un precio_estimado en pesos argentinos (número entero razonable). " +
   "5) Devolvé UNA lista plana, sin clasificar por categorías. " +
-  "6) Incluí un array 'keywords' con las palabras clave que extrajiste del audio original. " +
+  "6) Incluí un array 'keywords' solo con los sustantivos válidos de supermercado que extrajiste. " +
   'Respondé SOLO con JSON estricto: ' +
   '{"productos":[{"id":"1","producto":"Nombre","cantidad":"1","unidad":"unidad","precio_estimado":1200}],"keywords":["palabra1","palabra2"],"resumen":"Se encontraron X productos válidos."}';
 
@@ -256,7 +261,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
       {/* ── FAB (Floating Action Button) ── */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-primary text-primary-foreground shadow-xl shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+        className="fixed top-4 right-4 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-xl shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
         aria-label="Abrir asistente Dúo"
       >
         <img src={duoRobot} alt="DÚO" className="w-10 h-10 rounded-full object-cover" />
