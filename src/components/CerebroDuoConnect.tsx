@@ -337,9 +337,13 @@ export default function CerebroDuoConnect({
                               : "border-border bg-secondary hover:border-muted-foreground"
                           }`}
                         >
-                          <div className="w-10 h-10 rounded-xl bg-[hsl(var(--duo-gray))] flex items-center justify-center text-lg shrink-0">
-                            🛒
-                          </div>
+                          {p.imagen ? (
+                            <img src={p.imagen} alt={p.nombre} className="w-10 h-10 rounded-xl object-cover shrink-0" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-lg shrink-0">
+                              🛒
+                            </div>
+                          )}
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-foreground truncate">{p.nombre}</p>
                             <p className="text-[11px] text-muted-foreground">
