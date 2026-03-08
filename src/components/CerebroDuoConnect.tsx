@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { X, Search, Mic, ShoppingCart, Check, Loader2, MicOff } from "lucide-react";
+import { X, Search, Mic, ShoppingCart, Check, Loader2, MicOff, ArrowLeft } from "lucide-react";
 import duoRobot from "@/assets/duo-robot.png";
 import { buscarProductos, type Producto } from "@/lib/catalogo-supermercado";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,11 +48,20 @@ async function llamarGemini(texto: string): Promise<RespuestaGemini> {
   };
 }
 
-/* ─── Web Speech API hook ─── */
-function useSpeechRecognition() {
+/* ─── Web Speech API hook with silence detection ─── */
+function useSpeechRecognition(onSilenceDetected: () => void) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const recognitionRef = useRef<any>(null);
+  const silenceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasSpokenRef = useRef(false);
+
+  const clearSilenceTimer = useCallback(() => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+  }, []);
 
   const startListening = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -60,28 +69,51 @@ function useSpeechRecognition() {
     const recognition = new SR();
     recognition.lang = "es-AR";
     recognition.interimResults = true;
-    recognition.continuous = false;
+    recognition.continuous = true;
+    hasSpokenRef.current = false;
+
     recognition.onstart = () => setIsListening(true);
+
     recognition.onresult = (e: any) => {
       let text = "";
       for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
       setTranscript(text);
+      hasSpokenRef.current = true;
+
+      // Reset silence timer on every result
+      clearSilenceTimer();
+      silenceTimerRef.current = setTimeout(() => {
+        // 1.5s of silence after speech → auto-process
+        if (hasSpokenRef.current) {
+          recognitionRef.current?.stop();
+          onSilenceDetected();
+        }
+      }, 1500);
     };
-    recognition.onerror = () => setIsListening(false);
-    recognition.onend = () => setIsListening(false);
+
+    recognition.onerror = () => {
+      setIsListening(false);
+      clearSilenceTimer();
+    };
+    recognition.onend = () => {
+      setIsListening(false);
+      clearSilenceTimer();
+    };
+
     recognitionRef.current = recognition;
     recognition.start();
-  }, []);
+  }, [onSilenceDetected, clearSilenceTimer]);
 
   const stopListening = useCallback(() => {
+    clearSilenceTimer();
     recognitionRef.current?.stop();
     setIsListening(false);
-  }, []);
+  }, [clearSilenceTimer]);
 
   return { isListening, transcript, setTranscript, startListening, stopListening };
 }
 
-/* ─── Types ─── */
+/* ─── Props & types ─── */
 interface CerebroDuoConnectProps {
   onListaSeleccionada: (productos: Producto[]) => void;
 }
@@ -105,36 +137,21 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
   const [keywords, setKeywords] = useState<string[]>([]);
   const [resumen, setResumen] = useState("");
   const [error, setError] = useState("");
+  const processingRef = useRef(false);
 
-  const speech = useSpeechRecognition();
-
-  // Sync transcript to input (NO auto-start mic)
-  useEffect(() => {
-    if (speech.transcript) setTextoInput(speech.transcript);
-  }, [speech.transcript]);
-
-  const resetear = useCallback(() => {
-    setPaso("input");
-    setTextoInput("");
-    setResultados([]);
-    setKeywords([]);
-    setResumen("");
-    setError("");
-    speech.setTranscript("");
-  }, [speech]);
-
-  const procesarTexto = async () => {
-    if (!textoInput.trim()) return;
-    if (speech.isListening) speech.stopListening();
+  const procesarTextoFromRef = useCallback(async (texto: string) => {
+    if (!texto.trim() || processingRef.current) return;
+    processingRef.current = true;
     setPaso("procesando");
     setError("");
 
     try {
-      const respuesta = await llamarGemini(textoInput);
+      const respuesta = await llamarGemini(texto);
 
       if (respuesta.productos.length === 0) {
         setError("No pude identificar productos de supermercado. Intentá de nuevo.");
         setPaso("input");
+        processingRef.current = false;
         return;
       }
 
@@ -151,7 +168,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
             precio: item.precio_estimado,
             unidad: item.unidad,
           },
-          seleccionado: false, // ← deseleccionado por defecto
+          seleccionado: false,
         };
       });
 
@@ -161,6 +178,42 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
       setPaso("resultados");
     } catch {
       setError("Error al procesar. Verificá tu conexión.");
+      setPaso("input");
+    }
+    processingRef.current = false;
+  }, []);
+
+  // Silence callback needs access to current textoInput
+  const textoRef = useRef(textoInput);
+  useEffect(() => { textoRef.current = textoInput; }, [textoInput]);
+
+  const onSilenceDetected = useCallback(() => {
+    procesarTextoFromRef(textoRef.current);
+  }, [procesarTextoFromRef]);
+
+  const speech = useSpeechRecognition(onSilenceDetected);
+
+  // Sync transcript → input
+  useEffect(() => {
+    if (speech.transcript) setTextoInput(speech.transcript);
+  }, [speech.transcript]);
+
+  const resetear = useCallback(() => {
+    setPaso("input");
+    setTextoInput("");
+    setResultados([]);
+    setKeywords([]);
+    setResumen("");
+    setError("");
+    speech.setTranscript("");
+  }, [speech]);
+
+  const procesarTexto = () => procesarTextoFromRef(textoInput);
+
+  const irAtras = () => {
+    if (paso === "resultados") {
+      setPaso("input");
+    } else if (paso === "procesando") {
       setPaso("input");
     }
   };
@@ -201,21 +254,36 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
 
   return (
     <>
-      {/* ── FAB (Floating Action Button) ── */}
+      {/* ── FAB — Glassmorphism, larger ── */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 right-4 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-xl shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+        className="fixed top-4 right-4 z-50 w-20 h-20 rounded-3xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-2xl shadow-primary/40"
+        style={{
+          background: "linear-gradient(135deg, hsla(var(--primary) / 0.75), hsla(var(--primary) / 0.55))",
+          backdropFilter: "blur(16px) saturate(180%)",
+          WebkitBackdropFilter: "blur(16px) saturate(180%)",
+          border: "1px solid hsla(var(--primary) / 0.3)",
+        }}
         aria-label="Abrir asistente Dúo"
       >
-        <img src={duoRobot} alt="DÚO" className="w-10 h-10 rounded-full object-cover" />
-        <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-destructive rounded-full border-2 border-background animate-pulse" />
+        <img src={duoRobot} alt="DÚO" className="w-14 h-14 rounded-2xl object-cover drop-shadow-lg" />
+        <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full border-2 border-background animate-pulse" />
       </button>
 
       {/* ── Bottom Sheet ── */}
       <Drawer open={isOpen} onOpenChange={handleOpenChange}>
-        <DrawerContent className="max-h-[85dvh] bg-card">
+        <DrawerContent className="max-h-[92dvh] bg-card">
           <DrawerHeader className="pb-2">
             <div className="flex items-center gap-3">
+              {/* Back button */}
+              {(paso === "resultados" || paso === "procesando") && (
+                <button
+                  onClick={irAtras}
+                  className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-muted transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4 text-foreground" />
+                </button>
+              )}
               <img src={duoRobot} alt="DÚO" className="w-9 h-9 rounded-xl" />
               <div className="flex-1">
                 <DrawerTitle className="text-sm font-bold text-card-foreground">
@@ -246,7 +314,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
             {/* ── PASO: INPUT ── */}
             {paso === "input" && (
               <div className="space-y-4">
-                {/* Mic button — manual only */}
+                {/* Mic button */}
                 <div className="flex flex-col items-center gap-3 pt-2 pb-1">
                   <button
                     onClick={speech.isListening ? speech.stopListening : speech.startListening}
@@ -270,7 +338,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
                     )}
                   </button>
                   <p className={`text-xs font-medium ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
-                    {speech.isListening ? "🎙 Escuchando... hablá ahora" : "Tocá para activar el micrófono"}
+                    {speech.isListening ? "🎙 Escuchando... se envía solo al dejar de hablar" : "Tocá para activar el micrófono"}
                   </p>
                 </div>
 
@@ -312,10 +380,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
               </div>
             )}
 
-            {/* ── PASO: RESULTADOS ── */}
+            {/* ── PASO: RESULTADOS — Higher position ── */}
             {paso === "resultados" && (
-              <div className="space-y-3">
-                {/* Keyword Chips — always visible */}
+              <div className="space-y-3 animate-fade-in">
+                {/* Keyword Chips */}
                 {keywords.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {keywords.map((kw, i) => (
@@ -341,7 +409,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
                       }`}
                       onClick={() => toggleSeleccion(i)}
                     >
-                      {/* X dismiss button */}
                       <button
                         onClick={(e) => { e.stopPropagation(); eliminarItem(i); }}
                         className="absolute top-1.5 right-1.5 z-10 w-5 h-5 rounded-full bg-muted hover:bg-destructive hover:text-destructive-foreground flex items-center justify-center transition-colors"
@@ -349,7 +416,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
                         <X className="w-3 h-3" />
                       </button>
 
-                      {/* Image */}
                       {r.productoCatalogo.imagen ? (
                         <img
                           src={r.productoCatalogo.imagen}
@@ -362,7 +428,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
                         </div>
                       )}
 
-                      {/* Info */}
                       <p className="text-xs font-semibold text-card-foreground truncate">
                         {r.productoCatalogo.nombre}
                       </p>
@@ -383,7 +448,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
                   ))}
                 </div>
 
-                {/* Dynamic Cart Button */}
+                {/* Cart Button */}
                 <button
                   onClick={confirmarSeleccion}
                   disabled={seleccionados.length === 0}
