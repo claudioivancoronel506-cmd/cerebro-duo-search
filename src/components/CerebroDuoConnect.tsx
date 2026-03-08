@@ -253,9 +253,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
     }));
     onListaSeleccionada(prods);
     setPaso("confirmacion");
+    // Close drawer after 1s, then reset state after drawer animation finishes
     setTimeout(() => {
       setIsOpen(false);
-      resetear();
+      setTimeout(() => resetear(), 400);
     }, 1000);
   };
 
