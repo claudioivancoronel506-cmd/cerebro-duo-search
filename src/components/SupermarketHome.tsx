@@ -28,14 +28,17 @@ interface SupermarketHomeProps {
 export default function SupermarketHome({ cartCount }: SupermarketHomeProps) {
   return (
     <div className="min-h-screen bg-background">
-      {/* ── Header ── */}
-      <header className="sticky top-0 z-40 bg-primary text-primary-foreground">
+      {/* ── Header — Store branding (yellow) ── */}
+      <header className="sticky top-0 z-40" style={{ background: "hsl(var(--store-primary))", color: "hsl(var(--store-primary-foreground))" }}>
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
             <Menu className="w-5 h-5" />
-            <div>
-              <h1 className="text-base font-bold tracking-tight">SuperDúo</h1>
-              <p className="text-[10px] opacity-80">Tu súper de confianza</p>
+            <div className="flex items-center gap-2">
+              <ShoppingCart className="w-6 h-6" />
+              <div>
+                <h1 className="text-base font-bold tracking-tight">Tu Súper Online</h1>
+                <p className="text-[10px] opacity-70">Comprá desde tu casa</p>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -43,7 +46,7 @@ export default function SupermarketHome({ cartCount }: SupermarketHomeProps) {
             <div className="relative">
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 w-4 h-4 bg-background text-primary text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 w-5 h-5 text-[10px] font-bold rounded-full flex items-center justify-center" style={{ background: "hsl(var(--store-secondary))", color: "hsl(var(--store-secondary-foreground))" }}>
                   {cartCount}
                 </span>
               )}
@@ -53,7 +56,7 @@ export default function SupermarketHome({ cartCount }: SupermarketHomeProps) {
 
         {/* Search bar */}
         <div className="px-4 pb-3">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-primary-foreground/15 backdrop-blur-sm">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/30 backdrop-blur-sm">
             <Search className="w-4 h-4 opacity-60" />
             <span className="text-xs opacity-60">Buscar productos, marcas...</span>
           </div>
@@ -63,15 +66,15 @@ export default function SupermarketHome({ cartCount }: SupermarketHomeProps) {
       {/* ── Info bar ── */}
       <div className="flex items-center gap-4 px-4 py-2.5 bg-card border-b border-border overflow-x-auto">
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground whitespace-nowrap">
-          <Truck className="w-3.5 h-3.5 text-primary" />
+          <Truck className="w-3.5 h-3.5" style={{ color: "hsl(var(--store-secondary))" }} />
           <span>Envío gratis +$15.000</span>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground whitespace-nowrap">
-          <Clock className="w-3.5 h-3.5 text-primary" />
+          <Clock className="w-3.5 h-3.5" style={{ color: "hsl(var(--store-secondary))" }} />
           <span>Entrega en 45 min</span>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground whitespace-nowrap">
-          <Tag className="w-3.5 h-3.5 text-primary" />
+          <Tag className="w-3.5 h-3.5" style={{ color: "hsl(var(--store-secondary))" }} />
           <span>3 cuotas sin interés</span>
         </div>
       </div>
@@ -92,7 +95,7 @@ export default function SupermarketHome({ cartCount }: SupermarketHomeProps) {
       <section className="px-4 pt-5">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-bold text-foreground">Categorías</h2>
-          <button className="text-[11px] text-primary font-semibold flex items-center gap-0.5">
+          <button className="text-[11px] font-semibold flex items-center gap-0.5" style={{ color: "hsl(var(--store-secondary))" }}>
             Ver todas <ChevronRight className="w-3 h-3" />
           </button>
         </div>
@@ -102,7 +105,7 @@ export default function SupermarketHome({ cartCount }: SupermarketHomeProps) {
               key={cat.nombre}
               className="flex flex-col items-center gap-1.5 min-w-[60px] group"
             >
-              <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center text-2xl group-hover:bg-primary/10 transition-colors">
+              <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
                 {cat.emoji}
               </div>
               <span className="text-[10px] font-medium text-muted-foreground">{cat.nombre}</span>
@@ -137,7 +140,7 @@ export default function SupermarketHome({ cartCount }: SupermarketHomeProps) {
       <section className="px-4 pt-5 pb-24">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-bold text-foreground">⚡ Ofertas Flash</h2>
-          <button className="text-[11px] text-primary font-semibold flex items-center gap-0.5">
+          <button className="text-[11px] font-semibold flex items-center gap-0.5" style={{ color: "hsl(var(--store-secondary))" }}>
             Ver más <ChevronRight className="w-3 h-3" />
           </button>
         </div>
@@ -161,7 +164,7 @@ export default function SupermarketHome({ cartCount }: SupermarketHomeProps) {
                 <span className="text-[10px] text-muted-foreground line-through">
                   ${prod.precioAnterior.toLocaleString("es-AR")}
                 </span>
-                <span className="text-[10px] font-bold text-primary">-{prod.descuento}%</span>
+                <span className="text-[10px] font-bold" style={{ color: "hsl(var(--store-secondary))" }}>-{prod.descuento}%</span>
               </div>
             </div>
           ))}
