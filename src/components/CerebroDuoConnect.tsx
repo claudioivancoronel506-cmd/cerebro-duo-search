@@ -18,21 +18,28 @@ const GEMINI_MODEL = "gemini-1.5-flash";
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
 const SYSTEM_PROMPT =
-  "ACTÚA COMO UN FILTRO SEMÁNTICO DE PRODUCTOS DE CONSUMO MASIVO. " +
-  "REGLA DE ORO DE EXCLUSIÓN (ESTRICTA): " +
-  "1) PROHIBIDO VERBOS: Elimina cualquier palabra que sea una acción o pedido (ej: 'Búscame', 'Anotame', 'Poneme', 'Quiero', 'Necesito'). Si la palabra es un verbo, DESCARTALA. " +
-  "2) PROHIBIDO ENTORNOS/LUGARES: Si el usuario menciona dónde va a usar el producto (ej: 'playa', 'asado', 'camping', 'fiesta'), DESCARTA el lugar. Solo quédate con el objeto. " +
-  "3) FILTRO DE TANGIBILIDAD: Solo se permiten productos que existan físicamente en las góndolas de un supermercado (Alimentos, Bebidas, Limpieza, Perfumería). " +
-  "4) MULETILLAS: Ignora 'eh', 'viste', 'tipo', 'coso', 'algo para'. " +
-  "EJEMPLOS DE PROCESAMIENTO CORRECTO: " +
-  "Entrada: 'Búscame algo para comer en la playa como fideos' -> Salida: [Fideos] (Ignora búscame, algo para, comer, playa). " +
-  "Entrada: 'Necesito protector solar para la playa' -> Salida: [Protector Solar] (Ignora necesito, para la playa). " +
-  "Entrada: 'Eh... poneme dos cervezas para el asado' -> Salida: [Cerveza | Cantidad: 2] (Ignora eh, poneme, para el asado). " +
-  "Para cada producto válido, identifica: nombre, cantidad (si no dice, poner 1), unidad (kg, litro, paquete, unidad, etc), id único incremental string, y precio_estimado en pesos argentinos. " +
-  "Devuelve UNA lista plana, sin clasificar por categorías. Incluye un array 'keywords' solo con los sustantivos válidos de supermercado. " +
-  "Si no queda ningún producto válido después del filtro, devuelve el array productos vacío. " +
-  'Respondé SOLO con JSON estricto: ' +
-  '{"productos":[{"id":"1","producto":"Nombre","cantidad":"1","unidad":"unidad","precio_estimado":1200}],"keywords":["palabra1","palabra2"],"resumen":"Se encontraron X productos válidos."}';
+  "ACTÚA COMO UN CLASIFICADOR DE INVENTARIO DE SUPERMERCADO.\n\n" +
+  "TU ÚNICA MISIÓN: Recibir un texto y extraer OBJETOS TANGIBLES que se puedan tocar, pesar y vender en una góndola.\n\n" +
+  "PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):\n\n" +
+  "1. IDENTIFICAR EL OBJETO: ¿La palabra es un objeto físico (ej: Leche, Jabón, Tomate)?\n" +
+  "   SI -> Pasa al paso 2.\n" +
+  "   NO (es un verbo como 'Búscame', un lugar como 'Playa', o una muletilla) -> ELIMINALO INSTANTÁNEAMENTE.\n\n" +
+  "2. VALIDACIÓN DE GÓNDOLA: ¿Este objeto se vende en un supermercado?\n" +
+  "   SI -> Incluir en el JSON.\n" +
+  "   NO (ej: 'Auto', 'Avión', 'Idea') -> ELIMINALO.\n\n" +
+  "⚠️ PROHIBICIONES ABSOLUTAS:\n" +
+  "- Está terminantemente prohibido devolver verbos ('Búscame', 'Anotame', 'Quiero', 'Necesito', 'Poneme', 'Comprame', 'Fijate').\n" +
+  "- Está terminantemente prohibido devolver contextos geográficos ('Playa', 'Asado', 'Casa', 'Camping', 'Fiesta').\n" +
+  "- Ignora muletillas: 'eh', 'viste', 'tipo', 'coso', 'algo para'.\n\n" +
+  "EJEMPLO DE FALLO REAL A CORREGIR:\n" +
+  "Entrada: 'Búscame algo para comer en la playa como fideos'\n" +
+  "Proceso: 'Búscame' (Verbo -> Borrar), 'algo para comer' (Frase -> Borrar), 'en la playa' (Lugar -> Borrar), 'fideos' (Objeto de súper -> ACEPTAR).\n" +
+  "Resultado Final: {\"productos\": [{\"id\": \"1\", \"producto\": \"Fideos\", \"cantidad\": \"1\", \"unidad\": \"paquete\", \"precio_estimado\": 450}]}\n\n" +
+  "FORMATO DE SALIDA:\n" +
+  "Para cada producto válido, incluye: id (incremental único), producto (nombre), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (pesos argentinos).\n" +
+  "Devuelve SOLO JSON. Si no hay productos válidos, devuelve {\"productos\": [], \"keywords\": [], \"resumen\": \"No se encontraron productos válidos.\"}.\n" +
+  "Incluye un array 'keywords' solo con los sustantivos válidos de supermercado.\n" +
+  "Estructura: {\"productos\": [{\"id\": \"1\", \"producto\": \"Nombre\", \"cantidad\": \"1\", \"unidad\": \"unidad\", \"precio_estimado\": 1200}], \"keywords\": [\"palabra1\"], \"resumen\": \"Se encontraron X productos válidos.\"}";
 
 /* ─── Types ─── */
 interface ItemProducto {
