@@ -255,7 +255,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
     setPaso("confirmacion");
     setTimeout(() => {
       setIsOpen(false);
-      setIsCompleted(true);
       resetear();
     }, 1000);
   };
