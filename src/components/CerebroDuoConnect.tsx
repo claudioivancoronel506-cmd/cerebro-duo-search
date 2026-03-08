@@ -127,6 +127,7 @@ function useSpeechRecognition(onSilenceDetected: () => void) {
 /* ─── Props & types ─── */
 interface CerebroDuoConnectProps {
   onListaSeleccionada: (productos: Producto[]) => void;
+  onDismiss?: () => void;
 }
 
 type Paso = "input" | "procesando" | "resultados" | "confirmacion";
@@ -140,7 +141,7 @@ interface ResultadoGrilla {
 /* ═══════════════════════════════════════════════
    COMPONENTE PRINCIPAL — FAB + BOTTOM SHEET
    ═══════════════════════════════════════════════ */
-export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoConnectProps) {
+export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: CerebroDuoConnectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [paso, setPaso] = useState<Paso>("input");
   const [textoInput, setTextoInput] = useState("");
@@ -253,10 +254,12 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
     }));
     onListaSeleccionada(prods);
     setPaso("confirmacion");
-    // Close drawer after 1s, then reset state after drawer animation finishes
     setTimeout(() => {
       setIsOpen(false);
-      setTimeout(() => resetear(), 400);
+      setTimeout(() => {
+        resetear();
+        onDismiss?.();
+      }, 400);
     }, 1000);
   };
 

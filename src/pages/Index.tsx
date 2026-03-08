@@ -4,9 +4,14 @@ import type { Producto } from "@/lib/catalogo-supermercado";
 
 const Index = () => {
   const [productosSeleccionados, setProductosSeleccionados] = useState<Producto[]>([]);
+  const [isAssistantActive, setIsAssistantActive] = useState(true);
 
   const handleListaSeleccionada = (productos: Producto[]) => {
     setProductosSeleccionados((prev) => [...prev, ...productos]);
+  };
+
+  const handleDismiss = () => {
+    setIsAssistantActive(false);
   };
 
   return (
@@ -57,8 +62,13 @@ const Index = () => {
         )}
       </div>
 
-      {/* Floating widget — overlay */}
-      <CerebroDuoConnect onListaSeleccionada={handleListaSeleccionada} />
+      {/* Floating widget — se desmonta completamente del DOM tras confirmar */}
+      {isAssistantActive && (
+        <CerebroDuoConnect
+          onListaSeleccionada={handleListaSeleccionada}
+          onDismiss={handleDismiss}
+        />
+      )}
     </div>
   );
 };
