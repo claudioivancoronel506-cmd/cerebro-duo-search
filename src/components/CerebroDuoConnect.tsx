@@ -11,14 +11,30 @@ const GEMINI_MODEL = "gemini-1.5-flash";
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
 const SYSTEM_PROMPT =
-  "Sos un procesador de lenguaje natural para supermercados argentinos. " +
-  "Tu única tarea es recibir pedidos dictados y devolver una lista JSON de términos de búsqueda limpios y técnicos. " +
-  'No saludes ni expliques. Respondé SOLO con un array JSON de strings. ' +
-  'Ejemplo: "Quiero dos harinas y pan" -> ["Harina", "Pan"]. ' +
-  '"Eh buscame leche y unas galletitas" -> ["Leche", "Galletitas"].';
+  "Actuá como un procesador semántico de alta precisión para una lista de compras de supermercado argentino. " +
+  "REGLAS: 1) Solo productos de supermercado. Si mencionan objetos que no se venden (cocina, mesa, auto, tele), IGNÓRALOS. " +
+  "2) Eliminá muletillas: eh, buscame, necesito, poneme, comprame, fijate si hay. " +
+  "3) Para cada producto válido identificá: nombre, cantidad (si no dice, poner 1), unidad (kg, litro, paquete, unidad, etc). " +
+  "4) Devolvé UNA lista plana, sin clasificar por categorías. " +
+  'Respondé SOLO con JSON estricto, sin saludos ni comentarios, con este formato: ' +
+  '{"lista_compras":[{"producto":"Nombre","cantidad":"1","unidad":"unidad"}],"resumen":"Se encontraron X productos válidos."}. ' +
+  'Ejemplo: "Eh buscame harina, fideos y fijate si hay una cocina barata y un poco de pan" -> ' +
+  '{"lista_compras":[{"producto":"Harina","cantidad":"1","unidad":"kg"},{"producto":"Fideos","cantidad":"1","unidad":"paquete"},{"producto":"Pan","cantidad":"1","unidad":"unidad"}],"resumen":"Se encontraron 3 productos válidos."}';
+
+/* ─── Types for Gemini response ─── */
+interface ItemListaCompras {
+  producto: string;
+  cantidad: string;
+  unidad: string;
+}
+
+interface RespuestaGemini {
+  lista_compras: ItemListaCompras[];
+  resumen: string;
+}
 
 /* ─── Gemini direct call ─── */
-async function llamarGemini(texto: string): Promise<string[]> {
+async function llamarGemini(texto: string): Promise<RespuestaGemini> {
   const res = await fetch(GEMINI_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -26,7 +42,7 @@ async function llamarGemini(texto: string): Promise<string[]> {
       contents: [
         { role: "user", parts: [{ text: SYSTEM_PROMPT + "\n\nPedido del usuario: " + texto }] },
       ],
-      generationConfig: { temperature: 0.1, maxOutputTokens: 256 },
+      generationConfig: { temperature: 0.1, maxOutputTokens: 512 },
     }),
   });
 
@@ -36,14 +52,18 @@ async function llamarGemini(texto: string): Promise<string[]> {
   }
 
   const data = await res.json();
-  const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "[]";
-  // Extract JSON array from response
-  const match = rawText.match(/\[.*\]/s);
-  if (!match) return [];
+  const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
+  // Extract JSON object from response
+  const match = rawText.match(/\{[\s\S]*\}/);
+  if (!match) return { lista_compras: [], resumen: "" };
   try {
-    return JSON.parse(match[0]);
+    const parsed = JSON.parse(match[0]);
+    return {
+      lista_compras: parsed.lista_compras || [],
+      resumen: parsed.resumen || "",
+    };
   } catch {
-    return [];
+    return { lista_compras: [], resumen: "" };
   }
 }
 
