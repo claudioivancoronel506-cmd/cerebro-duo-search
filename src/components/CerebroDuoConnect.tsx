@@ -261,16 +261,11 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (open) {
-      setIsCompleted(false);
-    }
     if (!open) {
       if (speech.isListening) speech.stopListening();
       if (paso === "input") resetear();
     }
   };
-
-  if (isCompleted) return null;
 
   return (
     <>
