@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { X, Search, Mic, ShoppingCart, Check, Loader2, MicOff } from "lucide-react";
 import duoRobot from "@/assets/duo-robot.png";
 import { buscarProductos, type Producto } from "@/lib/catalogo-supermercado";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Drawer,
   DrawerContent,
@@ -9,37 +10,6 @@ import {
   DrawerTitle,
   DrawerDescription,
 } from "@/components/ui/drawer";
-
-/* ─────────────────────────────────────────────
-   🔑  PEGÁ TU API KEY DE GEMINI ACÁ ABAJO
-   ───────────────────────────────────────────── */
-const GEMINI_API_KEY = "PEGA_TU_CLAVE_AQUI";
-const GEMINI_MODEL = "gemini-1.5-flash";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-
-const SYSTEM_PROMPT =
-  "ACTÚA COMO UN CLASIFICADOR DE INVENTARIO DE SUPERMERCADO.\n\n" +
-  "TU ÚNICA MISIÓN: Recibir un texto y extraer OBJETOS TANGIBLES que se puedan tocar, pesar y vender en una góndola.\n\n" +
-  "PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):\n\n" +
-  "1. IDENTIFICAR EL OBJETO: ¿La palabra es un objeto físico (ej: Leche, Jabón, Tomate)?\n" +
-  "   SI -> Pasa al paso 2.\n" +
-  "   NO (es un verbo como 'Búscame', un lugar como 'Playa', o una muletilla) -> ELIMINALO INSTANTÁNEAMENTE.\n\n" +
-  "2. VALIDACIÓN DE GÓNDOLA: ¿Este objeto se vende en un supermercado?\n" +
-  "   SI -> Incluir en el JSON.\n" +
-  "   NO (ej: 'Auto', 'Avión', 'Idea') -> ELIMINALO.\n\n" +
-  "⚠️ PROHIBICIONES ABSOLUTAS:\n" +
-  "- Está terminantemente prohibido devolver verbos ('Búscame', 'Anotame', 'Quiero', 'Necesito', 'Poneme', 'Comprame', 'Fijate').\n" +
-  "- Está terminantemente prohibido devolver contextos geográficos ('Playa', 'Asado', 'Casa', 'Camping', 'Fiesta').\n" +
-  "- Ignora muletillas: 'eh', 'viste', 'tipo', 'coso', 'algo para'.\n\n" +
-  "EJEMPLO DE FALLO REAL A CORREGIR:\n" +
-  "Entrada: 'Búscame algo para comer en la playa como fideos'\n" +
-  "Proceso: 'Búscame' (Verbo -> Borrar), 'algo para comer' (Frase -> Borrar), 'en la playa' (Lugar -> Borrar), 'fideos' (Objeto de súper -> ACEPTAR).\n" +
-  "Resultado Final: {\"productos\": [{\"id\": \"1\", \"producto\": \"Fideos\", \"cantidad\": \"1\", \"unidad\": \"paquete\", \"precio_estimado\": 450}]}\n\n" +
-  "FORMATO DE SALIDA:\n" +
-  "Para cada producto válido, incluye: id (incremental único), producto (nombre), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (pesos argentinos).\n" +
-  "Devuelve SOLO JSON. Si no hay productos válidos, devuelve {\"productos\": [], \"keywords\": [], \"resumen\": \"No se encontraron productos válidos.\"}.\n" +
-  "Incluye un array 'keywords' solo con los sustantivos válidos de supermercado.\n" +
-  "Estructura: {\"productos\": [{\"id\": \"1\", \"producto\": \"Nombre\", \"cantidad\": \"1\", \"unidad\": \"unidad\", \"precio_estimado\": 1200}], \"keywords\": [\"palabra1\"], \"resumen\": \"Se encontraron X productos válidos.\"}";
 
 /* ─── Types ─── */
 interface ItemProducto {
@@ -56,42 +26,26 @@ interface RespuestaGemini {
   resumen: string;
 }
 
-/* ─── Gemini direct call (System Instruction real) ─── */
+/* ─── Edge function call ─── */
 async function llamarGemini(texto: string): Promise<RespuestaGemini> {
-  const res = await fetch(GEMINI_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      systemInstruction: {
-        parts: [{ text: SYSTEM_PROMPT }],
-      },
-      contents: [
-        { role: "user", parts: [{ text: texto }] },
-      ],
-      generationConfig: { temperature: 0.1, maxOutputTokens: 512 },
-    }),
+  const { data, error } = await supabase.functions.invoke("gemini-clasificar", {
+    body: { texto },
   });
 
-  if (!res.ok) {
-    const errBody = await res.text().catch(() => "");
-    console.error("Gemini API error:", res.status, errBody);
-    throw new Error(`Error al conectar con Gemini (${res.status})`);
+  if (error) {
+    console.error("Edge function error:", error);
+    throw new Error("Error al conectar con el clasificador");
   }
 
-  const data = await res.json();
-  const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
-  const match = rawText.match(/\{[\s\S]*\}/);
-  if (!match) return { productos: [], keywords: [], resumen: "" };
-  try {
-    const parsed = JSON.parse(match[0]);
-    return {
-      productos: parsed.productos || [],
-      keywords: parsed.keywords || [],
-      resumen: parsed.resumen || "",
-    };
-  } catch {
-    return { productos: [], keywords: [], resumen: "" };
+  if (data?.error) {
+    throw new Error(data.error);
   }
+
+  return {
+    productos: data?.productos || [],
+    keywords: data?.keywords || [],
+    resumen: data?.resumen || "",
+  };
 }
 
 /* ─── Web Speech API hook ─── */
@@ -154,15 +108,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
 
   const speech = useSpeechRecognition();
 
-  // Auto-start voice when sheet opens
-  useEffect(() => {
-    if (isOpen && paso === "input") {
-      const timer = setTimeout(() => speech.startListening(), 400);
-      return () => clearTimeout(timer);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
-
+  // Sync transcript to input (NO auto-start mic)
   useEffect(() => {
     if (speech.transcript) setTextoInput(speech.transcript);
   }, [speech.transcript]);
@@ -205,7 +151,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
             precio: item.precio_estimado,
             unidad: item.unidad,
           },
-          seleccionado: false,
+          seleccionado: false, // ← deseleccionado por defecto
         };
       });
 
@@ -214,7 +160,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
       setResumen(respuesta.resumen);
       setPaso("resultados");
     } catch {
-      setError("Error al procesar. Verificá tu conexión o API Key.");
+      setError("Error al procesar. Verificá tu conexión.");
       setPaso("input");
     }
   };
@@ -262,7 +208,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
         aria-label="Abrir asistente Dúo"
       >
         <img src={duoRobot} alt="DÚO" className="w-10 h-10 rounded-full object-cover" />
-        {/* Notification dot */}
         <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-destructive rounded-full border-2 border-background animate-pulse" />
       </button>
 
@@ -278,7 +223,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
                 </DrawerTitle>
                 <DrawerDescription className="text-[11px]">
                   {paso === "input"
-                    ? "Listo para escuchar o escribir"
+                    ? "Tocá el micrófono o escribí tu pedido"
                     : paso === "procesando"
                     ? "Procesando..."
                     : paso === "resultados"
@@ -288,7 +233,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
               </div>
               {paso === "resultados" && (
                 <button
-                  onClick={() => { resetear(); setTimeout(() => speech.startListening(), 300); }}
+                  onClick={() => resetear()}
                   className="text-[11px] font-semibold text-primary hover:underline"
                 >
                   Nuevo pedido
@@ -301,7 +246,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
             {/* ── PASO: INPUT ── */}
             {paso === "input" && (
               <div className="space-y-4">
-                {/* Mic button */}
+                {/* Mic button — manual only */}
                 <div className="flex flex-col items-center gap-3 pt-2 pb-1">
                   <button
                     onClick={speech.isListening ? speech.stopListening : speech.startListening}
@@ -370,7 +315,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
             {/* ── PASO: RESULTADOS ── */}
             {paso === "resultados" && (
               <div className="space-y-3">
-                {/* Keyword Chips */}
+                {/* Keyword Chips — always visible */}
                 {keywords.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {keywords.map((kw, i) => (
