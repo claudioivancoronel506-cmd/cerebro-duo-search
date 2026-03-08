@@ -118,10 +118,10 @@ interface CerebroDuoConnectProps {
 
 type Paso = "input" | "procesando" | "resultados" | "confirmacion";
 
-interface ResultadoBusqueda {
-  termino: string;
-  productos: Producto[];
-  seleccionado?: Producto;
+interface ResultadoGrilla {
+  item: ItemListaCompras;
+  productoCatalogo: Producto;
+  seleccionado: boolean;
 }
 
 /* ═══════════════════════════════════════════════
@@ -134,8 +134,8 @@ export default function CerebroDuoConnect({
 }: CerebroDuoConnectProps) {
   const [paso, setPaso] = useState<Paso>("input");
   const [textoInput, setTextoInput] = useState("");
-  const [resultados, setResultados] = useState<ResultadoBusqueda[]>([]);
-  const [terminoActivo, setTerminoActivo] = useState(0);
+  const [resultados, setResultados] = useState<ResultadoGrilla[]>([]);
+  const [resumen, setResumen] = useState("");
   const [error, setError] = useState("");
 
   const speech = useSpeechRecognition();
@@ -149,7 +149,7 @@ export default function CerebroDuoConnect({
     setPaso("input");
     setTextoInput("");
     setResultados([]);
-    setTerminoActivo(0);
+    setResumen("");
     setError("");
     speech.setTranscript("");
   }, [speech]);
@@ -167,46 +167,55 @@ export default function CerebroDuoConnect({
     setError("");
 
     try {
-      let terminos: string[];
+      let respuesta: RespuestaGemini;
 
       if (GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI") {
         // Fallback local si no hay API Key
         const { procesarTextoDesordenado } = await import("@/lib/procesador-texto");
-        terminos = procesarTextoDesordenado(textoInput);
+        const terminos = procesarTextoDesordenado(textoInput);
+        respuesta = {
+          lista_compras: terminos.map((t) => ({ producto: t, cantidad: "1", unidad: "unidad" })),
+          resumen: `Se encontraron ${terminos.length} productos válidos.`,
+        };
       } else {
-        terminos = await llamarGemini(textoInput);
+        respuesta = await llamarGemini(textoInput);
       }
 
-      if (terminos.length === 0) {
-        setError("No pude identificar productos en tu pedido. Intentá de nuevo.");
+      if (respuesta.lista_compras.length === 0) {
+        setError("No pude identificar productos de supermercado en tu pedido. Intentá de nuevo.");
         setPaso("input");
         return;
       }
 
-      const res = terminos.map((t) => ({
-        termino: t,
-        productos: buscarProductos(t),
-      }));
-      setResultados(res);
-      setTerminoActivo(0);
+      const grilla = respuesta.lista_compras.map((item) => {
+        const encontrados = buscarProductos(item.producto);
+        return {
+          item,
+          productoCatalogo: encontrados[0] || buscarProductos("")[0],
+          seleccionado: true,
+        };
+      });
+
+      setResultados(grilla);
+      setResumen(respuesta.resumen);
       setPaso("resultados");
     } catch (e) {
       console.error(e);
-      setError("Error al procesar con Gemini. Verificá tu API Key.");
+      setError("Error al procesar. Verificá tu conexión o API Key.");
       setPaso("input");
     }
   };
 
-  const seleccionarProducto = (idx: number, producto: Producto) => {
+  const toggleSeleccion = (idx: number) => {
     setResultados((prev) =>
-      prev.map((r, i) => (i === idx ? { ...r, seleccionado: producto } : r))
+      prev.map((r, i) => (i === idx ? { ...r, seleccionado: !r.seleccionado } : r))
     );
   };
 
-  const todosSeleccionados = resultados.length > 0 && resultados.every((r) => r.seleccionado);
+  const seleccionadosCount = resultados.filter((r) => r.seleccionado).length;
 
   const confirmarSeleccion = () => {
-    const seleccionados = resultados.filter((r) => r.seleccionado).map((r) => r.seleccionado!);
+    const seleccionados = resultados.filter((r) => r.seleccionado).map((r) => r.productoCatalogo);
     setPaso("confirmacion");
     setTimeout(() => {
       onListaSeleccionada(seleccionados);
