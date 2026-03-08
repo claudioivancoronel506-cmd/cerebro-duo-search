@@ -108,7 +108,17 @@ function useSpeechRecognition(onSilenceDetected: () => void) {
   const stopListening = useCallback(() => {
     clearSilenceTimer();
     recognitionRef.current?.stop();
+    recognitionRef.current = null;
     setIsListening(false);
+  }, [clearSilenceTimer]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      clearSilenceTimer();
+      recognitionRef.current?.stop();
+      recognitionRef.current = null;
+    };
   }, [clearSilenceTimer]);
 
   return { isListening, transcript, setTranscript, startListening, stopListening };
@@ -236,13 +246,17 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
   );
 
   const confirmarSeleccion = () => {
-    const prods = seleccionados.map((r) => r.productoCatalogo);
+    if (speech.isListening) speech.stopListening();
+    const prods = seleccionados.map((r) => ({
+      ...r.productoCatalogo,
+      cantidadSeleccionada: Number(r.item.cantidad || 1),
+    }));
     setPaso("confirmacion");
     setTimeout(() => {
       onListaSeleccionada(prods);
       resetear();
       setIsOpen(false);
-    }, 1800);
+    }, 1400);
   };
 
   const handleOpenChange = (open: boolean) => {
