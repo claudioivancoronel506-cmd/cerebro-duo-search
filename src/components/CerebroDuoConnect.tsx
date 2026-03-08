@@ -56,20 +56,27 @@ interface RespuestaGemini {
   resumen: string;
 }
 
-/* ─── Gemini direct call ─── */
+/* ─── Gemini direct call (System Instruction real) ─── */
 async function llamarGemini(texto: string): Promise<RespuestaGemini> {
   const res = await fetch(GEMINI_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      systemInstruction: {
+        parts: [{ text: SYSTEM_PROMPT }],
+      },
       contents: [
-        { role: "user", parts: [{ text: SYSTEM_PROMPT + "\n\nPedido del usuario: " + texto }] },
+        { role: "user", parts: [{ text: texto }] },
       ],
       generationConfig: { temperature: 0.1, maxOutputTokens: 512 },
     }),
   });
 
-  if (!res.ok) throw new Error("Error al conectar con Gemini");
+  if (!res.ok) {
+    const errBody = await res.text().catch(() => "");
+    console.error("Gemini API error:", res.status, errBody);
+    throw new Error(`Error al conectar con Gemini (${res.status})`);
+  }
 
   const data = await res.json();
   const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
@@ -177,25 +184,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
     setError("");
 
     try {
-      let respuesta: RespuestaGemini;
-
-      if (GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI") {
-        const { procesarTextoDesordenado } = await import("@/lib/procesador-texto");
-        const terminos = procesarTextoDesordenado(textoInput);
-        respuesta = {
-          productos: terminos.map((t, i) => ({
-            id: String(i + 1),
-            producto: t,
-            cantidad: "1",
-            unidad: "unidad",
-            precio_estimado: 1500,
-          })),
-          keywords: terminos.map((t) => t.toLowerCase()),
-          resumen: `Se encontraron ${terminos.length} productos válidos.`,
-        };
-      } else {
-        respuesta = await llamarGemini(textoInput);
-      }
+      const respuesta = await llamarGemini(textoInput);
 
       if (respuesta.productos.length === 0) {
         setError("No pude identificar productos de supermercado. Intentá de nuevo.");
