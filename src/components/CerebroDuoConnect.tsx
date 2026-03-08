@@ -75,8 +75,9 @@ function useSpeechRecognition(onSilenceDetected: () => void) {
     recognition.onstart = () => setIsListening(true);
 
     recognition.onresult = (e: any) => {
-      let text = "";
-      for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
+      // Only take the LAST result's transcript (final or interim) to avoid duplication
+      const lastResult = e.results[e.results.length - 1];
+      const text = lastResult[0].transcript.trim();
       setTranscript(text);
       hasSpokenRef.current = true;
 
