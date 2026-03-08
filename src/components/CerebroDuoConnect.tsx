@@ -251,12 +251,12 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
       ...r.productoCatalogo,
       cantidadSeleccionada: Number(r.item.cantidad || 1),
     }));
+    onListaSeleccionada(prods);
     setPaso("confirmacion");
     setTimeout(() => {
-      onListaSeleccionada(prods);
-      resetear();
       setIsOpen(false);
-    }, 1400);
+      resetear();
+    }, 1000);
   };
 
   const handleOpenChange = (open: boolean) => {
