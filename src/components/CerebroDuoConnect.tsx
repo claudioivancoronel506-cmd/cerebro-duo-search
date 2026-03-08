@@ -322,79 +322,42 @@ export default function CerebroDuoConnect({
           )}
 
           {paso === "resultados" && (
-            <div className="space-y-4">
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                {resultados.map((r, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setTerminoActivo(i)}
-                    className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
-                      i === terminoActivo
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : r.seleccionado
-                        ? "bg-secondary text-foreground border-border"
-                        : "bg-background text-muted-foreground border-border"
-                    }`}
-                  >
-                    {r.seleccionado && <Check className="w-3 h-3 inline mr-1" />}
-                    {r.termino}
-                  </button>
-                ))}
-              </div>
-
-              {resultados[terminoActivo] && (
-                <div className="space-y-2">
-                  <p className="text-xs text-muted-foreground">
-                    {resultados[terminoActivo].productos.length} resultado
-                    {resultados[terminoActivo].productos.length !== 1 ? "s" : ""} para "
-                    {resultados[terminoActivo].termino}"
-                  </p>
-                  {resultados[terminoActivo].productos.length === 0 ? (
-                    <p className="text-sm text-muted-foreground py-6 text-center">
-                      No se encontraron productos.
-                    </p>
+            <div className="space-y-3">
+              <p className="text-xs text-muted-foreground text-center">{resumen}</p>
+              
+              {resultados.map((r, i) => (
+                <button
+                  key={i}
+                  onClick={() => toggleSeleccion(i)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-2xl border text-left transition-all ${
+                    r.seleccionado
+                      ? "border-primary bg-primary/5 ring-1 ring-primary"
+                      : "border-border bg-secondary opacity-50"
+                  }`}
+                >
+                  {r.productoCatalogo.imagen ? (
+                    <img src={r.productoCatalogo.imagen} alt={r.productoCatalogo.nombre} className="w-12 h-12 rounded-xl object-cover shrink-0" />
                   ) : (
-                    resultados[terminoActivo].productos.map((p) => {
-                      const isSelected = resultados[terminoActivo].seleccionado?.id === p.id;
-                      return (
-                        <button
-                          key={p.id}
-                          onClick={() => seleccionarProducto(terminoActivo, p)}
-                          className={`w-full flex items-center gap-3 p-3 rounded-2xl border text-left transition-all ${
-                            isSelected
-                              ? "border-primary bg-primary/5 ring-1 ring-primary"
-                              : "border-border bg-secondary hover:border-muted-foreground"
-                          }`}
-                        >
-                          {p.imagen ? (
-                            <img src={p.imagen} alt={p.nombre} className="w-10 h-10 rounded-xl object-cover shrink-0" />
-                          ) : (
-                            <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-lg shrink-0">
-                              🛒
-                            </div>
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-foreground truncate">{p.nombre}</p>
-                            <p className="text-[11px] text-muted-foreground">
-                              {p.marca} · {p.unidad}
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-bold text-foreground">
-                              ${p.precio.toLocaleString("es-AR")}
-                            </span>
-                            {isSelected ? (
-                              <Check className="w-5 h-5 text-primary" />
-                            ) : (
-                              <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })
+                    <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-lg shrink-0">🛒</div>
                   )}
-                </div>
-              )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{r.productoCatalogo.nombre}</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-foreground">
+                      ${r.productoCatalogo.precio.toLocaleString("es-AR")}
+                    </span>
+                    {r.seleccionado ? (
+                      <Check className="w-5 h-5 text-primary" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    )}
+                  </div>
+                </button>
+              ))}
             </div>
           )}
 
@@ -414,12 +377,11 @@ export default function CerebroDuoConnect({
           <div className="px-5 py-4 border-t border-border">
             <button
               onClick={confirmarSeleccion}
-              disabled={!todosSeleccionados}
+              disabled={seleccionadosCount === 0}
               className="w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-primary text-primary-foreground hover:bg-[hsl(var(--duo-red-light))] active:scale-[0.98]"
             >
               <ShoppingCart className="w-4 h-4" />
-              Confirmar selección ({resultados.filter((r) => r.seleccionado).length}/
-              {resultados.length})
+              Confirmar selección ({seleccionadosCount}/{resultados.length})
             </button>
           </div>
         )}
