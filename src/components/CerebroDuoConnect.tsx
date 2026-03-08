@@ -148,7 +148,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
   const [keywords, setKeywords] = useState<string[]>([]);
   const [resumen, setResumen] = useState("");
   const [error, setError] = useState("");
-  const [isCompleted, setIsCompleted] = useState(false);
   const processingRef = useRef(false);
 
   const procesarTextoFromRef = useCallback(async (texto: string) => {
