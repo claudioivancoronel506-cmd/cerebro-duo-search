@@ -272,6 +272,8 @@ export default function CerebroDuoConnect({ onListaSeleccionada }: CerebroDuoCon
     }
   };
 
+  if (isCompleted) return null;
+
   return (
     <>
       {/* ── FAB — Glassmorphism, larger ── */}
