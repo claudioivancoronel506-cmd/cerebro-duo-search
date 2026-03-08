@@ -111,8 +111,6 @@ function useSpeechRecognition() {
 
 /* ─── Types ─── */
 interface CerebroDuoConnectProps {
-  isOpen: boolean;
-  onClose: () => void;
   onListaSeleccionada: (productos: Producto[]) => void;
 }
 
@@ -128,8 +126,6 @@ interface ResultadoGrilla {
    COMPONENTE PRINCIPAL
    ═══════════════════════════════════════════════ */
 export default function CerebroDuoConnect({
-  isOpen,
-  onClose,
   onListaSeleccionada,
 }: CerebroDuoConnectProps) {
   const [paso, setPaso] = useState<Paso>("input");
@@ -139,6 +135,15 @@ export default function CerebroDuoConnect({
   const [error, setError] = useState("");
 
   const speech = useSpeechRecognition();
+
+  // Auto-start voice on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      speech.startListening();
+    }, 500);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Sync speech transcript to input
   useEffect(() => {
@@ -154,12 +159,6 @@ export default function CerebroDuoConnect({
     speech.setTranscript("");
   }, [speech]);
 
-  const handleClose = () => {
-    if (speech.isListening) speech.stopListening();
-    resetear();
-    onClose();
-  };
-
   const procesarTexto = async () => {
     if (!textoInput.trim()) return;
     if (speech.isListening) speech.stopListening();
@@ -170,7 +169,6 @@ export default function CerebroDuoConnect({
       let respuesta: RespuestaGemini;
 
       if (GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI") {
-        // Fallback local si no hay API Key
         const { procesarTextoDesordenado } = await import("@/lib/procesador-texto");
         const terminos = procesarTextoDesordenado(textoInput);
         respuesta = {
@@ -219,173 +217,156 @@ export default function CerebroDuoConnect({
     setPaso("confirmacion");
     setTimeout(() => {
       onListaSeleccionada(seleccionados);
-      handleClose();
+      resetear();
+      // Auto-restart voice after confirmation
+      setTimeout(() => speech.startListening(), 500);
     }, 1500);
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={handleClose} />
-
-      <div className="relative w-full max-w-lg bg-background rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[85vh] flex flex-col animate-in slide-in-from-bottom duration-300 border border-border">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <div className="flex items-center gap-3">
-            <img src={duoRobot} alt="DÚO Robot" className="w-10 h-10 rounded-xl" />
-            <div>
-              <h2 className="font-bold text-foreground text-sm">Cerebro Dúo Connect</h2>
-              <p className="text-[11px] text-muted-foreground">
-                {GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI" ? "Modo local (sin Gemini)" : "Gemini 1.5 Flash · Voz activa"}
-              </p>
-            </div>
-          </div>
-          <button onClick={handleClose} className="p-2 rounded-full hover:bg-secondary transition-colors">
-            <X className="w-5 h-5 text-muted-foreground" />
-          </button>
+    <div className="w-full max-w-lg mx-auto flex flex-col flex-1 px-4">
+      {/* Header */}
+      <div className="flex items-center gap-3 py-4">
+        <img src={duoRobot} alt="DÚO Robot" className="w-10 h-10 rounded-xl" />
+        <div>
+          <h2 className="font-bold text-foreground text-sm">Cerebro Dúo Connect</h2>
+          <p className="text-[11px] text-muted-foreground">
+            {GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI" ? "Modo local (sin Gemini)" : "Gemini 1.5 Flash · Voz activa"}
+          </p>
         </div>
+      </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-5">
-          {paso === "input" && (
-            <div className="space-y-5">
-              <div className="flex flex-col items-center gap-3">
-                <img src={duoRobot} alt="DÚO" className="w-20 h-20 rounded-2xl shadow-lg" />
-                <p className="text-center text-sm text-muted-foreground max-w-xs">
-                  Tocá el micrófono para dictar, o escribí tu pedido. Gemini se encarga de entenderlo.
-                </p>
-              </div>
-
-              {/* Voice button */}
-              <div className="flex justify-center">
-                <button
-                  onClick={speech.isListening ? speech.stopListening : speech.startListening}
-                  className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all active:scale-95 ${
-                    speech.isListening
-                      ? "bg-destructive text-destructive-foreground animate-pulse shadow-lg shadow-destructive/30"
-                      : "bg-primary text-primary-foreground hover:bg-[hsl(var(--duo-red-light))]"
-                  }`}
-                >
-                  {speech.isListening ? <MicOff className="w-8 h-8" /> : <Mic className="w-8 h-8" />}
-                  {speech.isListening && (
-                    <span className="absolute -bottom-7 text-xs font-medium text-destructive animate-pulse">
-                      Escuchando...
-                    </span>
-                  )}
-                </button>
-              </div>
-
-              {/* Text area */}
-              <div className="relative mt-4">
-                <textarea
-                  value={textoInput}
-                  onChange={(e) => setTextoInput(e.target.value)}
-                  placeholder='Ej: "Eh... buscame dos de esas harinas baratas y un pan"'
-                  className="w-full h-24 p-4 rounded-2xl border border-border bg-secondary text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      procesarTexto();
-                    }
-                  }}
-                />
-              </div>
-
-              {error && (
-                <p className="text-xs text-destructive text-center">{error}</p>
-              )}
-
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+        {paso === "input" && (
+          <div className="space-y-5">
+            {/* Mic animation */}
+            <div className="flex flex-col items-center gap-4 py-6">
               <button
-                onClick={procesarTexto}
-                disabled={!textoInput.trim()}
-                className="w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-primary text-primary-foreground hover:bg-[hsl(var(--duo-red-light))] active:scale-[0.98]"
+                onClick={speech.isListening ? speech.stopListening : speech.startListening}
+                className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all active:scale-95 ${
+                  speech.isListening
+                    ? "bg-destructive text-destructive-foreground shadow-lg shadow-destructive/30"
+                    : "bg-primary text-primary-foreground hover:bg-[hsl(var(--duo-red-light))]"
+                }`}
               >
-                <Search className="w-4 h-4" />
-                Procesar pedido
+                {/* Pulsing rings when listening */}
+                {speech.isListening && (
+                  <>
+                    <span className="absolute inset-0 rounded-full bg-destructive/20 animate-ping" />
+                    <span className="absolute -inset-2 rounded-full border-2 border-destructive/30 animate-pulse" />
+                    <span className="absolute -inset-4 rounded-full border border-destructive/15 animate-pulse [animation-delay:150ms]" />
+                  </>
+                )}
+                {speech.isListening ? <MicOff className="w-9 h-9 relative z-10" /> : <Mic className="w-9 h-9" />}
               </button>
-            </div>
-          )}
-
-          {paso === "procesando" && (
-            <div className="flex flex-col items-center justify-center py-12 gap-4">
-              <div className="relative">
-                <img src={duoRobot} alt="DÚO" className="w-20 h-20 rounded-2xl animate-pulse" />
-                <Loader2 className="absolute -bottom-1 -right-1 w-6 h-6 text-primary animate-spin" />
-              </div>
-              <p className="text-sm text-muted-foreground animate-pulse">
-                {GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI"
-                  ? "Procesando localmente..."
-                  : "Gemini está procesando tu pedido..."}
+              <p className={`text-sm font-medium ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
+                {speech.isListening ? "🎙 Escuchando... hablá ahora" : "Tocá para activar el micrófono"}
               </p>
             </div>
-          )}
 
-          {paso === "resultados" && (
-            <div className="space-y-3">
-              <p className="text-xs text-muted-foreground text-center">{resumen}</p>
-              
-              {resultados.map((r, i) => (
-                <button
-                  key={i}
-                  onClick={() => toggleSeleccion(i)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-2xl border text-left transition-all ${
-                    r.seleccionado
-                      ? "border-primary bg-primary/5 ring-1 ring-primary"
-                      : "border-border bg-secondary opacity-50"
-                  }`}
-                >
-                  {r.productoCatalogo.imagen ? (
-                    <img src={r.productoCatalogo.imagen} alt={r.productoCatalogo.nombre} className="w-12 h-12 rounded-xl object-cover shrink-0" />
-                  ) : (
-                    <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-lg shrink-0">🛒</div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{r.productoCatalogo.nombre}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-foreground">
-                      ${r.productoCatalogo.precio.toLocaleString("es-AR")}
-                    </span>
-                    {r.seleccionado ? (
-                      <Check className="w-5 h-5 text-primary" />
-                    ) : (
-                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
+            {/* Text area */}
+            <textarea
+              value={textoInput}
+              onChange={(e) => setTextoInput(e.target.value)}
+              placeholder='Ej: "Eh... buscame dos de esas harinas baratas y un pan"'
+              className="w-full h-24 p-4 rounded-2xl border border-border bg-secondary text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  procesarTexto();
+                }
+              }}
+            />
 
-          {paso === "confirmacion" && (
-            <div className="flex flex-col items-center justify-center py-12 gap-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                <Check className="w-8 h-8 text-primary" />
-              </div>
-              <p className="text-sm font-medium text-foreground">¡Lista enviada!</p>
-              <p className="text-xs text-muted-foreground">Productos agregados correctamente.</p>
-            </div>
-          )}
-        </div>
+            {error && <p className="text-xs text-destructive text-center">{error}</p>}
 
-        {/* Footer */}
-        {paso === "resultados" && (
-          <div className="px-5 py-4 border-t border-border">
             <button
-              onClick={confirmarSeleccion}
-              disabled={seleccionadosCount === 0}
+              onClick={procesarTexto}
+              disabled={!textoInput.trim()}
               className="w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-primary text-primary-foreground hover:bg-[hsl(var(--duo-red-light))] active:scale-[0.98]"
             >
-              <ShoppingCart className="w-4 h-4" />
-              Confirmar selección ({seleccionadosCount}/{resultados.length})
+              <Search className="w-4 h-4" />
+              Procesar pedido
             </button>
           </div>
         )}
+
+        {paso === "procesando" && (
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <div className="relative">
+              <img src={duoRobot} alt="DÚO" className="w-20 h-20 rounded-2xl animate-pulse" />
+              <Loader2 className="absolute -bottom-1 -right-1 w-6 h-6 text-primary animate-spin" />
+            </div>
+            <p className="text-sm text-muted-foreground animate-pulse">
+              {GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI" ? "Procesando localmente..." : "Gemini está procesando tu pedido..."}
+            </p>
+          </div>
+        )}
+
+        {paso === "resultados" && (
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground text-center">{resumen}</p>
+            {resultados.map((r, i) => (
+              <button
+                key={i}
+                onClick={() => toggleSeleccion(i)}
+                className={`w-full flex items-center gap-3 p-3 rounded-2xl border text-left transition-all ${
+                  r.seleccionado
+                    ? "border-primary bg-primary/5 ring-1 ring-primary"
+                    : "border-border bg-secondary opacity-50"
+                }`}
+              >
+                {r.productoCatalogo.imagen ? (
+                  <img src={r.productoCatalogo.imagen} alt={r.productoCatalogo.nombre} className="w-12 h-12 rounded-xl object-cover shrink-0" />
+                ) : (
+                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-lg shrink-0">🛒</div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{r.productoCatalogo.nombre}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-foreground">
+                    ${r.productoCatalogo.precio.toLocaleString("es-AR")}
+                  </span>
+                  {r.seleccionado ? (
+                    <Check className="w-5 h-5 text-primary" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {paso === "confirmacion" && (
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <Check className="w-8 h-8 text-primary" />
+            </div>
+            <p className="text-sm font-medium text-foreground">¡Lista enviada!</p>
+            <p className="text-xs text-muted-foreground">Productos agregados correctamente.</p>
+          </div>
+        )}
       </div>
+
+      {/* Footer */}
+      {paso === "resultados" && (
+        <div className="py-4">
+          <button
+            onClick={confirmarSeleccion}
+            disabled={seleccionadosCount === 0}
+            className="w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-primary text-primary-foreground hover:bg-[hsl(var(--duo-red-light))] active:scale-[0.98]"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            Confirmar selección ({seleccionadosCount}/{resultados.length})
+          </button>
+        </div>
+      )}
     </div>
   );
 }
