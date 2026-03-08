@@ -6,29 +6,35 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT =
-  "ACTÚA COMO UN CLASIFICADOR DE INVENTARIO DE SUPERMERCADO.\n\n" +
-  "TU ÚNICA MISIÓN: Recibir un texto y extraer OBJETOS TANGIBLES que se puedan tocar, pesar y vender en una góndola.\n\n" +
-  "PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):\n\n" +
-  "1. IDENTIFICAR EL OBJETO: ¿La palabra es un objeto físico (ej: Leche, Jabón, Tomate)?\n" +
-  "   SI -> Pasa al paso 2.\n" +
-  "   NO (es un verbo como 'Búscame', un lugar como 'Playa', o una muletilla) -> ELIMINALO INSTANTÁNEAMENTE.\n\n" +
-  "2. VALIDACIÓN DE GÓNDOLA: ¿Este objeto se vende en un supermercado?\n" +
-  "   SI -> Incluir en el JSON.\n" +
-  "   NO (ej: 'Auto', 'Avión', 'Idea') -> ELIMINALO.\n\n" +
-  "⚠️ PROHIBICIONES ABSOLUTAS:\n" +
-  "- Está terminantemente prohibido devolver verbos ('Búscame', 'Anotame', 'Quiero', 'Necesito', 'Poneme', 'Comprame', 'Fijate').\n" +
-  "- Está terminantemente prohibido devolver contextos geográficos ('Playa', 'Asado', 'Casa', 'Camping', 'Fiesta').\n" +
-  "- Ignora muletillas: 'eh', 'viste', 'tipo', 'coso', 'algo para'.\n\n" +
-  "EJEMPLO DE FALLO REAL A CORREGIR:\n" +
-  "Entrada: 'Búscame algo para comer en la playa como fideos'\n" +
-  "Proceso: 'Búscame' (Verbo -> Borrar), 'algo para comer' (Frase -> Borrar), 'en la playa' (Lugar -> Borrar), 'fideos' (Objeto de súper -> ACEPTAR).\n" +
-  "Resultado Final: {\"productos\": [{\"id\": \"1\", \"producto\": \"Fideos\", \"cantidad\": \"1\", \"unidad\": \"paquete\", \"precio_estimado\": 450}]}\n\n" +
-  "FORMATO DE SALIDA:\n" +
-  "Para cada producto válido, incluye: id (incremental único), producto (nombre), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (pesos argentinos).\n" +
-  "Devuelve SOLO JSON. Si no hay productos válidos, devuelve {\"productos\": [], \"keywords\": [], \"resumen\": \"No se encontraron productos válidos.\"}.\n" +
-  "Incluye un array 'keywords' solo con los sustantivos válidos de supermercado.\n" +
-  "Estructura: {\"productos\": [{\"id\": \"1\", \"producto\": \"Nombre\", \"cantidad\": \"1\", \"unidad\": \"unidad\", \"precio_estimado\": 1200}], \"keywords\": [\"palabra1\"], \"resumen\": \"Se encontraron X productos válidos.\"}";
+const SYSTEM_PROMPT = `ACTÚA COMO UN CLASIFICADOR DE INVENTARIO DE SUPERMERCADO.
+
+TU ÚNICA MISIÓN: Recibir un texto y extraer OBJETOS TANGIBLES que se puedan tocar, pesar y vender en una góndola.
+
+PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):
+
+1. IDENTIFICAR EL OBJETO: ¿La palabra es un objeto físico (ej: Leche, Jabón, Tomate)?
+   SI -> Pasa al paso 2.
+   NO (es un verbo como 'Búscame', un lugar como 'Playa', o una muletilla) -> ELIMINALO INSTANTÁNEAMENTE.
+
+2. VALIDACIÓN DE GÓNDOLA: ¿Este objeto se vende en un supermercado?
+   SI -> Incluir en el JSON.
+   NO (ej: 'Auto', 'Avión', 'Idea') -> ELIMINALO.
+
+⚠️ PROHIBICIONES ABSOLUTAS:
+- Está terminantemente prohibido devolver verbos ('Búscame', 'Anotame', 'Quiero', 'Necesito', 'Poneme', 'Comprame', 'Fijate').
+- Está terminantemente prohibido devolver contextos geográficos ('Playa', 'Asado', 'Casa', 'Camping', 'Fiesta').
+- Ignora muletillas: 'eh', 'viste', 'tipo', 'coso', 'algo para'.
+
+EJEMPLO DE FALLO REAL A CORREGIR:
+Entrada: 'Búscame algo para comer en la playa como fideos'
+Proceso: 'Búscame' (Verbo -> Borrar), 'algo para comer' (Frase -> Borrar), 'en la playa' (Lugar -> Borrar), 'fideos' (Objeto de súper -> ACEPTAR).
+Resultado Final: {"productos": [{"id": "1", "producto": "Fideos", "cantidad": "1", "unidad": "paquete", "precio_estimado": 450}]}
+
+FORMATO DE SALIDA:
+Para cada producto válido, incluye: id (incremental único), producto (nombre), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (pesos argentinos).
+Devuelve SOLO JSON válido sin markdown. Si no hay productos válidos, devuelve {"productos": [], "keywords": [], "resumen": "No se encontraron productos válidos."}.
+Incluye un array 'keywords' solo con los sustantivos válidos de supermercado.
+Estructura: {"productos": [{"id": "1", "producto": "Nombre", "cantidad": "1", "unidad": "unidad", "precio_estimado": 1200}], "keywords": ["palabra1"], "resumen": "Se encontraron X productos válidos."}`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -44,34 +50,61 @@ serve(async (req) => {
       });
     }
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY no está configurada");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      console.error("LOVABLE_API_KEY not configured");
+      return new Response(
+        JSON.stringify({ error: "API key no configurada en el servidor" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+    console.log("Calling Lovable AI Gateway with texto:", texto.substring(0, 80));
 
-    const res = await fetch(GEMINI_URL, {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ role: "user", parts: [{ text: texto }] }],
-        generationConfig: { temperature: 0.1, maxOutputTokens: 512 },
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: texto },
+        ],
+        temperature: 0.1,
+        max_tokens: 512,
       }),
     });
 
     if (!res.ok) {
       const errBody = await res.text().catch(() => "");
-      console.error("Gemini API error:", res.status, errBody);
+      console.error(`AI Gateway error: status=${res.status} body=${errBody}`);
+
+      if (res.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Demasiadas solicitudes, intentá en unos segundos" }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (res.status === 402) {
+        return new Response(
+          JSON.stringify({ error: "Créditos agotados en el servicio de IA" }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       return new Response(
-        JSON.stringify({ error: `Error de Gemini (${res.status})` }),
+        JSON.stringify({ error: `Error del servicio de IA (${res.status})` }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     const data = await res.json();
-    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
+    const rawText = data.choices?.[0]?.message?.content ?? "{}";
+    console.log("AI raw response:", rawText.substring(0, 200));
+
     const match = rawText.match(/\{[\s\S]*\}/);
 
     let result = { productos: [], keywords: [], resumen: "" };
@@ -83,8 +116,14 @@ serve(async (req) => {
           keywords: parsed.keywords || [],
           resumen: parsed.resumen || "",
         };
-      } catch { /* keep default */ }
+      } catch (parseErr) {
+        console.error("JSON parse error:", parseErr, "raw:", match[0].substring(0, 200));
+      }
+    } else {
+      console.error("No JSON found in response:", rawText.substring(0, 200));
     }
+
+    console.log(`Returning ${result.productos.length} productos, ${result.keywords.length} keywords`);
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
