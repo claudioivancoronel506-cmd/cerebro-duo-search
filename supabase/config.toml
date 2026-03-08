@@ -1,1 +1,4 @@
 project_id = "uurrxkkodrlsbklndxew"
+
+[functions.gemini-clasificar]
+verify_jwt = false
