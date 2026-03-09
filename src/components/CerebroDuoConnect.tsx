@@ -490,7 +490,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           aria-label="Abrir asistente Cerebro Dúo"
         >
           <img src={duoRobot} alt="Cerebro Dúo" className="w-18 h-18 rounded-2xl object-cover drop-shadow-lg pointer-events-none" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-background animate-pulse" style={{ background: "hsl(var(--duo-red-light))" }} />
         </button>
       </div>
 
