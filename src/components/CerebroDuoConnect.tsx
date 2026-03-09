@@ -159,6 +159,27 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   const fabRef = useRef<HTMLDivElement>(null);
   const hasDraggedRef = useRef(false);
 
+  // Bubble visibility state
+  const [bubbleVisible, setBubbleVisible] = useState(true);
+  const bubbleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Show bubble for 4 seconds then fade out
+  const showBubbleTemporarily = useCallback(() => {
+    setBubbleVisible(true);
+    if (bubbleTimerRef.current) clearTimeout(bubbleTimerRef.current);
+    bubbleTimerRef.current = setTimeout(() => {
+      setBubbleVisible(false);
+    }, 4000);
+  }, []);
+
+  // Show bubble on mount
+  useEffect(() => {
+    showBubbleTemporarily();
+    return () => {
+      if (bubbleTimerRef.current) clearTimeout(bubbleTimerRef.current);
+    };
+  }, [showBubbleTemporarily]);
+
   const procesarTextoFromRef = useCallback(async (texto: string) => {
     if (!texto.trim() || processingRef.current) return;
     processingRef.current = true;
