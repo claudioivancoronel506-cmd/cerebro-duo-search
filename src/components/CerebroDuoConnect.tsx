@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { X, Search, Mic, ShoppingCart, Check, Loader2, MicOff, ArrowLeft } from "lucide-react";
+import { X, Search, Mic, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw } from "lucide-react";
 import duoRobot from "@/assets/duo-robot.png";
 import { buscarProductos, type Producto } from "@/lib/catalogo-supermercado";
 import { supabase } from "@/integrations/supabase/client";
