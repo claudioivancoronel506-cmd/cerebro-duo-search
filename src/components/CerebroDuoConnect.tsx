@@ -369,19 +369,27 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   </p>
                 </div>
 
-                {/* Text input */}
-                <textarea
-                  value={textoInput}
-                  onChange={(e) => setTextoInput(e.target.value)}
-                  placeholder='Ej: "Buscame harina, pollo y algo de queso"'
-                  className="w-full h-20 p-3 rounded-2xl border border-border bg-secondary text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      procesarTexto();
-                    }
-                  }}
-                />
+                {/* Live transcript or text input */}
+                {speech.isListening && textoInput ? (
+                  <div className="w-full p-6 rounded-2xl border border-primary/30 bg-primary/5 text-center">
+                    <p className="text-4xl font-bold text-foreground leading-tight">
+                      {textoInput}
+                    </p>
+                  </div>
+                ) : (
+                  <textarea
+                    value={textoInput}
+                    onChange={(e) => setTextoInput(e.target.value)}
+                    placeholder='Ej: "Buscame harina, pollo y algo de queso"'
+                    className="w-full h-20 p-3 rounded-2xl border border-border bg-secondary text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        procesarTexto();
+                      }
+                    }}
+                  />
+                )}
 
                 {error && <p className="text-xs text-destructive text-center">{error}</p>}
 
