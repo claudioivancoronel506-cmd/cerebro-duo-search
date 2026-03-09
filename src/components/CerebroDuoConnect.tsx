@@ -440,7 +440,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   {resultados.map((r, i) => (
                     <div
                       key={r.item.id}
-                      className={`relative rounded-xl border-2 p-2.5 transition-all cursor-pointer ${
+                      className={`relative rounded-xl border-2 p-4 transition-all cursor-pointer ${
                         r.seleccionado
                           ? "border-primary bg-primary/5 shadow-sm"
                           : "border-border bg-card opacity-70"
@@ -450,7 +450,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       {/* Delete button */}
                       <button
                         onClick={(e) => { e.stopPropagation(); eliminarItem(i); }}
-                        className="absolute top-1.5 right-1.5 z-10 w-6 h-6 rounded-full bg-muted/80 hover:bg-destructive hover:text-destructive-foreground flex items-center justify-center transition-colors"
+                        className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full bg-muted/80 hover:bg-destructive hover:text-destructive-foreground flex items-center justify-center transition-colors"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
@@ -460,30 +460,30 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                         <img
                           src={r.productoCatalogo.imagen}
                           alt={r.productoCatalogo.nombre}
-                          className="w-full aspect-[4/3] rounded-lg object-cover mb-2"
+                          className="w-full aspect-[4/3] rounded-lg object-cover mb-3"
                         />
                       ) : (
-                        <div className="w-full aspect-[4/3] rounded-lg bg-muted flex items-center justify-center text-2xl mb-2">
+                        <div className="w-full aspect-[4/3] rounded-lg bg-muted flex items-center justify-center text-2xl mb-3">
                           🛒
                         </div>
                       )}
 
                       {/* Name */}
-                      <p className="text-sm font-bold text-card-foreground leading-tight line-clamp-2">
+                      <p className="text-3xl font-bold text-card-foreground leading-tight line-clamp-2 mb-2">
                         {r.productoCatalogo.nombre}
                       </p>
                       {/* Brand & qty */}
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="text-xl text-muted-foreground mb-3">
                         {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
                       </p>
                       {/* Price + check */}
-                      <div className="flex items-center justify-between mt-1.5">
-                        <span className="text-base font-black text-card-foreground">
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-4xl font-black text-card-foreground">
                           ${r.productoCatalogo.precio.toLocaleString("es-AR")}
                         </span>
                         {r.seleccionado && (
-                          <span className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <Check className="w-3.5 h-3.5 text-primary-foreground" />
+                          <span className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                            <Check className="w-4 h-4 text-primary-foreground" />
                           </span>
                         )}
                       </div>
@@ -495,7 +495,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <button
                   onClick={confirmarSeleccion}
                   disabled={seleccionados.length === 0}
-                  className="sticky bottom-0 w-full py-4 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 active:scale-[0.98] shadow-lg text-white"
+                  className="sticky bottom-0 w-full py-8 rounded-2xl font-black text-3xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 active:scale-[0.98] shadow-lg text-white"
                   style={{
                     background: seleccionados.length > 0
                       ? "linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))"
@@ -505,7 +505,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                     color: seleccionados.length === 0 ? "hsl(var(--muted-foreground))" : undefined,
                   }}
                 >
-                  <ShoppingCart className="w-6 h-6" />
+                  <ShoppingCart className="w-7 h-7" />
                   {seleccionados.length > 0
                     ? `Confirmar ($${totalPrecio.toLocaleString("es-AR")})`
                     : "Seleccioná productos"}
