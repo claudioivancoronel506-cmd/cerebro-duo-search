@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { X, Search, Mic, ShoppingCart, Check, Loader2, MicOff, ArrowLeft } from "lucide-react";
+import { X, Search, Mic, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw } from "lucide-react";
 import duoRobot from "@/assets/duo-robot.png";
 import { buscarProductos, type Producto } from "@/lib/catalogo-supermercado";
 import { supabase } from "@/integrations/supabase/client";
@@ -275,6 +275,8 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     0
   );
 
+  const [showSyncOverlay, setShowSyncOverlay] = useState(false);
+
   const confirmarSeleccion = () => {
     if (speech.isListening) speech.stopListening();
     const prods = seleccionados.map((r) => ({
@@ -285,11 +287,17 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     setPaso("confirmacion");
     setTimeout(() => {
       setIsOpen(false);
+      // Show sync overlay after drawer closes
       setTimeout(() => {
         resetear();
-        onDismiss?.();
+        setShowSyncOverlay(true);
+        // Keep overlay for 4 seconds then fade out
+        setTimeout(() => {
+          setShowSyncOverlay(false);
+          setTimeout(() => onDismiss?.(), 600);
+        }, 4000);
       }, 400);
-    }, 2000);
+    }, 1500);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -720,6 +728,36 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           </div>
         </DrawerContent>
       </Drawer>
+
+      {/* ── SYNC OVERLAY — full-screen blocking ── */}
+      {showSyncOverlay && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/60 backdrop-blur-sm"
+          style={{ animation: "fade-in 0.4s ease-out" }}
+        >
+          <div
+            className="flex flex-col items-center gap-6 p-10 rounded-3xl border-4 mx-6 shadow-2xl"
+            style={{
+              backgroundColor: "hsl(var(--background))",
+              borderColor: "hsl(var(--destructive))",
+              boxShadow: "0 25px 80px hsla(0, 0%, 0%, 0.5), 0 0 0 1px hsla(var(--destructive) / 0.3)",
+            }}
+          >
+            {/* Spinning sync icon */}
+            <RefreshCw
+              className="w-20 h-20 text-destructive"
+              style={{ animation: "spin 0.5s linear infinite" }}
+            />
+            {/* Massive text */}
+            <p className="text-5xl font-black text-destructive text-center leading-tight">
+              ¡Lista sincronizada con Tu Súper Online!
+            </p>
+            <p className="text-2xl font-bold text-muted-foreground text-center">
+              Stock actualizado en tiempo real
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 }
