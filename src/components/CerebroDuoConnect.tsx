@@ -273,18 +273,21 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
   return (
     <>
-      {/* ── FAB — Dúo branding (red), floats as external plugin ── */}
-      <div className="fixed bottom-6 right-4 z-50 flex flex-col items-center gap-4">
-        {/* Welcome Message */}
-        <div className="flex flex-col items-center gap-2 animate-fade-in">
-          <p className="text-4xl font-black text-foreground text-center leading-tight">¿Qué querés comprar?</p>
-          <div className="w-2 h-2 rounded-full bg-primary/60 animate-pulse" />
+      {/* ── FAB — Dúo with speech bubble ── */}
+      <div className="fixed bottom-6 right-4 z-50 flex items-end gap-2">
+        {/* Speech bubble with animated dots */}
+        <div className="relative mb-8 bg-card border border-border rounded-2xl rounded-br-none px-4 py-3 shadow-lg animate-fade-in">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce [animation-delay:0ms]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce [animation-delay:150ms]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce [animation-delay:300ms]" />
+          </div>
         </div>
 
-        {/* Large FAB Button */}
+        {/* FAB Button */}
         <button
           onClick={() => setIsOpen(true)}
-          className="w-28 h-28 rounded-3xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
+          className="w-24 h-24 rounded-3xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
           style={{
             background: "linear-gradient(135deg, hsl(var(--duo-red)), hsl(var(--duo-red-dark)))",
             boxShadow: "0 12px 40px hsla(var(--duo-red) / 0.5), 0 4px 12px hsla(0, 0%, 0%, 0.2)",
@@ -292,14 +295,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           }}
           aria-label="Abrir asistente Cerebro Dúo"
         >
-          <img src={duoRobot} alt="Cerebro Dúo" className="w-20 h-20 rounded-2xl object-cover drop-shadow-lg" />
-          <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full border-2 border-background animate-pulse" style={{ background: "hsl(var(--duo-red-light))" }} />
+          <img src={duoRobot} alt="Cerebro Dúo" className="w-18 h-18 rounded-2xl object-cover drop-shadow-lg" />
+          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-background animate-pulse" style={{ background: "hsl(var(--duo-red-light))" }} />
         </button>
       </div>
 
       {/* ── Bottom Sheet ── */}
       <Drawer open={isOpen} onOpenChange={handleOpenChange}>
-        <DrawerContent className="max-h-[92dvh] bg-card">
+        <DrawerContent className="min-h-[65dvh] max-h-[92dvh] bg-card">
           <DrawerHeader className="pb-2">
             <div className="flex items-center gap-3">
               {/* Back button */}
@@ -371,8 +374,8 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
                 {/* Live transcript or text input */}
                 {speech.isListening && textoInput ? (
-                  <div className="w-full p-6 rounded-2xl border-2 border-primary/40 bg-primary/5 text-center min-h-[120px] flex items-center justify-center">
-                    <p className="text-6xl font-black text-foreground leading-tight break-words">
+                  <div className="w-full p-6 rounded-2xl border-2 border-primary/40 bg-primary/5 text-center min-h-[180px] flex items-center justify-center">
+                    <p className="text-5xl font-black text-foreground leading-tight break-words">
                       {textoInput}
                     </p>
                   </div>
@@ -433,51 +436,45 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 )}
 
                 {/* 2-Column Grid */}
-                <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 gap-2">
                   {resultados.map((r, i) => (
                     <div
                       key={r.item.id}
-                      className={`relative rounded-2xl border-2 p-4 transition-all cursor-pointer ${
+                      className={`relative rounded-xl border-2 p-3 flex items-center gap-3 transition-all cursor-pointer ${
                         r.seleccionado
-                          ? "border-primary bg-primary/5 ring-2 ring-primary/40 shadow-sm"
-                          : "border-border bg-secondary/60 opacity-55"
+                          ? "border-primary bg-primary/5"
+                          : "border-border bg-secondary/60 opacity-60"
                       }`}
                       onClick={() => toggleSeleccion(i)}
                     >
-                      <button
-                        onClick={(e) => { e.stopPropagation(); eliminarItem(i); }}
-                        className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-muted hover:bg-destructive hover:text-destructive-foreground flex items-center justify-center transition-colors"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
+                      {/* Checkbox area */}
+                      <div className={`w-7 h-7 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
+                        r.seleccionado ? "bg-primary border-primary" : "border-muted-foreground/40"
+                      }`}>
+                        {r.seleccionado && <Check className="w-4 h-4 text-primary-foreground" />}
+                      </div>
 
-                      {r.productoCatalogo.imagen ? (
-                        <img
-                          src={r.productoCatalogo.imagen}
-                          alt={r.productoCatalogo.nombre}
-                          className="w-full aspect-square rounded-xl object-cover mb-2"
-                        />
-                      ) : (
-                        <div className="w-full aspect-square rounded-xl bg-muted flex items-center justify-center text-2xl mb-2">
-                          🛒
-                        </div>
-                      )}
+                      {/* Product info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-lg font-bold text-card-foreground truncate">
+                          {r.productoCatalogo.nombre}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
+                        </p>
+                      </div>
 
-                      <p className="text-2xl font-black text-card-foreground">
-                        {r.productoCatalogo.nombre}
-                      </p>
-                      <p className="text-lg text-muted-foreground">
-                        {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
-                      </p>
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-2xl font-black text-card-foreground">
+                      {/* Price + delete */}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-lg font-black text-card-foreground">
                           ${r.productoCatalogo.precio.toLocaleString("es-AR")}
                         </span>
-                        {r.seleccionado && (
-                          <span className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                            <Check className="w-5 h-5 text-primary-foreground" />
-                          </span>
-                        )}
+                        <button
+                          onClick={(e) => { e.stopPropagation(); eliminarItem(i); }}
+                          className="w-7 h-7 rounded-full bg-muted hover:bg-destructive hover:text-destructive-foreground flex items-center justify-center transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -487,9 +484,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <button
                   onClick={confirmarSeleccion}
                   disabled={seleccionados.length === 0}
-                  className="w-full py-6 rounded-2xl font-black text-3xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] shadow-lg shadow-primary/20"
+                  className="sticky bottom-0 w-full py-5 rounded-2xl font-black text-2xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] shadow-lg shadow-primary/20"
                 >
-                  <ShoppingCart className="w-8 h-8" />
+                  <ShoppingCart className="w-7 h-7" />
                   {seleccionados.length > 0
                     ? `Agregar ($${totalPrecio.toLocaleString("es-AR")})`
                     : "Seleccioná productos"}
