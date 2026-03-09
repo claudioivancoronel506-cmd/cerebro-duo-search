@@ -275,6 +275,8 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     0
   );
 
+  const [showSyncOverlay, setShowSyncOverlay] = useState(false);
+
   const confirmarSeleccion = () => {
     if (speech.isListening) speech.stopListening();
     const prods = seleccionados.map((r) => ({
@@ -285,11 +287,17 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     setPaso("confirmacion");
     setTimeout(() => {
       setIsOpen(false);
+      // Show sync overlay after drawer closes
       setTimeout(() => {
         resetear();
-        onDismiss?.();
+        setShowSyncOverlay(true);
+        // Keep overlay for 4 seconds then fade out
+        setTimeout(() => {
+          setShowSyncOverlay(false);
+          setTimeout(() => onDismiss?.(), 600);
+        }, 4000);
       }, 400);
-    }, 2000);
+    }, 1500);
   };
 
   const handleOpenChange = (open: boolean) => {

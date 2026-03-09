@@ -14,9 +14,6 @@ const Index = () => {
 
   const handleDismiss = useCallback(() => {
     setIsAssistantActive(false);
-    toast.success("¡Lista sincronizada con Tu Súper Online!", {
-      duration: 3000,
-    });
     // Re-enable after unmount so user can use it again
     setTimeout(() => setIsAssistantActive(true), 1500);
   }, []);
