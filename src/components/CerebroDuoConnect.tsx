@@ -89,7 +89,7 @@ function useSpeechRecognition(onSilenceDetected: () => void) {
           recognitionRef.current?.stop();
           onSilenceDetected();
         }
-      }, 1500);
+      }, 2000);
     };
 
     recognition.onerror = () => {
