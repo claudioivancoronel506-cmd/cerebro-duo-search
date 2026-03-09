@@ -422,17 +422,21 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         }}
       >
         {/* Circular speech bubble above robot */}
-        <div className="relative mb-2 animate-pulse">
+        <div
+          className={`relative mb-2 transition-opacity duration-500 ${
+            bubbleVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
           {/* Circle with text */}
           <div
-            className="w-28 h-28 rounded-full flex items-center justify-center text-center px-2 shadow-lg border-4"
+            className="w-28 h-28 rounded-full flex items-center justify-center text-center px-2 shadow-lg border-2"
             style={{
-              backgroundColor: "hsl(var(--destructive))",
+              backgroundColor: "hsl(var(--background))",
               borderColor: "hsl(var(--destructive))",
-              boxShadow: "0 4px 20px hsla(var(--destructive) / 0.4)",
+              boxShadow: "0 4px 20px hsla(var(--destructive) / 0.25)",
             }}
           >
-            <p className="text-sm font-black leading-tight text-destructive-foreground">
+            <p className="text-sm font-black leading-tight text-destructive">
               ¿Qué querés comprar?
             </p>
           </div>
@@ -442,7 +446,18 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             style={{
               borderLeft: "10px solid transparent",
               borderRight: "10px solid transparent",
-              borderTop: "12px solid hsl(var(--destructive))",
+              borderTop: "12px solid hsl(var(--background))",
+              filter: "drop-shadow(0 2px 0 hsl(var(--destructive)))",
+            }}
+          />
+          {/* Red border for pointer */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2 -bottom-[11px] w-0 h-0"
+            style={{
+              borderLeft: "12px solid transparent",
+              borderRight: "12px solid transparent",
+              borderTop: "14px solid hsl(var(--destructive))",
+              zIndex: -1,
             }}
           />
         </div>
