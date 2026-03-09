@@ -493,15 +493,15 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             {paso === "confirmacion" && (
               <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
                 <div className="flex flex-col items-center gap-4 px-6">
-                  <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center animate-pulse">
-                    <Check className="w-9 h-9 text-green-600" />
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: "hsla(var(--success) / 0.2)" }}>
+                    <Check className="w-9 h-9" style={{ color: "hsl(var(--success))" }} />
                   </div>
-                  <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-full px-8 py-4 shadow-2xl shadow-green-500/40">
+                  <div className="rounded-full px-8 py-4 shadow-2xl" style={{ background: `linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))`, boxShadow: `0 10px 40px hsla(var(--success) / 0.4)` }}>
                     <p className="text-2xl font-bold text-white text-center">
                       ¡Agregado al carrito!
                     </p>
                   </div>
-                  <p className="text-sm font-semibold text-card-foreground bg-background/90 rounded-full px-6 py-2 backdrop-blur-sm">
+                  <p className="text-sm font-semibold rounded-full px-6 py-2 backdrop-blur-sm" style={{ backgroundColor: "hsla(var(--background) / 0.9)", color: "hsl(var(--foreground))" }}>
                     {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
                   </p>
                 </div>
