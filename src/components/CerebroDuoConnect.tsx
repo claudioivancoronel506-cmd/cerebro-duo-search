@@ -277,7 +277,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
       <div className="fixed bottom-6 right-4 z-50 flex flex-col items-center gap-4">
         {/* Welcome Message */}
         <div className="flex flex-col items-center gap-2 animate-fade-in">
-          <p className="text-sm font-semibold text-foreground text-center">¿Qué querés comprar?</p>
+          <p className="text-xl font-bold text-foreground text-center">¿Qué querés comprar?</p>
           <div className="w-2 h-2 rounded-full bg-primary/60 animate-pulse" />
         </div>
 
@@ -313,10 +313,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
               )}
               <img src={duoRobot} alt="DÚO" className="w-9 h-9 rounded-xl" />
               <div className="flex-1">
-                <DrawerTitle className="text-sm font-bold text-card-foreground">
+                <DrawerTitle className="text-lg font-bold text-card-foreground">
                   Cerebro Dúo Connect
                 </DrawerTitle>
-                <DrawerDescription className="text-[11px]">
+                <DrawerDescription className="text-sm">
                   {paso === "input"
                     ? "Tocá el micrófono o escribí tu pedido"
                     : paso === "procesando"
@@ -329,7 +329,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
               {paso === "resultados" && (
                 <button
                   onClick={() => resetear()}
-                  className="text-[11px] font-semibold text-primary hover:underline"
+                  className="text-sm font-semibold text-primary hover:underline"
                 >
                   Nuevo pedido
                 </button>
@@ -364,15 +364,15 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       <Mic className="w-8 h-8" />
                     )}
                   </button>
-                  <p className={`text-xs font-medium ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
+                  <p className={`text-base font-semibold ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
                     {speech.isListening ? "🎙 Escuchando... se envía solo al dejar de hablar" : "Tocá para activar el micrófono"}
                   </p>
                 </div>
 
                 {/* Live transcript or text input */}
                 {speech.isListening && textoInput ? (
-                  <div className="w-full p-6 rounded-2xl border border-primary/30 bg-primary/5 text-center">
-                    <p className="text-4xl font-bold text-foreground leading-tight">
+                  <div className="w-full p-8 rounded-2xl border border-primary/30 bg-primary/5 text-center">
+                    <p className="text-5xl font-extrabold text-foreground leading-tight">
                       {textoInput}
                     </p>
                   </div>
@@ -381,7 +381,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                     value={textoInput}
                     onChange={(e) => setTextoInput(e.target.value)}
                     placeholder='Ej: "Buscame harina, pollo y algo de queso"'
-                    className="w-full h-20 p-3 rounded-2xl border border-border bg-secondary text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+                    className="w-full h-24 p-4 rounded-2xl border border-border bg-secondary text-foreground text-lg resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
@@ -396,9 +396,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <button
                   onClick={procesarTexto}
                   disabled={!textoInput.trim()}
-                  className="w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
+                  className="w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
                 >
-                  <Search className="w-4 h-4" />
+                  <Search className="w-5 h-5" />
                   Procesar pedido
                 </button>
               </div>
@@ -411,7 +411,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   <img src={duoRobot} alt="DÚO" className="w-16 h-16 rounded-2xl animate-pulse" />
                   <Loader2 className="absolute -bottom-1 -right-1 w-5 h-5 text-primary animate-spin" />
                 </div>
-                <p className="text-sm text-muted-foreground animate-pulse">Sincronizando con la tienda...</p>
+                <p className="text-lg font-semibold text-muted-foreground animate-pulse">Sincronizando con la tienda...</p>
               </div>
             )}
 
@@ -424,7 +424,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                     {keywords.map((kw, i) => (
                       <span
                         key={i}
-                        className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary/10 text-primary border border-primary/20"
+                       className="px-3 py-1.5 rounded-full text-sm font-semibold bg-primary/10 text-primary border border-primary/20"
                       >
                         {kw}
                       </span>
@@ -463,14 +463,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                         </div>
                       )}
 
-                      <p className="text-xs font-semibold text-card-foreground truncate">
+                      <p className="text-base font-bold text-card-foreground truncate">
                         {r.productoCatalogo.nombre}
                       </p>
-                      <p className="text-[10px] text-muted-foreground truncate">
+                      <p className="text-sm text-muted-foreground truncate">
                         {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
                       </p>
-                      <div className="flex items-center justify-between mt-1.5">
-                        <span className="text-xs font-bold text-card-foreground">
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-base font-extrabold text-card-foreground">
                           ${r.productoCatalogo.precio.toLocaleString("es-AR")}
                         </span>
                         {r.seleccionado && (
@@ -487,9 +487,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <button
                   onClick={confirmarSeleccion}
                   disabled={seleccionados.length === 0}
-                  className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] shadow-lg shadow-primary/20"
+                  className="w-full py-5 rounded-2xl font-extrabold text-xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] shadow-lg shadow-primary/20"
                 >
-                  <ShoppingCart className="w-4 h-4" />
+                  <ShoppingCart className="w-6 h-6" />
                   {seleccionados.length > 0
                     ? `Agregar al Carrito ($${totalPrecio.toLocaleString("es-AR")})`
                     : "Seleccioná productos"}
@@ -504,13 +504,13 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   <div className="w-16 h-16 rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: "hsla(var(--success) / 0.2)" }}>
                     <Check className="w-9 h-9" style={{ color: "hsl(var(--success))" }} />
                   </div>
-                  <div className="rounded-full px-8 py-4 shadow-2xl" style={{ background: `linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))`, boxShadow: `0 10px 40px hsla(var(--success) / 0.4)` }}>
-                    <p className="text-2xl font-bold text-white text-center">
-                      ¡Agregado al carrito!
-                    </p>
-                  </div>
-                  <p className="text-sm font-semibold rounded-full px-6 py-2 backdrop-blur-sm" style={{ backgroundColor: "hsla(var(--background) / 0.9)", color: "hsl(var(--foreground))" }}>
-                    {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
+                    <div className="rounded-full px-10 py-6 shadow-2xl" style={{ background: `linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))`, boxShadow: `0 10px 40px hsla(var(--success) / 0.4)` }}>
+                     <p className="text-4xl font-extrabold text-white text-center">
+                       ¡Agregado al carrito!
+                     </p>
+                   </div>
+                   <p className="text-xl font-bold rounded-full px-8 py-3 backdrop-blur-sm" style={{ backgroundColor: "hsla(var(--background) / 0.9)", color: "hsl(var(--foreground))" }}>
+                     {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
                   </p>
                 </div>
               </div>
