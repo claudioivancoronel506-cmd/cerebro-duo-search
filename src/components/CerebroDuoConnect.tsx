@@ -274,19 +274,28 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   return (
     <>
       {/* ── FAB — Dúo branding (red), floats as external plugin ── */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-4 z-50 w-16 h-16 rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
-        style={{
-          background: "linear-gradient(135deg, hsl(var(--duo-red)), hsl(var(--duo-red-dark)))",
-          boxShadow: "0 8px 32px hsla(var(--duo-red) / 0.45), 0 2px 8px hsla(0, 0%, 0%, 0.15)",
-          border: "2px solid hsla(0, 0%, 100%, 0.2)",
-        }}
-        aria-label="Abrir asistente Cerebro Dúo"
-      >
-        <img src={duoRobot} alt="Cerebro Dúo" className="w-11 h-11 rounded-xl object-cover drop-shadow-lg" />
-        <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-background animate-pulse" style={{ background: "hsl(var(--duo-red-light))" }} />
-      </button>
+      <div className="fixed bottom-6 right-4 z-50 flex flex-col items-center gap-4">
+        {/* Welcome Message */}
+        <div className="flex flex-col items-center gap-2 animate-fade-in">
+          <p className="text-sm font-semibold text-foreground text-center">¿Qué querés comprar?</p>
+          <div className="w-2 h-2 rounded-full bg-primary/60 animate-pulse" />
+        </div>
+
+        {/* Large FAB Button */}
+        <button
+          onClick={() => setIsOpen(true)}
+          className="w-28 h-28 rounded-3xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
+          style={{
+            background: "linear-gradient(135deg, hsl(var(--duo-red)), hsl(var(--duo-red-dark)))",
+            boxShadow: "0 12px 40px hsla(var(--duo-red) / 0.5), 0 4px 12px hsla(0, 0%, 0%, 0.2)",
+            border: "2px solid hsla(0, 0%, 100%, 0.2)",
+          }}
+          aria-label="Abrir asistente Cerebro Dúo"
+        >
+          <img src={duoRobot} alt="Cerebro Dúo" className="w-20 h-20 rounded-2xl object-cover drop-shadow-lg" />
+          <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full border-2 border-background animate-pulse" style={{ background: "hsl(var(--duo-red-light))" }} />
+        </button>
+      </div>
 
       {/* ── Bottom Sheet ── */}
       <Drawer open={isOpen} onOpenChange={handleOpenChange}>
