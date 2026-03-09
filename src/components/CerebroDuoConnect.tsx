@@ -435,60 +435,79 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   </div>
                 )}
 
-                {/* 2-Column Grid */}
-                <div className="grid grid-cols-1 gap-2">
+                {/* Product Cards */}
+                <div className="grid grid-cols-2 gap-2">
                   {resultados.map((r, i) => (
                     <div
                       key={r.item.id}
-                      className={`relative rounded-xl border-2 p-3 flex items-center gap-3 transition-all cursor-pointer ${
+                      className={`relative rounded-xl border-2 p-2.5 transition-all cursor-pointer ${
                         r.seleccionado
-                          ? "border-primary bg-primary/5"
-                          : "border-border bg-secondary/60 opacity-60"
+                          ? "border-primary bg-primary/5 shadow-sm"
+                          : "border-border bg-card opacity-70"
                       }`}
                       onClick={() => toggleSeleccion(i)}
                     >
-                      {/* Checkbox area */}
-                      <div className={`w-7 h-7 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
-                        r.seleccionado ? "bg-primary border-primary" : "border-muted-foreground/40"
-                      }`}>
-                        {r.seleccionado && <Check className="w-4 h-4 text-primary-foreground" />}
-                      </div>
+                      {/* Delete button */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); eliminarItem(i); }}
+                        className="absolute top-1.5 right-1.5 z-10 w-6 h-6 rounded-full bg-muted/80 hover:bg-destructive hover:text-destructive-foreground flex items-center justify-center transition-colors"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
 
-                      {/* Product info */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-lg font-bold text-card-foreground truncate">
-                          {r.productoCatalogo.nombre}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
-                        </p>
-                      </div>
+                      {/* Image */}
+                      {r.productoCatalogo.imagen ? (
+                        <img
+                          src={r.productoCatalogo.imagen}
+                          alt={r.productoCatalogo.nombre}
+                          className="w-full aspect-[4/3] rounded-lg object-cover mb-2"
+                        />
+                      ) : (
+                        <div className="w-full aspect-[4/3] rounded-lg bg-muted flex items-center justify-center text-2xl mb-2">
+                          🛒
+                        </div>
+                      )}
 
-                      {/* Price + delete */}
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-lg font-black text-card-foreground">
+                      {/* Name */}
+                      <p className="text-sm font-bold text-card-foreground leading-tight line-clamp-2">
+                        {r.productoCatalogo.nombre}
+                      </p>
+                      {/* Brand & qty */}
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
+                      </p>
+                      {/* Price + check */}
+                      <div className="flex items-center justify-between mt-1.5">
+                        <span className="text-base font-black text-card-foreground">
                           ${r.productoCatalogo.precio.toLocaleString("es-AR")}
                         </span>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); eliminarItem(i); }}
-                          className="w-7 h-7 rounded-full bg-muted hover:bg-destructive hover:text-destructive-foreground flex items-center justify-center transition-colors"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
+                        {r.seleccionado && (
+                          <span className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                            <Check className="w-3.5 h-3.5 text-primary-foreground" />
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Cart Button */}
+                {/* Confirm Button — success green, always visible */}
                 <button
                   onClick={confirmarSeleccion}
                   disabled={seleccionados.length === 0}
-                  className="sticky bottom-0 w-full py-5 rounded-2xl font-black text-2xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] shadow-lg shadow-primary/20"
+                  className="sticky bottom-0 w-full py-4 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 active:scale-[0.98] shadow-lg text-white"
+                  style={{
+                    background: seleccionados.length > 0
+                      ? "linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))"
+                      : undefined,
+                    backgroundColor: seleccionados.length === 0 ? "hsl(var(--muted))" : undefined,
+                    boxShadow: seleccionados.length > 0 ? "0 8px 24px hsla(var(--success) / 0.4)" : undefined,
+                    color: seleccionados.length === 0 ? "hsl(var(--muted-foreground))" : undefined,
+                  }}
                 >
-                  <ShoppingCart className="w-7 h-7" />
+                  <ShoppingCart className="w-6 h-6" />
                   {seleccionados.length > 0
-                    ? `Agregar ($${totalPrecio.toLocaleString("es-AR")})`
+                    ? `Confirmar ($${totalPrecio.toLocaleString("es-AR")})`
                     : "Seleccioná productos"}
                 </button>
               </div>
