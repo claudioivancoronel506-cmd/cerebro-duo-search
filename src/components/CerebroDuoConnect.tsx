@@ -491,14 +491,20 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
             {/* ── PASO: CONFIRMACIÓN ── */}
             {paso === "confirmacion" && (
-              <div className="flex flex-col items-center justify-center py-10 gap-3">
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Check className="w-7 h-7 text-primary" />
+              <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+                <div className="flex flex-col items-center gap-4 px-6">
+                  <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center animate-pulse">
+                    <Check className="w-9 h-9 text-green-600" />
+                  </div>
+                  <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-full px-8 py-4 shadow-2xl shadow-green-500/40">
+                    <p className="text-2xl font-bold text-white text-center">
+                      ¡Agregado al carrito!
+                    </p>
+                  </div>
+                  <p className="text-sm font-semibold text-card-foreground bg-background/90 rounded-full px-6 py-2 backdrop-blur-sm">
+                    {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
+                  </p>
                 </div>
-                <p className="text-sm font-semibold text-card-foreground">Sincronizando con la tienda...</p>
-                <p className="text-xs text-muted-foreground">
-                  {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
-                </p>
               </div>
             )}
           </div>
