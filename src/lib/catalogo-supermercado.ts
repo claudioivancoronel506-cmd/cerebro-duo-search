@@ -90,6 +90,36 @@ export const catalogoProductos: Producto[] = [
     imagen: "https://i.ibb.co/yBM5kqTf/image.png",
     keywords: ["queso", "queso cremoso", "queso rallado"],
   },
+  {
+    id: "9",
+    nombre: "Fideos",
+    marca: "Matarazzo",
+    categoria: "Pastas",
+    precio: 800,
+    unidad: "500 g",
+    imagen: "https://i.ibb.co/r2sHdQ5t/images-6.jpg",
+    keywords: ["fideos", "fideo", "pasta", "tallarines", "spaghetti", "mostachol"],
+  },
+  {
+    id: "10",
+    nombre: "LECHE 2X1",
+    marca: "La Serenísima",
+    categoria: "Lácteos",
+    precio: 1800,
+    unidad: "2 litros",
+    imagen: "https://i.ibb.co/whBDWMmC/images-6.jpg",
+    keywords: ["leche", "leche entera", "leche descremada", "lacteo", "2x1"],
+  },
+  {
+    id: "11",
+    nombre: "Mermelada",
+    marca: "Arcor",
+    categoria: "Dulces",
+    precio: 2000,
+    unidad: "450 g",
+    imagen: "https://i.ibb.co/nNSLwbfS/images-2.jpg",
+    keywords: ["mermelada", "dulce", "jalea", "mermelada de frutilla", "mermelada de durazno"],
+  },
 ];
 
 export function buscarProductos(termino: string): Producto[] {
