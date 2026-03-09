@@ -275,13 +275,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     <>
       {/* ── FAB — Dúo with speech bubble ── */}
       <div className="fixed bottom-6 right-4 z-50 flex items-end gap-2">
-        {/* Speech bubble with animated dots */}
-        <div className="relative mb-8 bg-card border border-border rounded-2xl rounded-br-none px-4 py-3 shadow-lg animate-fade-in">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce [animation-delay:0ms]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce [animation-delay:150ms]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce [animation-delay:300ms]" />
-          </div>
+        {/* Speech bubble with invitation text */}
+        <div className="relative mb-8 bg-card border border-border rounded-2xl rounded-br-none px-4 py-3 shadow-lg animate-pulse">
+          <p className="text-xl font-bold text-destructive">¿Qué querés comprar?</p>
         </div>
 
         {/* FAB Button */}
