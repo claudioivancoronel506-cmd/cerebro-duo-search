@@ -362,8 +362,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     if (isDragging) {
       setIsDragging(false);
       snapToEdge(position.x);
+      // Show bubble again after drag
+      showBubbleTemporarily();
     }
-  }, [isDragging, position.x, snapToEdge]);
+  }, [isDragging, position.x, snapToEdge, showBubbleTemporarily]);
 
   // Mouse events
   const onMouseDown = (e: React.MouseEvent) => {
