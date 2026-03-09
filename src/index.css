@@ -43,6 +43,8 @@ All colors MUST be HSL.
     --duo-red-dark: 0 80% 35%;
     --duo-gray: 0 0% 96%;
     --duo-gray-dark: 0 0% 60%;
+    --success: 142 71% 45%;
+    --success-light: 142 71% 55%;
 
     /* App Madre — yellow/green supermarket theme */
     --store-primary: 46 95% 50%;
