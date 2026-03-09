@@ -151,6 +151,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   const [error, setError] = useState("");
   const processingRef = useRef(false);
 
+  // Draggable state
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isOnLeft, setIsOnLeft] = useState(false);
+  const dragStartRef = useRef({ x: 0, y: 0, posX: 0, posY: 0 });
+  const fabRef = useRef<HTMLDivElement>(null);
+  const hasDraggedRef = useRef(false);
+
   const procesarTextoFromRef = useCallback(async (texto: string) => {
     if (!texto.trim() || processingRef.current) return;
     processingRef.current = true;
@@ -271,27 +279,171 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     }
   };
 
+  // Snap to nearest edge
+  const snapToEdge = useCallback((currentX: number) => {
+    const screenWidth = window.innerWidth;
+    const fabWidth = 96; // w-24 = 6rem = 96px
+    const margin = 16;
+    
+    // Calculate center of FAB
+    const fabCenter = screenWidth - margin - fabWidth / 2 + currentX;
+    const screenCenter = screenWidth / 2;
+    
+    if (fabCenter < screenCenter) {
+      // Snap to left
+      const leftX = -(screenWidth - margin * 2 - fabWidth);
+      setPosition(prev => ({ ...prev, x: leftX }));
+      setIsOnLeft(true);
+    } else {
+      // Snap to right (original position)
+      setPosition(prev => ({ ...prev, x: 0 }));
+      setIsOnLeft(false);
+    }
+  }, []);
+
+  // Drag handlers
+  const handleDragStart = useCallback((clientX: number, clientY: number) => {
+    setIsDragging(true);
+    hasDraggedRef.current = false;
+    dragStartRef.current = {
+      x: clientX,
+      y: clientY,
+      posX: position.x,
+      posY: position.y,
+    };
+  }, [position]);
+
+  const handleDragMove = useCallback((clientX: number, clientY: number) => {
+    if (!isDragging) return;
+    
+    const deltaX = clientX - dragStartRef.current.x;
+    const deltaY = clientY - dragStartRef.current.y;
+    
+    // Mark as dragged if moved more than 5px
+    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+      hasDraggedRef.current = true;
+    }
+    
+    const newX = dragStartRef.current.posX + deltaX;
+    const newY = dragStartRef.current.posY + deltaY;
+    
+    // Constrain Y position
+    const maxY = window.innerHeight - 150;
+    const minY = -(window.innerHeight - 200);
+    
+    setPosition({
+      x: newX,
+      y: Math.max(minY, Math.min(0, newY)),
+    });
+  }, [isDragging]);
+
+  const handleDragEnd = useCallback(() => {
+    if (isDragging) {
+      setIsDragging(false);
+      snapToEdge(position.x);
+    }
+  }, [isDragging, position.x, snapToEdge]);
+
+  // Mouse events
+  const onMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleDragStart(e.clientX, e.clientY);
+  };
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => handleDragMove(e.clientX, e.clientY);
+    const onMouseUp = () => handleDragEnd();
+    
+    if (isDragging) {
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
+    }
+    
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [isDragging, handleDragMove, handleDragEnd]);
+
+  // Touch events
+  const onTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    handleDragStart(touch.clientX, touch.clientY);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    handleDragMove(touch.clientX, touch.clientY);
+  };
+
+  const onTouchEnd = () => {
+    handleDragEnd();
+  };
+
+  const handleFabClick = () => {
+    // Only open if not dragged
+    if (!hasDraggedRef.current) {
+      setIsOpen(true);
+    }
+  };
+
   return (
     <>
-      {/* ── FAB — Dúo with speech bubble ── */}
-      <div className="fixed bottom-6 right-4 z-50 flex items-end gap-2">
-        {/* Speech bubble with invitation text */}
-        <div className="relative mb-8 bg-card border border-border rounded-2xl rounded-br-none px-4 py-3 shadow-lg animate-pulse">
-          <p className="text-xl font-bold text-destructive">¿Qué querés comprar?</p>
+      {/* ── FAB — Dúo with circular speech bubble ── */}
+      <div
+        ref={fabRef}
+        className="fixed bottom-6 right-4 z-50 flex flex-col items-center"
+        style={{
+          transform: `translate(${position.x}px, ${position.y}px)`,
+          transition: isDragging ? "none" : "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        {/* Circular speech bubble above robot */}
+        <div className="relative mb-2 animate-pulse">
+          {/* Circle with text */}
+          <div
+            className="w-28 h-28 rounded-full flex items-center justify-center text-center px-2 shadow-lg border-4"
+            style={{
+              backgroundColor: "hsl(var(--destructive))",
+              borderColor: "hsl(var(--destructive))",
+              boxShadow: "0 4px 20px hsla(var(--destructive) / 0.4)",
+            }}
+          >
+            <p className="text-sm font-black leading-tight text-destructive-foreground">
+              ¿Qué querés comprar?
+            </p>
+          </div>
+          {/* Pointer/arrow pointing down */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-0 h-0"
+            style={{
+              borderLeft: "10px solid transparent",
+              borderRight: "10px solid transparent",
+              borderTop: "12px solid hsl(var(--destructive))",
+            }}
+          />
         </div>
 
         {/* FAB Button */}
         <button
-          onClick={() => setIsOpen(true)}
-          className="w-24 h-24 rounded-3xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
+          onMouseDown={onMouseDown}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          onClick={handleFabClick}
+          className={`w-24 h-24 rounded-3xl flex items-center justify-center transition-all duration-300 ${
+            isDragging ? "scale-110 cursor-grabbing" : "hover:scale-110 active:scale-95 cursor-grab"
+          }`}
           style={{
             background: "linear-gradient(135deg, hsl(var(--duo-red)), hsl(var(--duo-red-dark)))",
-            boxShadow: "0 12px 40px hsla(var(--duo-red) / 0.5), 0 4px 12px hsla(0, 0%, 0%, 0.2)",
+            boxShadow: isDragging
+              ? "0 20px 60px hsla(var(--duo-red) / 0.6), 0 8px 20px hsla(0, 0%, 0%, 0.3)"
+              : "0 12px 40px hsla(var(--duo-red) / 0.5), 0 4px 12px hsla(0, 0%, 0%, 0.2)",
             border: "2px solid hsla(0, 0%, 100%, 0.2)",
           }}
           aria-label="Abrir asistente Cerebro Dúo"
         >
-          <img src={duoRobot} alt="Cerebro Dúo" className="w-18 h-18 rounded-2xl object-cover drop-shadow-lg" />
+          <img src={duoRobot} alt="Cerebro Dúo" className="w-18 h-18 rounded-2xl object-cover drop-shadow-lg pointer-events-none" />
           <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-background animate-pulse" style={{ background: "hsl(var(--duo-red-light))" }} />
         </button>
       </div>
