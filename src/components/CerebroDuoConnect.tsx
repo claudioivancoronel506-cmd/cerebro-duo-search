@@ -260,7 +260,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         resetear();
         onDismiss?.();
       }, 400);
-    }, 1000);
+    }, 2000);
   };
 
   const handleOpenChange = (open: boolean) => {
