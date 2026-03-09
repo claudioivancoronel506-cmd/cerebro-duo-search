@@ -84,7 +84,7 @@ function useSpeechRecognition(onSilenceDetected: () => void) {
       // Reset silence timer on every result
       clearSilenceTimer();
       silenceTimerRef.current = setTimeout(() => {
-        // 1.5s of silence after speech → auto-process
+        // 2s of silence after speech → auto-process
         if (hasSpokenRef.current) {
           recognitionRef.current?.stop();
           onSilenceDetected();
