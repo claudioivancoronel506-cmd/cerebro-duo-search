@@ -437,14 +437,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         >
           {/* Oval speech bubble with text */}
           <div
-            className="w-36 h-24 rounded-full flex items-center justify-center text-center px-4 shadow-lg border-2"
+            className="w-52 h-36 rounded-full flex items-center justify-center text-center px-6 shadow-lg border-2"
             style={{
               backgroundColor: "hsl(var(--background))",
               borderColor: "hsl(var(--destructive))",
               boxShadow: "0 4px 20px hsla(var(--destructive) / 0.25)",
             }}
           >
-            <p className="text-sm font-black leading-tight text-destructive">
+            <p className="text-base font-black leading-tight text-destructive">
               ¿Qué querés comprar?
             </p>
           </div>
