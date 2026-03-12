@@ -541,7 +541,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <div className="flex flex-col items-center gap-3 pt-2 pb-1">
                   <button
                     onClick={speech.isListening ? speech.stopListening : speech.startListening}
-                    className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all active:scale-95 ${
+                    className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-95 ${
                       speech.isListening
                         ? "bg-destructive text-destructive-foreground"
                         : "bg-primary text-primary-foreground"
@@ -551,24 +551,23 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       <>
                         <span className="absolute inset-0 rounded-full bg-destructive/25 animate-ping" />
                         <span className="absolute -inset-2 rounded-full border-2 border-destructive/30 animate-pulse" />
-                        <span className="absolute -inset-4 rounded-full border border-destructive/15 animate-pulse [animation-delay:200ms]" />
                       </>
                     )}
                     {speech.isListening ? (
-                      <MicOff className="w-8 h-8 relative z-10" />
+                      <MicOff className="w-6 h-6 relative z-10" />
                     ) : (
-                      <Mic className="w-8 h-8" />
+                      <Mic className="w-6 h-6" />
                     )}
                   </button>
-                  <p className={`text-xl font-bold ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
+                  <p className={`text-sm font-semibold ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
                     {speech.isListening ? "🎙 Escuchando..." : "Tocá para activar el micrófono"}
                   </p>
                 </div>
 
                 {/* Live transcript or text input */}
                 {speech.isListening && textoInput ? (
-                  <div className="w-full p-6 rounded-2xl border-2 border-primary/40 bg-primary/5 text-center min-h-[180px] flex items-center justify-center">
-                    <p className="text-5xl font-black text-foreground leading-tight break-words">
+                  <div className="w-full p-4 rounded-xl border-2 border-primary/40 bg-primary/5 text-center min-h-[100px] flex items-center justify-center">
+                    <p className="text-lg font-bold text-foreground leading-snug break-words">
                       {textoInput}
                     </p>
                   </div>
@@ -577,7 +576,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                     value={textoInput}
                     onChange={(e) => setTextoInput(e.target.value)}
                     placeholder='Ej: "Buscame harina, pollo y algo de queso"'
-                    className="w-full h-28 p-4 rounded-2xl border border-border bg-secondary text-foreground text-2xl resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+                    className="w-full h-24 p-3 rounded-xl border border-border bg-secondary text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
@@ -592,9 +591,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <button
                   onClick={procesarTexto}
                   disabled={!textoInput.trim()}
-                  className="w-full py-5 rounded-2xl font-black text-2xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
+                  className="w-full h-12 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
                 >
-                  <Search className="w-7 h-7" />
+                  <Search className="w-5 h-5" />
                   Procesar pedido
                 </button>
               </div>
