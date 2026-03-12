@@ -687,17 +687,17 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <button
                   onClick={confirmarSeleccion}
                   disabled={seleccionados.length === 0}
-                  className="sticky bottom-0 w-full py-8 rounded-2xl font-black text-3xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 active:scale-[0.98] shadow-lg text-white"
+                  className="sticky bottom-0 w-full h-12 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-40 active:scale-[0.98] shadow-md text-white"
                   style={{
                     background: seleccionados.length > 0
                       ? "linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))"
                       : undefined,
                     backgroundColor: seleccionados.length === 0 ? "hsl(var(--muted))" : undefined,
-                    boxShadow: seleccionados.length > 0 ? "0 8px 24px hsla(var(--success) / 0.4)" : undefined,
+                    boxShadow: seleccionados.length > 0 ? "0 4px 16px hsla(var(--success) / 0.3)" : undefined,
                     color: seleccionados.length === 0 ? "hsl(var(--muted-foreground))" : undefined,
                   }}
                 >
-                  <ShoppingCart className="w-7 h-7" />
+                  <ShoppingCart className="w-5 h-5" />
                   {seleccionados.length > 0
                     ? `Confirmar ($${totalPrecio.toLocaleString("es-AR")})`
                     : "Seleccioná productos"}
