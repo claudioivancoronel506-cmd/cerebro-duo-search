@@ -603,10 +603,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             {paso === "procesando" && (
               <div className="flex flex-col items-center justify-center py-10 gap-3">
                 <div className="relative">
-                  <img src={duoRobot} alt="DÚO" className="w-16 h-16 rounded-2xl animate-pulse" />
-                  <Loader2 className="absolute -bottom-1 -right-1 w-5 h-5 text-primary animate-spin" />
+                  <img src={duoRobot} alt="DÚO" className="w-12 h-12 rounded-xl animate-pulse" />
+                  <Loader2 className="absolute -bottom-1 -right-1 w-4 h-4 text-primary animate-spin" />
                 </div>
-                <p className="text-2xl font-bold text-muted-foreground animate-pulse">Sincronizando con la tienda...</p>
+                <p className="text-sm font-semibold text-muted-foreground animate-pulse">Sincronizando con la tienda...</p>
               </div>
             )}
 
