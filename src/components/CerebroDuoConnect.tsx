@@ -311,7 +311,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   // Snap to nearest edge
   const snapToEdge = useCallback((currentX: number) => {
     const screenWidth = window.innerWidth;
-    const fabWidth = 96; // w-24 = 6rem = 96px
+    const fabWidth = 48; // w-12 = 3rem = 48px
     const margin = 16;
     
     // Calculate center of FAB
@@ -437,34 +437,34 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         >
           {/* Oval speech bubble with text */}
           <div
-            className="w-36 h-24 rounded-full flex items-center justify-center text-center px-4 shadow-lg border-2"
+            className="w-20 h-12 rounded-full flex items-center justify-center text-center px-2 shadow-md border"
             style={{
               backgroundColor: "hsl(var(--background))",
               borderColor: "hsl(var(--destructive))",
-              boxShadow: "0 4px 20px hsla(var(--destructive) / 0.25)",
+              boxShadow: "0 2px 10px hsla(var(--destructive) / 0.25)",
             }}
           >
-            <p className="text-sm font-black leading-tight text-destructive">
+            <p className="text-[10px] font-black leading-tight text-destructive">
               ¿Qué querés comprar?
             </p>
           </div>
           {/* Pointer/arrow pointing down */}
           <div
-            className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-0 h-0"
+            className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-0"
             style={{
-              borderLeft: "10px solid transparent",
-              borderRight: "10px solid transparent",
-              borderTop: "12px solid hsl(var(--background))",
-              filter: "drop-shadow(0 2px 0 hsl(var(--destructive)))",
+              borderLeft: "5px solid transparent",
+              borderRight: "5px solid transparent",
+              borderTop: "6px solid hsl(var(--background))",
+              filter: "drop-shadow(0 1px 0 hsl(var(--destructive)))",
             }}
           />
           {/* Red border for pointer */}
           <div
-            className="absolute left-1/2 -translate-x-1/2 -bottom-[11px] w-0 h-0"
+            className="absolute left-1/2 -translate-x-1/2 -bottom-[6px] w-0 h-0"
             style={{
-              borderLeft: "12px solid transparent",
-              borderRight: "12px solid transparent",
-              borderTop: "14px solid hsl(var(--destructive))",
+              borderLeft: "6px solid transparent",
+              borderRight: "6px solid transparent",
+              borderTop: "7px solid hsl(var(--destructive))",
               zIndex: -1,
             }}
           />
@@ -477,7 +477,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
           onClick={handleFabClick}
-          className={`w-24 h-24 rounded-3xl flex items-center justify-center transition-all duration-300 ${
+          className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
             isDragging ? "scale-110 cursor-grabbing" : "hover:scale-110 active:scale-95 cursor-grab"
           }`}
           style={{
@@ -489,7 +489,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           }}
           aria-label="Abrir asistente Cerebro Dúo"
         >
-          <img src={duoRobot} alt="Cerebro Dúo" className="w-18 h-18 rounded-2xl object-cover drop-shadow-lg pointer-events-none" />
+          <img src={duoRobot} alt="Cerebro Dúo" className="w-9 h-9 rounded-lg object-cover drop-shadow-md pointer-events-none" />
         </button>
       </div>
 
