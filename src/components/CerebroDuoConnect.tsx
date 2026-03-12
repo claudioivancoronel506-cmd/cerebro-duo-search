@@ -444,7 +444,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
               boxShadow: "0 4px 20px hsla(var(--destructive) / 0.25)",
             }}
           >
-            <p className="text-base font-black leading-tight text-destructive">
+            <p className="text-xs font-black leading-tight text-destructive">
               ¿Qué querés comprar?
             </p>
           </div>
