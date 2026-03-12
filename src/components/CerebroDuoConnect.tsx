@@ -311,7 +311,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   // Snap to nearest edge
   const snapToEdge = useCallback((currentX: number) => {
     const screenWidth = window.innerWidth;
-    const fabWidth = 96; // w-24 = 6rem = 96px
+    const fabWidth = 144; // w-36 = 9rem = 144px
     const margin = 16;
     
     // Calculate center of FAB
@@ -437,14 +437,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         >
           {/* Oval speech bubble with text */}
           <div
-            className="w-36 h-24 rounded-full flex items-center justify-center text-center px-4 shadow-lg border-2"
+            className="w-52 h-36 rounded-full flex items-center justify-center text-center px-6 shadow-lg border-2"
             style={{
               backgroundColor: "hsl(var(--background))",
               borderColor: "hsl(var(--destructive))",
               boxShadow: "0 4px 20px hsla(var(--destructive) / 0.25)",
             }}
           >
-            <p className="text-sm font-black leading-tight text-destructive">
+            <p className="text-base font-black leading-tight text-destructive">
               ¿Qué querés comprar?
             </p>
           </div>
@@ -477,7 +477,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
           onClick={handleFabClick}
-          className={`w-24 h-24 rounded-3xl flex items-center justify-center transition-all duration-300 ${
+          className={`w-36 h-36 rounded-3xl flex items-center justify-center transition-all duration-300 ${
             isDragging ? "scale-110 cursor-grabbing" : "hover:scale-110 active:scale-95 cursor-grab"
           }`}
           style={{
@@ -489,7 +489,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           }}
           aria-label="Abrir asistente Cerebro Dúo"
         >
-          <img src={duoRobot} alt="Cerebro Dúo" className="w-18 h-18 rounded-2xl object-cover drop-shadow-lg pointer-events-none" />
+          <img src={duoRobot} alt="Cerebro Dúo" className="w-28 h-28 rounded-2xl object-cover drop-shadow-lg pointer-events-none" />
         </button>
       </div>
 
