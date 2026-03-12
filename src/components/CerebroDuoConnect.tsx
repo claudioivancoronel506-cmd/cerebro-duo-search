@@ -734,23 +734,21 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           style={{ animation: "fade-in 0.4s ease-out" }}
         >
           <div
-            className="flex flex-col items-center gap-6 p-10 rounded-3xl border-4 mx-6 shadow-2xl"
+            className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 mx-6 shadow-xl"
             style={{
               backgroundColor: "hsl(var(--background))",
               borderColor: "hsl(var(--destructive))",
-              boxShadow: "0 25px 80px hsla(0, 0%, 0%, 0.5), 0 0 0 1px hsla(var(--destructive) / 0.3)",
+              boxShadow: "0 16px 48px hsla(0, 0%, 0%, 0.4)",
             }}
           >
-            {/* Spinning sync icon */}
             <RefreshCw
-              className="w-20 h-20 text-destructive"
+              className="w-10 h-10 text-destructive"
               style={{ animation: "spin 0.5s linear infinite" }}
             />
-            {/* Massive text */}
-            <p className="text-5xl font-black text-destructive text-center leading-tight">
+            <p className="text-lg font-black text-destructive text-center leading-tight">
               ¡Lista sincronizada con Tu Súper Online!
             </p>
-            <p className="text-2xl font-bold text-muted-foreground text-center">
+            <p className="text-sm font-semibold text-muted-foreground text-center">
               Stock actualizado en tiempo real
             </p>
           </div>
