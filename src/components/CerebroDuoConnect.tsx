@@ -311,7 +311,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   // Snap to nearest edge
   const snapToEdge = useCallback((currentX: number) => {
     const screenWidth = window.innerWidth;
-    const fabWidth = 144; // w-36 = 9rem = 144px
+    const fabWidth = 72; // w-[72px]
     const margin = 16;
     
     // Calculate center of FAB
