@@ -477,7 +477,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
           onClick={handleFabClick}
-          className={`w-24 h-24 rounded-3xl flex items-center justify-center transition-all duration-300 ${
+          className={`w-36 h-36 rounded-3xl flex items-center justify-center transition-all duration-300 ${
             isDragging ? "scale-110 cursor-grabbing" : "hover:scale-110 active:scale-95 cursor-grab"
           }`}
           style={{
@@ -489,7 +489,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           }}
           aria-label="Abrir asistente Cerebro Dúo"
         >
-          <img src={duoRobot} alt="Cerebro Dúo" className="w-18 h-18 rounded-2xl object-cover drop-shadow-lg pointer-events-none" />
+          <img src={duoRobot} alt="Cerebro Dúo" className="w-28 h-28 rounded-2xl object-cover drop-shadow-lg pointer-events-none" />
         </button>
       </div>
 
