@@ -437,34 +437,34 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         >
           {/* Oval speech bubble with text */}
           <div
-            className="w-36 h-24 rounded-full flex items-center justify-center text-center px-4 shadow-lg border-2"
+            className="w-20 h-12 rounded-full flex items-center justify-center text-center px-2 shadow-md border"
             style={{
               backgroundColor: "hsl(var(--background))",
               borderColor: "hsl(var(--destructive))",
-              boxShadow: "0 4px 20px hsla(var(--destructive) / 0.25)",
+              boxShadow: "0 2px 10px hsla(var(--destructive) / 0.25)",
             }}
           >
-            <p className="text-sm font-black leading-tight text-destructive">
+            <p className="text-[10px] font-black leading-tight text-destructive">
               ¿Qué querés comprar?
             </p>
           </div>
           {/* Pointer/arrow pointing down */}
           <div
-            className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-0 h-0"
+            className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-0"
             style={{
-              borderLeft: "10px solid transparent",
-              borderRight: "10px solid transparent",
-              borderTop: "12px solid hsl(var(--background))",
-              filter: "drop-shadow(0 2px 0 hsl(var(--destructive)))",
+              borderLeft: "5px solid transparent",
+              borderRight: "5px solid transparent",
+              borderTop: "6px solid hsl(var(--background))",
+              filter: "drop-shadow(0 1px 0 hsl(var(--destructive)))",
             }}
           />
           {/* Red border for pointer */}
           <div
-            className="absolute left-1/2 -translate-x-1/2 -bottom-[11px] w-0 h-0"
+            className="absolute left-1/2 -translate-x-1/2 -bottom-[6px] w-0 h-0"
             style={{
-              borderLeft: "12px solid transparent",
-              borderRight: "12px solid transparent",
-              borderTop: "14px solid hsl(var(--destructive))",
+              borderLeft: "6px solid transparent",
+              borderRight: "6px solid transparent",
+              borderTop: "7px solid hsl(var(--destructive))",
               zIndex: -1,
             }}
           />
