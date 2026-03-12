@@ -489,7 +489,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           }}
           aria-label="Abrir asistente Cerebro Dúo"
         >
-          <img src={duoRobot} alt="Cerebro Dúo" className="w-28 h-28 rounded-2xl object-cover drop-shadow-lg pointer-events-none" />
+          <img src={duoRobot} alt="Cerebro Dúo" className="w-14 h-14 rounded-xl object-cover drop-shadow-md pointer-events-none" />
         </button>
       </div>
 
