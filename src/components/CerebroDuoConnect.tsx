@@ -541,7 +541,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <div className="flex flex-col items-center gap-3 pt-2 pb-1">
                   <button
                     onClick={speech.isListening ? speech.stopListening : speech.startListening}
-                    className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all active:scale-95 ${
+                    className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-95 ${
                       speech.isListening
                         ? "bg-destructive text-destructive-foreground"
                         : "bg-primary text-primary-foreground"
@@ -551,24 +551,23 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       <>
                         <span className="absolute inset-0 rounded-full bg-destructive/25 animate-ping" />
                         <span className="absolute -inset-2 rounded-full border-2 border-destructive/30 animate-pulse" />
-                        <span className="absolute -inset-4 rounded-full border border-destructive/15 animate-pulse [animation-delay:200ms]" />
                       </>
                     )}
                     {speech.isListening ? (
-                      <MicOff className="w-8 h-8 relative z-10" />
+                      <MicOff className="w-6 h-6 relative z-10" />
                     ) : (
-                      <Mic className="w-8 h-8" />
+                      <Mic className="w-6 h-6" />
                     )}
                   </button>
-                  <p className={`text-xl font-bold ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
+                  <p className={`text-sm font-semibold ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
                     {speech.isListening ? "🎙 Escuchando..." : "Tocá para activar el micrófono"}
                   </p>
                 </div>
 
                 {/* Live transcript or text input */}
                 {speech.isListening && textoInput ? (
-                  <div className="w-full p-6 rounded-2xl border-2 border-primary/40 bg-primary/5 text-center min-h-[180px] flex items-center justify-center">
-                    <p className="text-5xl font-black text-foreground leading-tight break-words">
+                  <div className="w-full p-4 rounded-xl border-2 border-primary/40 bg-primary/5 text-center min-h-[100px] flex items-center justify-center">
+                    <p className="text-lg font-bold text-foreground leading-snug break-words">
                       {textoInput}
                     </p>
                   </div>
@@ -577,7 +576,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                     value={textoInput}
                     onChange={(e) => setTextoInput(e.target.value)}
                     placeholder='Ej: "Buscame harina, pollo y algo de queso"'
-                    className="w-full h-28 p-4 rounded-2xl border border-border bg-secondary text-foreground text-2xl resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+                    className="w-full h-24 p-3 rounded-xl border border-border bg-secondary text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
@@ -592,9 +591,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <button
                   onClick={procesarTexto}
                   disabled={!textoInput.trim()}
-                  className="w-full py-5 rounded-2xl font-black text-2xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
+                  className="w-full h-12 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
                 >
-                  <Search className="w-7 h-7" />
+                  <Search className="w-5 h-5" />
                   Procesar pedido
                 </button>
               </div>
@@ -604,10 +603,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             {paso === "procesando" && (
               <div className="flex flex-col items-center justify-center py-10 gap-3">
                 <div className="relative">
-                  <img src={duoRobot} alt="DÚO" className="w-16 h-16 rounded-2xl animate-pulse" />
-                  <Loader2 className="absolute -bottom-1 -right-1 w-5 h-5 text-primary animate-spin" />
+                  <img src={duoRobot} alt="DÚO" className="w-12 h-12 rounded-xl animate-pulse" />
+                  <Loader2 className="absolute -bottom-1 -right-1 w-4 h-4 text-primary animate-spin" />
                 </div>
-                <p className="text-2xl font-bold text-muted-foreground animate-pulse">Sincronizando con la tienda...</p>
+                <p className="text-sm font-semibold text-muted-foreground animate-pulse">Sincronizando con la tienda...</p>
               </div>
             )}
 
@@ -620,7 +619,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                     {keywords.map((kw, i) => (
                       <span
                         key={i}
-                       className="px-4 py-2 rounded-full text-lg font-bold bg-primary/10 text-primary border border-primary/20"
+                        className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20"
                       >
                         {kw}
                       </span>
@@ -633,7 +632,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   {resultados.map((r, i) => (
                     <div
                       key={r.item.id}
-                      className={`relative rounded-xl border-2 p-4 transition-all cursor-pointer ${
+                       className={`relative rounded-xl border-2 p-3 transition-all cursor-pointer ${
                         r.seleccionado
                           ? "border-primary bg-primary/5 shadow-sm"
                           : "border-border bg-card opacity-70"
@@ -643,9 +642,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       {/* Delete button */}
                       <button
                         onClick={(e) => { e.stopPropagation(); eliminarItem(i); }}
-                        className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full bg-muted/80 hover:bg-destructive hover:text-destructive-foreground flex items-center justify-center transition-colors"
+                        className="absolute top-1.5 right-1.5 z-10 w-5 h-5 rounded-full bg-muted/80 hover:bg-destructive hover:text-destructive-foreground flex items-center justify-center transition-colors"
                       >
-                        <X className="w-3.5 h-3.5" />
+                        <X className="w-3 h-3" />
                       </button>
 
                       {/* Image */}
@@ -653,30 +652,30 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                         <img
                           src={r.productoCatalogo.imagen}
                           alt={r.productoCatalogo.nombre}
-                          className="w-full aspect-[4/3] rounded-lg object-cover mb-3"
+                          className="w-full aspect-[4/3] rounded-lg object-cover mb-2"
                         />
                       ) : (
-                        <div className="w-full aspect-[4/3] rounded-lg bg-muted flex items-center justify-center text-2xl mb-3">
+                        <div className="w-full aspect-[4/3] rounded-lg bg-muted flex items-center justify-center text-lg mb-2">
                           🛒
                         </div>
                       )}
 
                       {/* Name */}
-                      <p className="text-3xl font-bold text-card-foreground leading-tight line-clamp-2 mb-2">
+                      <p className="text-sm font-bold text-card-foreground leading-tight line-clamp-2 mb-1">
                         {r.productoCatalogo.nombre}
                       </p>
                       {/* Brand & qty */}
-                      <p className="text-xl text-muted-foreground mb-3">
+                      <p className="text-xs text-muted-foreground mb-2">
                         {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
                       </p>
                       {/* Price + check */}
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-4xl font-black text-card-foreground">
+                      <div className="flex items-center justify-between">
+                        <span className="text-base font-black text-card-foreground">
                           ${r.productoCatalogo.precio.toLocaleString("es-AR")}
                         </span>
                         {r.seleccionado && (
-                          <span className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                            <Check className="w-4 h-4 text-primary-foreground" />
+                          <span className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                            <Check className="w-3 h-3 text-primary-foreground" />
                           </span>
                         )}
                       </div>
@@ -688,17 +687,17 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <button
                   onClick={confirmarSeleccion}
                   disabled={seleccionados.length === 0}
-                  className="sticky bottom-0 w-full py-8 rounded-2xl font-black text-3xl flex items-center justify-center gap-3 transition-all disabled:opacity-40 active:scale-[0.98] shadow-lg text-white"
+                  className="sticky bottom-0 w-full h-12 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-40 active:scale-[0.98] shadow-md text-white"
                   style={{
                     background: seleccionados.length > 0
                       ? "linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))"
                       : undefined,
                     backgroundColor: seleccionados.length === 0 ? "hsl(var(--muted))" : undefined,
-                    boxShadow: seleccionados.length > 0 ? "0 8px 24px hsla(var(--success) / 0.4)" : undefined,
+                    boxShadow: seleccionados.length > 0 ? "0 4px 16px hsla(var(--success) / 0.3)" : undefined,
                     color: seleccionados.length === 0 ? "hsl(var(--muted-foreground))" : undefined,
                   }}
                 >
-                  <ShoppingCart className="w-7 h-7" />
+                  <ShoppingCart className="w-5 h-5" />
                   {seleccionados.length > 0
                     ? `Confirmar ($${totalPrecio.toLocaleString("es-AR")})`
                     : "Seleccioná productos"}
@@ -709,20 +708,20 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             {/* ── PASO: CONFIRMACIÓN ── */}
             {paso === "confirmacion" && (
               <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none animate-fade-in">
-                <div className="flex flex-col items-center gap-4 px-6">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: "hsla(var(--success) / 0.2)" }}>
-                    <Check className="w-9 h-9" style={{ color: "hsl(var(--success))" }} />
+                <div className="flex flex-col items-center gap-3 px-6">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: "hsla(var(--success) / 0.2)" }}>
+                    <Check className="w-6 h-6" style={{ color: "hsl(var(--success))" }} />
                   </div>
-                    <div className="rounded-full px-12 py-8 shadow-2xl" style={{ background: `linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))`, boxShadow: `0 10px 40px hsla(var(--success) / 0.4)` }}>
-                     <p className="text-6xl font-black text-white text-center">
-                       ¡Agregado al carrito!
-                     </p>
-                   </div>
-                   <p className="text-2xl font-bold rounded-full px-8 py-3 backdrop-blur-sm" style={{ backgroundColor: "hsla(var(--background) / 0.9)", color: "hsl(var(--foreground))" }}>
-                     {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
-                   </p>
-                 </div>
-               </div>
+                  <div className="rounded-2xl px-8 py-4 shadow-xl" style={{ background: `linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))`, boxShadow: `0 8px 30px hsla(var(--success) / 0.4)` }}>
+                    <p className="text-lg font-black text-white text-center">
+                      ¡Agregado al carrito!
+                    </p>
+                  </div>
+                  <p className="text-sm font-semibold rounded-full px-5 py-2 backdrop-blur-sm" style={{ backgroundColor: "hsla(var(--background) / 0.9)", color: "hsl(var(--foreground))" }}>
+                    {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         </DrawerContent>
@@ -735,23 +734,21 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           style={{ animation: "fade-in 0.4s ease-out" }}
         >
           <div
-            className="flex flex-col items-center gap-6 p-10 rounded-3xl border-4 mx-6 shadow-2xl"
+            className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 mx-6 shadow-xl"
             style={{
               backgroundColor: "hsl(var(--background))",
               borderColor: "hsl(var(--destructive))",
-              boxShadow: "0 25px 80px hsla(0, 0%, 0%, 0.5), 0 0 0 1px hsla(var(--destructive) / 0.3)",
+              boxShadow: "0 16px 48px hsla(0, 0%, 0%, 0.4)",
             }}
           >
-            {/* Spinning sync icon */}
             <RefreshCw
-              className="w-20 h-20 text-destructive"
+              className="w-10 h-10 text-destructive"
               style={{ animation: "spin 0.5s linear infinite" }}
             />
-            {/* Massive text */}
-            <p className="text-5xl font-black text-destructive text-center leading-tight">
+            <p className="text-lg font-black text-destructive text-center leading-tight">
               ¡Lista sincronizada con Tu Súper Online!
             </p>
-            <p className="text-2xl font-bold text-muted-foreground text-center">
+            <p className="text-sm font-semibold text-muted-foreground text-center">
               Stock actualizado en tiempo real
             </p>
           </div>
