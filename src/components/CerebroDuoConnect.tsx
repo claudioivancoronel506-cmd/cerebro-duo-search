@@ -619,7 +619,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                     {keywords.map((kw, i) => (
                       <span
                         key={i}
-                       className="px-4 py-2 rounded-full text-lg font-bold bg-primary/10 text-primary border border-primary/20"
+                        className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20"
                       >
                         {kw}
                       </span>
