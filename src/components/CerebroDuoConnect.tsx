@@ -708,20 +708,20 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             {/* ── PASO: CONFIRMACIÓN ── */}
             {paso === "confirmacion" && (
               <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none animate-fade-in">
-                <div className="flex flex-col items-center gap-4 px-6">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: "hsla(var(--success) / 0.2)" }}>
-                    <Check className="w-9 h-9" style={{ color: "hsl(var(--success))" }} />
+                <div className="flex flex-col items-center gap-3 px-6">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: "hsla(var(--success) / 0.2)" }}>
+                    <Check className="w-6 h-6" style={{ color: "hsl(var(--success))" }} />
                   </div>
-                    <div className="rounded-full px-12 py-8 shadow-2xl" style={{ background: `linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))`, boxShadow: `0 10px 40px hsla(var(--success) / 0.4)` }}>
-                     <p className="text-6xl font-black text-white text-center">
-                       ¡Agregado al carrito!
-                     </p>
-                   </div>
-                   <p className="text-2xl font-bold rounded-full px-8 py-3 backdrop-blur-sm" style={{ backgroundColor: "hsla(var(--background) / 0.9)", color: "hsl(var(--foreground))" }}>
-                     {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
-                   </p>
-                 </div>
-               </div>
+                  <div className="rounded-2xl px-8 py-4 shadow-xl" style={{ background: `linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))`, boxShadow: `0 8px 30px hsla(var(--success) / 0.4)` }}>
+                    <p className="text-lg font-black text-white text-center">
+                      ¡Agregado al carrito!
+                    </p>
+                  </div>
+                  <p className="text-sm font-semibold rounded-full px-5 py-2 backdrop-blur-sm" style={{ backgroundColor: "hsla(var(--background) / 0.9)", color: "hsl(var(--foreground))" }}>
+                    {seleccionados.length} productos · ${totalPrecio.toLocaleString("es-AR")}
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         </DrawerContent>
