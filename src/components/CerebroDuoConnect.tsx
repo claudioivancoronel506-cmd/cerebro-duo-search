@@ -477,7 +477,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
           onClick={handleFabClick}
-          className={`w-36 h-36 rounded-3xl flex items-center justify-center transition-all duration-300 ${
+          className={`w-[72px] h-[72px] rounded-2xl flex items-center justify-center transition-all duration-300 ${
             isDragging ? "scale-110 cursor-grabbing" : "hover:scale-110 active:scale-95 cursor-grab"
           }`}
           style={{
