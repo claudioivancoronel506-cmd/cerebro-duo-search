@@ -554,9 +554,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       </>
                     )}
                     {speech.isListening ? (
-                      <MicOff className="w-6 h-6 relative z-10" />
+                      <Mic className="w-6 h-6 relative z-10" />
                     ) : (
-                      <Mic className="w-6 h-6" />
+                      <MicOff className="w-6 h-6" />
                     )}
                   </button>
                   <p className={`text-sm font-semibold ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
@@ -683,25 +683,40 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   ))}
                 </div>
 
-                {/* Confirm Button — success green, always visible */}
-                <button
-                  onClick={confirmarSeleccion}
-                  disabled={seleccionados.length === 0}
-                  className="sticky bottom-0 w-full h-12 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-40 active:scale-[0.98] shadow-md text-white"
-                  style={{
-                    background: seleccionados.length > 0
-                      ? "linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))"
-                      : undefined,
-                    backgroundColor: seleccionados.length === 0 ? "hsl(var(--muted))" : undefined,
-                    boxShadow: seleccionados.length > 0 ? "0 4px 16px hsla(var(--success) / 0.3)" : undefined,
-                    color: seleccionados.length === 0 ? "hsl(var(--muted-foreground))" : undefined,
-                  }}
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  {seleccionados.length > 0
-                    ? `Confirmar ($${totalPrecio.toLocaleString("es-AR")})`
-                    : "Seleccioná productos"}
-                </button>
+                {/* Sticky footer: running total + confirm */}
+                <div className="sticky bottom-0 bg-card pt-3 pb-1 border-t border-border -mx-4 px-4 space-y-2">
+                  {/* Running total summary */}
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground font-medium">
+                      {seleccionados.length > 0
+                        ? `${seleccionados.length} producto${seleccionados.length > 1 ? "s" : ""} seleccionado${seleccionados.length > 1 ? "s" : ""}`
+                        : "Ningún producto seleccionado"}
+                    </span>
+                    <span className="text-lg font-black text-card-foreground">
+                      ${totalPrecio.toLocaleString("es-AR")}
+                    </span>
+                  </div>
+
+                  {/* Confirm button */}
+                  <button
+                    onClick={confirmarSeleccion}
+                    disabled={seleccionados.length === 0}
+                    className="w-full h-12 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-40 active:scale-[0.98] shadow-md text-white"
+                    style={{
+                      background: seleccionados.length > 0
+                        ? "linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)))"
+                        : undefined,
+                      backgroundColor: seleccionados.length === 0 ? "hsl(var(--muted))" : undefined,
+                      boxShadow: seleccionados.length > 0 ? "0 4px 16px hsla(var(--success) / 0.3)" : undefined,
+                      color: seleccionados.length === 0 ? "hsl(var(--muted-foreground))" : undefined,
+                    }}
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    {seleccionados.length > 0
+                      ? `Confirmar ($${totalPrecio.toLocaleString("es-AR")})`
+                      : "Seleccioná productos"}
+                  </button>
+                </div>
               </div>
             )}
 
