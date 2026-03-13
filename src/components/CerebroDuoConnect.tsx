@@ -554,9 +554,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       </>
                     )}
                     {speech.isListening ? (
-                      <MicOff className="w-6 h-6 relative z-10" />
+                      <Mic className="w-6 h-6 relative z-10" />
                     ) : (
-                      <Mic className="w-6 h-6" />
+                      <MicOff className="w-6 h-6" />
                     )}
                   </button>
                   <p className={`text-sm font-semibold ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
