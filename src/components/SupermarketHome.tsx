@@ -26,7 +26,7 @@ interface SupermarketHomeProps {
   onCartClick?: () => void;
 }
 
-export default function SupermarketHome({ cartCount }: SupermarketHomeProps) {
+export default function SupermarketHome({ cartCount, onCartClick }: SupermarketHomeProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* ── Header — Store branding (yellow) ── */}
