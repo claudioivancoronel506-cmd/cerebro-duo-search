@@ -496,41 +496,52 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
       {/* ── Bottom Sheet ── */}
       <Drawer open={isOpen} onOpenChange={handleOpenChange}>
         <DrawerContent className={`bg-card ${paso === "resultados" ? "min-h-[100dvh] max-h-[100dvh]" : "min-h-[65dvh] max-h-[92dvh]"}`}>
-          <DrawerHeader className="pb-2">
-            <div className="flex items-center gap-3">
-              {/* Back button */}
-              {(paso === "resultados" || paso === "procesando") && (
+          <DrawerHeader className={paso === "resultados" ? "py-2 px-4" : "pb-2"}>
+            {paso === "resultados" ? (
+              /* Compact header for results */
+              <div className="flex items-center justify-between">
                 <button
                   onClick={irAtras}
                   className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-muted transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4 text-foreground" />
                 </button>
-              )}
-              <img src={duoRobot} alt="DÚO" className="w-9 h-9 rounded-xl" />
-              <div className="flex-1">
-                <DrawerTitle className="text-lg font-bold text-card-foreground">
-                  Cerebro Dúo Connect
+                <DrawerTitle className="text-base font-bold text-card-foreground">
+                  {resultados.length} productos encontrados
                 </DrawerTitle>
-                <DrawerDescription className="text-sm">
-                  {paso === "input"
-                    ? "Tocá el micrófono o escribí tu pedido"
-                    : paso === "procesando"
-                    ? "Procesando..."
-                    : paso === "resultados"
-                    ? resumen
-                    : "¡Listo!"}
-                </DrawerDescription>
-              </div>
-              {paso === "resultados" && (
                 <button
                   onClick={() => resetear()}
-                  className="text-sm font-semibold text-primary hover:underline"
+                  className="text-xs font-semibold text-primary hover:underline"
                 >
-                  Nuevo pedido
+                  Nuevo
                 </button>
-              )}
-            </div>
+              </div>
+            ) : (
+              /* Default header for other steps */
+              <div className="flex items-center gap-3">
+                {paso === "procesando" && (
+                  <button
+                    onClick={irAtras}
+                    className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-muted transition-colors"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-foreground" />
+                  </button>
+                )}
+                <img src={duoRobot} alt="DÚO" className="w-9 h-9 rounded-xl" />
+                <div className="flex-1">
+                  <DrawerTitle className="text-lg font-bold text-card-foreground">
+                    Cerebro Dúo Connect
+                  </DrawerTitle>
+                  <DrawerDescription className="text-sm">
+                    {paso === "input"
+                      ? "Tocá el micrófono o escribí tu pedido"
+                      : paso === "procesando"
+                      ? "Procesando..."
+                      : "¡Listo!"}
+                  </DrawerDescription>
+                </div>
+              </div>
+            )}
           </DrawerHeader>
 
           <div className="px-4 pb-4 overflow-y-auto flex-1">
