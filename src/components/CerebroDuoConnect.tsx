@@ -495,7 +495,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
       {/* ── Bottom Sheet ── */}
       <Drawer open={isOpen} onOpenChange={handleOpenChange}>
-        <DrawerContent className="min-h-[65dvh] max-h-[92dvh] bg-card">
+        <DrawerContent className={`bg-card ${paso === "resultados" ? "min-h-[100dvh] max-h-[100dvh]" : "min-h-[65dvh] max-h-[92dvh]"}`}>
           <DrawerHeader className="pb-2">
             <div className="flex items-center gap-3">
               {/* Back button */}
