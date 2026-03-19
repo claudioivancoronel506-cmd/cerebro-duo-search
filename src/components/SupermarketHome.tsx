@@ -44,14 +44,14 @@ export default function SupermarketHome({ cartCount, onCartClick }: SupermarketH
           </div>
           <div className="flex items-center gap-3">
             <Bell className="w-5 h-5 opacity-80" />
-            <div className="relative">
+            <button onClick={onCartClick} className="relative active:scale-95 transition-transform">
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 w-5 h-5 text-[10px] font-bold rounded-full flex items-center justify-center" style={{ background: "hsl(var(--store-secondary))", color: "hsl(var(--store-secondary-foreground))" }}>
                   {cartCount}
                 </span>
               )}
-            </div>
+            </button>
           </div>
         </div>
 
