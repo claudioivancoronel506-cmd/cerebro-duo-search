@@ -17,7 +17,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 12%;
 
-    --primary: 0 80% 45%;
+    --primary: 263 84% 35%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 95%;
@@ -26,23 +26,25 @@ All colors MUST be HSL.
     --muted: 0 0% 94%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 0 80% 45%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 45 97% 56%;
+    --accent-foreground: 0 0% 10%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 0 0% 88%;
     --input: 0 0% 88%;
-    --ring: 0 80% 45%;
+    --ring: 263 84% 35%;
 
     --radius: 0.75rem;
 
-    --duo-red: 0 80% 45%;
-    --duo-red-light: 0 80% 55%;
-    --duo-red-dark: 0 80% 35%;
-    --duo-gray: 0 0% 96%;
-    --duo-gray-dark: 0 0% 60%;
+    --sf-purple: 263 84% 35%;
+    --sf-purple-light: 263 70% 50%;
+    --sf-purple-dark: 263 84% 22%;
+    --sf-gold: 45 97% 56%;
+    --sf-gold-dark: 40 96% 44%;
+    --sf-gray: 0 0% 96%;
+    --sf-gray-dark: 0 0% 60%;
     --success: 142 71% 45%;
     --success-light: 142 71% 55%;
 
@@ -55,19 +57,12 @@ All colors MUST be HSL.
     --store-header-foreground: 0 0% 10%;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -81,8 +76,8 @@ All colors MUST be HSL.
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 263 70% 60%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -90,15 +85,15 @@ All colors MUST be HSL.
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 45 97% 56%;
+    --accent-foreground: 0 0% 10%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 263 70% 60%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
