@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { X, Search, Mic, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw } from "lucide-react";
-import duoRobot from "@/assets/duo-robot.png";
+import { X, Search, Mic, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw, Zap } from "lucide-react";
+import superflashLogo from "@/assets/superflash-logo.png";
 import { buscarProductos, type Producto } from "@/lib/catalogo-supermercado";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -75,16 +75,13 @@ function useSpeechRecognition(onSilenceDetected: () => void) {
     recognition.onstart = () => setIsListening(true);
 
     recognition.onresult = (e: any) => {
-      // Only take the LAST result's transcript (final or interim) to avoid duplication
       const lastResult = e.results[e.results.length - 1];
       const text = lastResult[0].transcript.trim();
       setTranscript(text);
       hasSpokenRef.current = true;
 
-      // Reset silence timer on every result
       clearSilenceTimer();
       silenceTimerRef.current = setTimeout(() => {
-        // 2s of silence after speech → auto-process
         if (hasSpokenRef.current) {
           recognitionRef.current?.stop();
           onSilenceDetected();
@@ -112,7 +109,6 @@ function useSpeechRecognition(onSilenceDetected: () => void) {
     setIsListening(false);
   }, [clearSilenceTimer]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       clearSilenceTimer();
@@ -163,7 +159,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   const [bubbleVisible, setBubbleVisible] = useState(true);
   const bubbleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Show bubble for 4 seconds then fade out
   const showBubbleTemporarily = useCallback(() => {
     setBubbleVisible(true);
     if (bubbleTimerRef.current) clearTimeout(bubbleTimerRef.current);
@@ -172,7 +167,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     }, 4000);
   }, []);
 
-  // Show bubble on mount
   useEffect(() => {
     showBubbleTemporarily();
     return () => {
@@ -224,7 +218,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     processingRef.current = false;
   }, []);
 
-  // Silence callback needs access to current textoInput
   const textoRef = useRef(textoInput);
   useEffect(() => { textoRef.current = textoInput; }, [textoInput]);
 
@@ -234,7 +227,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
   const speech = useSpeechRecognition(onSilenceDetected);
 
-  // Sync transcript → input
   useEffect(() => {
     if (speech.transcript) setTextoInput(speech.transcript);
   }, [speech.transcript]);
@@ -287,11 +279,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     setPaso("confirmacion");
     setTimeout(() => {
       setIsOpen(false);
-      // Show sync overlay after drawer closes
       setTimeout(() => {
         resetear();
         setShowSyncOverlay(true);
-        // Keep overlay for 4 seconds then fade out
         setTimeout(() => {
           setShowSyncOverlay(false);
           setTimeout(() => onDismiss?.(), 600);
@@ -308,29 +298,23 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     }
   };
 
-  // Snap to nearest edge
   const snapToEdge = useCallback((currentX: number) => {
     const screenWidth = window.innerWidth;
-    const fabWidth = 48; // w-12 = 3rem = 48px
+    const fabWidth = 48;
     const margin = 16;
-    
-    // Calculate center of FAB
     const fabCenter = screenWidth - margin - fabWidth / 2 + currentX;
     const screenCenter = screenWidth / 2;
-    
+
     if (fabCenter < screenCenter) {
-      // Snap to left
       const leftX = -(screenWidth - margin * 2 - fabWidth);
       setPosition(prev => ({ ...prev, x: leftX }));
       setIsOnLeft(true);
     } else {
-      // Snap to right (original position)
       setPosition(prev => ({ ...prev, x: 0 }));
       setIsOnLeft(false);
     }
   }, []);
 
-  // Drag handlers
   const handleDragStart = useCallback((clientX: number, clientY: number) => {
     setIsDragging(true);
     hasDraggedRef.current = false;
@@ -344,22 +328,15 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
   const handleDragMove = useCallback((clientX: number, clientY: number) => {
     if (!isDragging) return;
-    
     const deltaX = clientX - dragStartRef.current.x;
     const deltaY = clientY - dragStartRef.current.y;
-    
-    // Mark as dragged if moved more than 5px
     if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
       hasDraggedRef.current = true;
     }
-    
     const newX = dragStartRef.current.posX + deltaX;
     const newY = dragStartRef.current.posY + deltaY;
-    
-    // Constrain Y position
     const maxY = window.innerHeight - 150;
     const minY = -(window.innerHeight - 200);
-    
     setPosition({
       x: newX,
       y: Math.max(minY, Math.min(0, newY)),
@@ -370,12 +347,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     if (isDragging) {
       setIsDragging(false);
       snapToEdge(position.x);
-      // Show bubble again after drag
       showBubbleTemporarily();
     }
   }, [isDragging, position.x, snapToEdge, showBubbleTemporarily]);
 
-  // Mouse events
   const onMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     handleDragStart(e.clientX, e.clientY);
@@ -384,19 +359,16 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => handleDragMove(e.clientX, e.clientY);
     const onMouseUp = () => handleDragEnd();
-    
     if (isDragging) {
       window.addEventListener("mousemove", onMouseMove);
       window.addEventListener("mouseup", onMouseUp);
     }
-    
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
   }, [isDragging, handleDragMove, handleDragEnd]);
 
-  // Touch events
   const onTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
     handleDragStart(touch.clientX, touch.clientY);
@@ -412,7 +384,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   };
 
   const handleFabClick = () => {
-    // Only open if not dragged
     if (!hasDraggedRef.current) {
       setIsOpen(true);
     }
@@ -420,7 +391,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
   return (
     <>
-      {/* ── FAB — Dúo with circular speech bubble ── */}
+      {/* ── FAB — Superflash with circular speech bubble ── */}
       <div
         ref={fabRef}
         className="fixed bottom-6 right-4 z-50 flex flex-col items-center"
@@ -429,42 +400,39 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           transition: isDragging ? "none" : "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        {/* Circular speech bubble above robot */}
+        {/* Circular speech bubble above logo */}
         <div
           className={`relative mb-2 transition-opacity duration-500 ${
             bubbleVisible ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         >
-          {/* Oval speech bubble with text */}
           <div
             className="w-20 h-12 rounded-full flex items-center justify-center text-center px-2 shadow-md border"
             style={{
               backgroundColor: "hsl(var(--background))",
-              borderColor: "hsl(var(--destructive))",
-              boxShadow: "0 2px 10px hsla(var(--destructive) / 0.25)",
+              borderColor: "hsl(var(--sf-purple))",
+              boxShadow: "0 2px 10px hsla(var(--sf-purple) / 0.25)",
             }}
           >
-            <p className="text-[10px] font-black leading-tight text-destructive">
+            <p className="text-[10px] font-black leading-tight" style={{ color: "hsl(var(--sf-purple))" }}>
               ¿Qué querés comprar?
             </p>
           </div>
-          {/* Pointer/arrow pointing down */}
           <div
             className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-0"
             style={{
               borderLeft: "5px solid transparent",
               borderRight: "5px solid transparent",
               borderTop: "6px solid hsl(var(--background))",
-              filter: "drop-shadow(0 1px 0 hsl(var(--destructive)))",
+              filter: "drop-shadow(0 1px 0 hsl(var(--sf-purple)))",
             }}
           />
-          {/* Red border for pointer */}
           <div
             className="absolute left-1/2 -translate-x-1/2 -bottom-[6px] w-0 h-0"
             style={{
               borderLeft: "6px solid transparent",
               borderRight: "6px solid transparent",
-              borderTop: "7px solid hsl(var(--destructive))",
+              borderTop: "7px solid hsl(var(--sf-purple))",
               zIndex: -1,
             }}
           />
@@ -477,19 +445,19 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
           onClick={handleFabClick}
-          className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+          className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 overflow-hidden ${
             isDragging ? "scale-110 cursor-grabbing" : "hover:scale-110 active:scale-95 cursor-grab"
           }`}
           style={{
-            background: "linear-gradient(135deg, hsl(var(--duo-red)), hsl(var(--duo-red-dark)))",
+            background: "linear-gradient(135deg, hsl(var(--sf-purple-light)), hsl(var(--sf-purple-dark)))",
             boxShadow: isDragging
-              ? "0 20px 60px hsla(var(--duo-red) / 0.6), 0 8px 20px hsla(0, 0%, 0%, 0.3)"
-              : "0 12px 40px hsla(var(--duo-red) / 0.5), 0 4px 12px hsla(0, 0%, 0%, 0.2)",
+              ? "0 20px 60px hsla(var(--sf-purple) / 0.6), 0 8px 20px hsla(0, 0%, 0%, 0.3)"
+              : "0 12px 40px hsla(var(--sf-purple) / 0.5), 0 4px 12px hsla(0, 0%, 0%, 0.2)",
             border: "2px solid hsla(0, 0%, 100%, 0.2)",
           }}
-          aria-label="Abrir asistente Cerebro Dúo"
+          aria-label="Abrir asistente Superflash"
         >
-          <img src={duoRobot} alt="Cerebro Dúo" className="w-9 h-9 rounded-lg object-cover drop-shadow-md pointer-events-none" />
+          <img src={superflashLogo} alt="Superflash" className="w-10 h-10 rounded-xl object-cover drop-shadow-md pointer-events-none" />
         </button>
       </div>
 
@@ -498,7 +466,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         <DrawerContent className={`bg-card ${paso === "resultados" ? "min-h-[100dvh] max-h-[100dvh]" : "min-h-[65dvh] max-h-[92dvh]"}`}>
           <DrawerHeader className={paso === "resultados" ? "py-2 px-4" : "pb-2"}>
             {paso === "resultados" ? (
-              /* Compact header for results */
               <div className="flex items-center justify-between">
                 <button
                   onClick={irAtras}
@@ -517,7 +484,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 </button>
               </div>
             ) : (
-              /* Default header for other steps */
               <div className="flex items-center gap-3">
                 {paso === "procesando" && (
                   <button
@@ -527,10 +493,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                     <ArrowLeft className="w-4 h-4 text-foreground" />
                   </button>
                 )}
-                <img src={duoRobot} alt="DÚO" className="w-9 h-9 rounded-xl" />
+                <img src={superflashLogo} alt="Superflash" className="w-9 h-9 rounded-xl" />
                 <div className="flex-1">
                   <DrawerTitle className="text-lg font-bold text-card-foreground">
-                    Cerebro Dúo Connect
+                    Superflash
                   </DrawerTitle>
                   <DrawerDescription className="text-sm">
                     {paso === "input"
@@ -552,32 +518,34 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <div className="flex flex-col items-center gap-3 pt-2 pb-1">
                   <button
                     onClick={speech.isListening ? speech.stopListening : speech.startListening}
-                    className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-95 ${
-                      speech.isListening
-                        ? "bg-destructive text-destructive-foreground"
-                        : "bg-primary text-primary-foreground"
-                    }`}
+                    className="relative w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-95"
+                    style={{
+                      background: speech.isListening
+                        ? "linear-gradient(135deg, hsl(var(--sf-gold)), hsl(var(--sf-gold-dark)))"
+                        : "linear-gradient(135deg, hsl(var(--sf-purple)), hsl(var(--sf-purple-dark)))",
+                      color: speech.isListening ? "hsl(0, 0%, 10%)" : "hsl(0, 0%, 100%)",
+                    }}
                   >
                     {speech.isListening && (
                       <>
-                        <span className="absolute inset-0 rounded-full bg-destructive/25 animate-ping" />
-                        <span className="absolute -inset-2 rounded-full border-2 border-destructive/30 animate-pulse" />
+                        <span className="absolute inset-0 rounded-full animate-ping" style={{ backgroundColor: "hsla(var(--sf-gold) / 0.25)" }} />
+                        <span className="absolute -inset-2 rounded-full border-2 animate-pulse" style={{ borderColor: "hsla(var(--sf-gold) / 0.30)" }} />
                       </>
                     )}
                     {speech.isListening ? (
-                      <Mic className="w-6 h-6 relative z-10" />
+                      <Zap className="w-7 h-7 relative z-10" />
                     ) : (
                       <MicOff className="w-6 h-6" />
                     )}
                   </button>
-                  <p className={`text-sm font-semibold ${speech.isListening ? "text-destructive animate-pulse" : "text-muted-foreground"}`}>
-                    {speech.isListening ? "🎙 Escuchando..." : "Tocá para activar el micrófono"}
+                  <p className={`text-sm font-semibold ${speech.isListening ? "animate-pulse" : "text-muted-foreground"}`} style={speech.isListening ? { color: "hsl(var(--sf-gold-dark))" } : undefined}>
+                    {speech.isListening ? "⚡ Escuchando..." : "Tocá para activar el micrófono"}
                   </p>
                 </div>
 
                 {/* Live transcript or text input */}
                 {speech.isListening && textoInput ? (
-                  <div className="w-full p-4 rounded-xl border-2 border-primary/40 bg-primary/5 text-center min-h-[100px] flex items-center justify-center">
+                  <div className="w-full p-4 rounded-xl border-2 text-center min-h-[100px] flex items-center justify-center" style={{ borderColor: "hsla(var(--sf-purple) / 0.4)", backgroundColor: "hsla(var(--sf-purple) / 0.05)" }}>
                     <p className="text-lg font-bold text-foreground leading-snug break-words">
                       {textoInput}
                     </p>
@@ -602,7 +570,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <button
                   onClick={procesarTexto}
                   disabled={!textoInput.trim()}
-                  className="w-full h-12 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-40 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
+                  className="w-full h-12 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-40 active:scale-[0.98]"
+                  style={{
+                    background: textoInput.trim()
+                      ? "linear-gradient(135deg, hsl(var(--sf-purple)), hsl(var(--sf-purple-dark)))"
+                      : undefined,
+                    backgroundColor: !textoInput.trim() ? "hsl(var(--muted))" : undefined,
+                    color: textoInput.trim() ? "hsl(0, 0%, 100%)" : "hsl(var(--muted-foreground))",
+                  }}
                 >
                   <Search className="w-5 h-5" />
                   Procesar pedido
@@ -614,17 +589,16 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             {paso === "procesando" && (
               <div className="flex flex-col items-center justify-center py-10 gap-3">
                 <div className="relative">
-                  <img src={duoRobot} alt="DÚO" className="w-12 h-12 rounded-xl animate-pulse" />
+                  <img src={superflashLogo} alt="Superflash" className="w-12 h-12 rounded-xl animate-pulse" />
                   <Loader2 className="absolute -bottom-1 -right-1 w-4 h-4 text-primary animate-spin" />
                 </div>
                 <p className="text-sm font-semibold text-muted-foreground animate-pulse">Sincronizando con la tienda...</p>
               </div>
             )}
 
-            {/* ── PASO: RESULTADOS — Higher position ── */}
+            {/* ── PASO: RESULTADOS ── */}
             {paso === "resultados" && (
               <div className="flex flex-col h-full animate-fade-in">
-                {/* Keyword Chips */}
                 {keywords.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {keywords.map((kw, i) => (
@@ -638,7 +612,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   </div>
                 )}
 
-                {/* Product List — simplified cards */}
                 <div className="flex-1 overflow-y-auto -mx-4 px-4 space-y-2 pb-28">
                   {resultados.map((r, i) => (
                     <div
@@ -650,7 +623,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       }`}
                       onClick={() => toggleSeleccion(i)}
                     >
-                      {/* Thumbnail */}
                       {r.productoCatalogo.imagen ? (
                         <img
                           src={r.productoCatalogo.imagen}
@@ -663,7 +635,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                         </div>
                       )}
 
-                      {/* Info */}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-card-foreground leading-tight line-clamp-1">
                           {r.productoCatalogo.nombre}
@@ -673,7 +644,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                         </p>
                       </div>
 
-                      {/* Price + action */}
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span className="text-sm font-black text-card-foreground">
                           ${r.productoCatalogo.precio.toLocaleString("es-AR")}
@@ -690,7 +660,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   ))}
                 </div>
 
-                {/* Compact sticky footer */}
                 <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-3 z-10">
                   <button
                     onClick={confirmarSeleccion}
@@ -736,7 +705,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         </DrawerContent>
       </Drawer>
 
-      {/* ── SYNC OVERLAY — full-screen blocking ── */}
+      {/* ── SYNC OVERLAY ── */}
       {showSyncOverlay && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/60 backdrop-blur-sm"
@@ -746,15 +715,15 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 mx-6 shadow-xl"
             style={{
               backgroundColor: "hsl(var(--background))",
-              borderColor: "hsl(var(--destructive))",
+              borderColor: "hsl(var(--sf-purple))",
               boxShadow: "0 16px 48px hsla(0, 0%, 0%, 0.4)",
             }}
           >
             <RefreshCw
-              className="w-10 h-10 text-destructive"
-              style={{ animation: "spin 0.5s linear infinite" }}
+              className="w-10 h-10"
+              style={{ color: "hsl(var(--sf-purple))", animation: "spin 0.5s linear infinite" }}
             />
-            <p className="text-lg font-black text-destructive text-center leading-tight">
+            <p className="text-lg font-black text-center leading-tight" style={{ color: "hsl(var(--sf-purple))" }}>
               ¡Lista sincronizada con Tu Súper Online!
             </p>
             <p className="text-sm font-semibold text-muted-foreground text-center">

@@ -47,12 +47,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        duo: {
-          red: "hsl(var(--duo-red))",
-          "red-light": "hsl(var(--duo-red-light))",
-          "red-dark": "hsl(var(--duo-red-dark))",
-          gray: "hsl(var(--duo-gray))",
-          "gray-dark": "hsl(var(--duo-gray-dark))",
+        sf: {
+          purple: "hsl(var(--sf-purple))",
+          "purple-light": "hsl(var(--sf-purple-light))",
+          "purple-dark": "hsl(var(--sf-purple-dark))",
+          gold: "hsl(var(--sf-gold))",
+          "gold-dark": "hsl(var(--sf-gold-dark))",
+          gray: "hsl(var(--sf-gray))",
+          "gray-dark": "hsl(var(--sf-gray-dark))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

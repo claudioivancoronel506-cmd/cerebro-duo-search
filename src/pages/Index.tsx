@@ -64,7 +64,7 @@ const Index = () => {
           <DialogHeader>
             <DialogTitle className="text-base font-bold">Output del Sistema</DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              JSON estructurado generado por Cerebro Dúo
+              JSON estructurado generado por Superflash
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[55vh]">
