@@ -68,6 +68,23 @@ const Index = () => {
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[55vh]">
+            {/* API Documentation Header */}
+            <div className="mb-4 space-y-3">
+              <h3 className="text-sm font-black tracking-tight text-foreground">Superflash API</h3>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded bg-green-600 text-white text-[10px] font-bold uppercase">POST</span>
+                <code className="text-xs font-mono text-muted-foreground">/interpret</code>
+              </div>
+              <div>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Request</p>
+                <pre className="text-xs font-mono bg-muted p-3 rounded-lg text-foreground">
+{`{
+  "text": "pollo, fiambres, pan, yogurt"
+}`}
+                </pre>
+              </div>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Response</p>
+            </div>
             <pre className="text-xs font-mono bg-muted p-4 rounded-lg overflow-x-auto whitespace-pre-wrap break-words text-foreground">
               {cartItems.length > 0
                 ? JSON.stringify(cartJson, null, 2)
