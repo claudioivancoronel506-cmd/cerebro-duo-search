@@ -28,13 +28,21 @@ const Index = () => {
     setTimeout(() => setIsAssistantActive(true), 1500);
   }, []);
 
-  const cartJson = cartItems.map((p) => ({
+  const cartData = cartItems.map((p) => ({
     name: p.nombre,
     brand: p.marca,
     quantity: p.cantidadSeleccionada ?? 1,
     unit_price: p.precio,
     subtotal: (p.cantidadSeleccionada ?? 1) * p.precio,
   }));
+
+  const cartJson = {
+    status: "success",
+    source: "superflash",
+    currency: "ARS",
+    data: cartData,
+    total: cartData.reduce((sum, item) => sum + item.subtotal, 0),
+  };
 
   return (
     <div className="min-h-screen bg-background">
