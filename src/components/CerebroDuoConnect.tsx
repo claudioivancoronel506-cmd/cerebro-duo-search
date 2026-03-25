@@ -650,8 +650,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                             className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
                           />
                         ) : (
-                          <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center text-xl flex-shrink-0">
-                            {isSuggestion ? "⚡" : "🛒"}
+                          <div
+                            className="w-14 h-14 rounded-lg flex items-center justify-center text-xl flex-shrink-0"
+                            style={isSuggestion ? {
+                              background: "linear-gradient(135deg, hsla(var(--sf-gold) / 0.25), hsla(var(--sf-purple) / 0.15))",
+                              border: "1px solid hsla(var(--sf-gold) / 0.3)",
+                            } : { backgroundColor: "hsl(var(--muted))" }}
+                          >
+                            {isSuggestion ? "⚡" : "📦"}
                           </div>
                         )}
 
