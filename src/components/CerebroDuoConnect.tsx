@@ -18,6 +18,7 @@ interface ItemProducto {
   cantidad: string;
   unidad: string;
   precio_estimado: number;
+  isSuggestion?: boolean;
 }
 
 interface RespuestaGemini {
@@ -613,51 +614,74 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 )}
 
                 <div className="flex-1 overflow-y-auto -mx-4 px-4 space-y-2 pb-28">
-                  {resultados.map((r, i) => (
-                    <div
-                      key={r.item.id}
-                      className={`flex items-center gap-3 rounded-xl border-2 p-2.5 transition-all cursor-pointer ${
-                        r.seleccionado
-                          ? "border-primary bg-primary/5"
-                          : "border-border bg-card opacity-70"
-                      }`}
-                      onClick={() => toggleSeleccion(i)}
-                    >
-                      {r.productoCatalogo.imagen ? (
-                        <img
-                          src={r.productoCatalogo.imagen}
-                          alt={r.productoCatalogo.nombre}
-                          className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
-                        />
-                      ) : (
-                        <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center text-xl flex-shrink-0">
-                          🛒
-                        </div>
-                      )}
-
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-card-foreground leading-tight line-clamp-1">
-                          {r.productoCatalogo.nombre}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-sm font-black text-card-foreground">
-                          ${r.productoCatalogo.precio.toLocaleString("es-AR")}
-                        </span>
-                        {r.seleccionado ? (
-                          <span className="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
-                            <Check className="w-4 h-4 text-primary-foreground" />
+                  {resultados.map((r, i) => {
+                    const isSuggestion = r.item.isSuggestion === true;
+                    return (
+                      <div
+                        key={r.item.id}
+                        className={`relative flex items-center gap-3 rounded-xl border-2 p-2.5 transition-all cursor-pointer ${
+                          r.seleccionado
+                            ? isSuggestion
+                              ? "border-accent bg-accent/10"
+                              : "border-primary bg-primary/5"
+                            : isSuggestion
+                            ? "border-accent/40 bg-accent/5 opacity-80"
+                            : "border-border bg-card opacity-70"
+                        }`}
+                        onClick={() => toggleSeleccion(i)}
+                      >
+                        {isSuggestion && (
+                          <span
+                            className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold z-10"
+                            style={{
+                              background: "linear-gradient(135deg, hsl(var(--sf-gold)), hsl(var(--sf-gold-dark)))",
+                              color: "hsl(0, 0%, 10%)",
+                              boxShadow: "0 1px 4px hsla(var(--sf-gold) / 0.4)",
+                            }}
+                          >
+                            Sugerencia ⚡
                           </span>
-                        ) : (
-                          <span className="w-7 h-7 rounded-full border-2 border-muted-foreground/30" />
                         )}
+
+                        {r.productoCatalogo.imagen ? (
+                          <img
+                            src={r.productoCatalogo.imagen}
+                            alt={r.productoCatalogo.nombre}
+                            className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center text-xl flex-shrink-0">
+                            {isSuggestion ? "⚡" : "🛒"}
+                          </div>
+                        )}
+
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-card-foreground leading-tight line-clamp-1">
+                            {r.productoCatalogo.nombre}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className="text-sm font-black text-card-foreground">
+                            ${r.productoCatalogo.precio.toLocaleString("es-AR")}
+                          </span>
+                          {r.seleccionado ? (
+                            <span
+                              className="w-7 h-7 rounded-full flex items-center justify-center"
+                              style={{ backgroundColor: isSuggestion ? "hsl(var(--sf-gold))" : "hsl(var(--primary))" }}
+                            >
+                              <Check className="w-4 h-4" style={{ color: isSuggestion ? "hsl(0,0%,10%)" : "hsl(var(--primary-foreground))" }} />
+                            </span>
+                          ) : (
+                            <span className="w-7 h-7 rounded-full border-2 border-muted-foreground/30" />
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-3 z-10">
