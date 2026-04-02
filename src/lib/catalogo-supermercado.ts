@@ -122,42 +122,71 @@ export const catalogoProductos: Producto[] = [
   },
 ];
 
+function normalize(s: string): string {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 export function buscarProductos(termino: string): Producto[] {
-  const t = termino.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const t = normalize(termino);
 
-  // Exact matches first
-  const exact = catalogoProductos.filter((p) => {
-    const texto = `${p.nombre} ${p.marca} ${p.categoria} ${(p.keywords || []).join(" ")}`
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-    return texto.includes(t);
+  // 1. Strict match: product name STARTS with the search term
+  const startsWith = catalogoProductos.filter((p) => {
+    const nombre = normalize(p.nombre);
+    return nombre.startsWith(t) || nombre.split(" ")[0] === t;
   });
+  if (startsWith.length > 0) return startsWith;
 
-  if (exact.length > 0) return exact;
+  // 2. Keyword exact match, but apply derivative exclusion rule:
+  //    The term must appear as the FIRST keyword or the product name's
+  //    first word must match the term. Reject products where the term
+  //    is secondary (e.g. "Dulce de leche" when searching "leche").
+  const keywordStrict = catalogoProductos.filter((p) => {
+    const nombre = normalize(p.nombre);
+    const firstWord = nombre.split(" ")[0];
+    const keywords = (p.keywords || []).map(normalize);
 
-  // Fuzzy: find the most similar product
+    // Derivative exclusion: if the product name's first word differs
+    // from the search term AND the name is >50% longer, skip it
+    const nameLenRatio = nombre.length / t.length;
+    if (firstWord !== t && nameLenRatio > 1.5) return false;
+
+    // Check if term matches first keyword or is contained in name starting position
+    return nombre.includes(t) || keywords[0] === t || keywords.some((k) => k === t);
+  });
+  if (keywordStrict.length > 0) return keywordStrict;
+
+  // 3. Broad keyword search (any keyword contains term), still with derivative filter
+  const broad = catalogoProductos.filter((p) => {
+    const nombre = normalize(p.nombre);
+    const firstWord = nombre.split(" ")[0];
+    const keywords = (p.keywords || []).map(normalize);
+    const all = `${nombre} ${keywords.join(" ")}`;
+
+    // Derivative exclusion
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t)) return false;
+
+    return all.includes(t);
+  });
+  if (broad.length > 0) return broad;
+
+  // 4. Fuzzy fallback for typos - still respect derivative exclusion
   let bestScore = 0;
-  let bestProduct: typeof catalogoProductos[0] | null = null;
+  let bestProduct: Producto | null = null;
 
   for (const p of catalogoProductos) {
-    const fields = `${p.nombre} ${p.marca} ${p.categoria} ${(p.keywords || []).join(" ")}`
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
+    const nombre = normalize(p.nombre);
+    const firstWord = nombre.split(" ")[0];
 
-    // Simple similarity: count matching characters
+    // Skip derivatives even in fuzzy
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t)) continue;
+
+    const fields = `${nombre} ${(p.keywords || []).map(normalize).join(" ")}`;
     let score = 0;
-    for (const char of t) {
-      if (fields.includes(char)) score++;
-    }
-    // Bonus for substring matches of 3+ chars
     for (let len = 3; len <= t.length; len++) {
       for (let i = 0; i <= t.length - len; i++) {
         if (fields.includes(t.substring(i, i + len))) score += len;
       }
     }
-
     if (score > bestScore) {
       bestScore = score;
       bestProduct = p;
