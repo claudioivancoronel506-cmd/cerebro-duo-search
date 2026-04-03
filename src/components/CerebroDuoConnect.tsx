@@ -191,6 +191,11 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         return;
       }
 
+      // Detect price-sorting voice commands
+      const textoLower = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const PRICE_SORT_KEYWORDS = ["barato", "economico", "menor precio", "mas barato", "mas economico"];
+      const ordenarPorPrecio = PRICE_SORT_KEYWORDS.some((kw) => textoLower.includes(kw));
+
       const grilla = respuesta.productos.flatMap((item) => {
         const encontrados = buscarProductos(item.producto);
         if (encontrados.length === 0) {
@@ -205,14 +210,34 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
               unidad: item.unidad,
             },
             seleccionado: false,
+            esMejorPrecio: false,
           }];
         }
         return encontrados.map((prod) => ({
           item: { ...item, precio_estimado: prod.precio },
           productoCatalogo: prod,
           seleccionado: false,
+          esMejorPrecio: false,
         }));
       });
+
+      if (ordenarPorPrecio) {
+        grilla.sort((a, b) => a.productoCatalogo.precio - b.productoCatalogo.precio);
+
+        // Mark cheapest per product name group
+        const seenGroups = new Set<string>();
+        for (const r of grilla) {
+          const groupKey = r.item.producto.toLowerCase();
+          if (!seenGroups.has(groupKey)) {
+            seenGroups.add(groupKey);
+            // Only mark if there are multiple items in this group
+            const groupCount = grilla.filter((g) => g.item.producto.toLowerCase() === groupKey).length;
+            if (groupCount > 1) {
+              r.esMejorPrecio = true;
+            }
+          }
+        }
+      }
 
       setResultados(grilla);
       setKeywords(respuesta.keywords);
