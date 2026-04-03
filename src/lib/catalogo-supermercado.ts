@@ -198,18 +198,26 @@ function normalize(s: string): string {
 
 export function buscarProductos(termino: string): Producto[] {
   const t = normalize(termino);
+  const seenIds = new Set<string>();
+  const results: Producto[] = [];
+
+  const addUnique = (productos: Producto[]) => {
+    for (const p of productos) {
+      if (!seenIds.has(p.id)) {
+        seenIds.add(p.id);
+        results.push(p);
+      }
+    }
+  };
 
   // 1. Strict match: product name STARTS with the search term
   const startsWith = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
     return nombre.startsWith(t) || nombre.split(" ")[0] === t;
   });
-  if (startsWith.length > 0) return startsWith;
+  addUnique(startsWith);
 
-  // 2. Keyword exact match, but apply derivative exclusion rule:
-  //    The term must appear as the FIRST keyword or the product name's
-  //    first word must match the term. Reject products where the term
-  //    is secondary (e.g. "Dulce de leche" when searching "leche").
+  // 2. Keyword exact match, with derivative exclusion rule
   const keywordStrict = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
     const firstWord = nombre.split(" ")[0];
@@ -217,14 +225,15 @@ export function buscarProductos(termino: string): Producto[] {
     const hasExactKeyword = keywords.some((k) => k === t);
     const endsWithTerm = nombre.endsWith(t);
 
-    // Derivative exclusion: bypass if term is an exact keyword or appears at end of name
     const nameLenRatio = nombre.length / t.length;
     if (firstWord !== t && nameLenRatio > 1.5 && !hasExactKeyword && !endsWithTerm) return false;
 
-    // Check if term matches any keyword or is contained in name
     return nombre.includes(t) || hasExactKeyword;
   });
-  if (keywordStrict.length > 0) return keywordStrict;
+  addUnique(keywordStrict);
+
+  // If we already have results from steps 1-2, return them
+  if (results.length > 0) return results;
 
   // 3. Broad keyword search (any keyword contains term), still with derivative filter
   const broad = catalogoProductos.filter((p) => {
@@ -235,14 +244,13 @@ export function buscarProductos(termino: string): Producto[] {
     const hasExactKeyword = keywords.some((k) => k === t);
     const endsWithTerm = nombre.endsWith(t);
 
-    // Derivative exclusion — bypass for exact keyword or trailing match
     if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) return false;
 
     return all.includes(t);
   });
   if (broad.length > 0) return broad;
 
-  // 4. Fuzzy fallback for typos - still respect derivative exclusion
+  // 4. Fuzzy fallback for typos
   let bestScore = 0;
   let bestProduct: Producto | null = null;
 
@@ -253,7 +261,6 @@ export function buscarProductos(termino: string): Producto[] {
     const hasExactKeyword = keywords.some((k) => k === t);
     const endsWithTerm = nombre.endsWith(t);
 
-    // Skip derivatives even in fuzzy — bypass for exact keyword or trailing match
     if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) continue;
 
     const fields = `${nombre} ${(p.keywords || []).map(normalize).join(" ")}`;
