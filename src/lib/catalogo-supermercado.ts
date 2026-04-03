@@ -148,7 +148,7 @@ export const catalogoProductos: Producto[] = [
     precio: 2500,
     unidad: "500 g",
     imagen: "https://i.ibb.co/8wvMJ8x/image.jpg",
-    keywords: ["yerba", "yerba mate", "mate"],
+    keywords: ["yerba", "yerba mate", "mate", "amanda"],
   },
   {
     id: "203",
@@ -214,14 +214,15 @@ export function buscarProductos(termino: string): Producto[] {
     const nombre = normalize(p.nombre);
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
+    const hasExactKeyword = keywords.some((k) => k === t);
+    const endsWithTerm = nombre.endsWith(t);
 
-    // Derivative exclusion: if the product name's first word differs
-    // from the search term AND the name is >50% longer, skip it
+    // Derivative exclusion: bypass if term is an exact keyword or appears at end of name
     const nameLenRatio = nombre.length / t.length;
-    if (firstWord !== t && nameLenRatio > 1.5) return false;
+    if (firstWord !== t && nameLenRatio > 1.5 && !hasExactKeyword && !endsWithTerm) return false;
 
-    // Check if term matches first keyword or is contained in name starting position
-    return nombre.includes(t) || keywords[0] === t || keywords.some((k) => k === t);
+    // Check if term matches any keyword or is contained in name
+    return nombre.includes(t) || hasExactKeyword;
   });
   if (keywordStrict.length > 0) return keywordStrict;
 
@@ -231,9 +232,11 @@ export function buscarProductos(termino: string): Producto[] {
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
     const all = `${nombre} ${keywords.join(" ")}`;
+    const hasExactKeyword = keywords.some((k) => k === t);
+    const endsWithTerm = nombre.endsWith(t);
 
-    // Derivative exclusion
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t)) return false;
+    // Derivative exclusion — bypass for exact keyword or trailing match
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) return false;
 
     return all.includes(t);
   });
@@ -246,9 +249,12 @@ export function buscarProductos(termino: string): Producto[] {
   for (const p of catalogoProductos) {
     const nombre = normalize(p.nombre);
     const firstWord = nombre.split(" ")[0];
+    const keywords = (p.keywords || []).map(normalize);
+    const hasExactKeyword = keywords.some((k) => k === t);
+    const endsWithTerm = nombre.endsWith(t);
 
-    // Skip derivatives even in fuzzy
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t)) continue;
+    // Skip derivatives even in fuzzy — bypass for exact keyword or trailing match
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) continue;
 
     const fields = `${nombre} ${(p.keywords || []).map(normalize).join(" ")}`;
     let score = 0;
