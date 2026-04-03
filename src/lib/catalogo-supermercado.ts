@@ -148,7 +148,7 @@ export const catalogoProductos: Producto[] = [
     precio: 2500,
     unidad: "500 g",
     imagen: "https://i.ibb.co/8wvMJ8x/image.jpg",
-    keywords: ["yerba", "yerba mate", "mate"],
+    keywords: ["yerba", "yerba mate", "mate", "amanda"],
   },
   {
     id: "203",
