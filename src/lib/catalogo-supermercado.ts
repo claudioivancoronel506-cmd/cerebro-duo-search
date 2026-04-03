@@ -232,9 +232,11 @@ export function buscarProductos(termino: string): Producto[] {
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
     const all = `${nombre} ${keywords.join(" ")}`;
+    const hasExactKeyword = keywords.some((k) => k === t);
+    const endsWithTerm = nombre.endsWith(t);
 
-    // Derivative exclusion
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t)) return false;
+    // Derivative exclusion — bypass for exact keyword or trailing match
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) return false;
 
     return all.includes(t);
   });
