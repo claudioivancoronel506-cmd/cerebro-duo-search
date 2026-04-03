@@ -675,6 +675,19 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                           </span>
                         )}
 
+                        {r.esMejorPrecio && !isSuggestion && (
+                          <span
+                            className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold z-10"
+                            style={{
+                              background: "linear-gradient(135deg, hsl(142, 71%, 45%), hsl(142, 76%, 36%))",
+                              color: "hsl(0, 0%, 100%)",
+                              boxShadow: "0 1px 4px hsla(142, 71%, 45%, 0.4)",
+                            }}
+                          >
+                            ✅ Mejor Precio
+                          </span>
+                        )}
+
                         {r.productoCatalogo.imagen ? (
                           <img
                             src={r.productoCatalogo.imagen}
