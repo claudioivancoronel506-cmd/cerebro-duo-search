@@ -191,21 +191,27 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         return;
       }
 
-      const grilla = respuesta.productos.map((item) => {
+      const grilla = respuesta.productos.flatMap((item) => {
         const encontrados = buscarProductos(item.producto);
-        const prod = encontrados[0];
-        return {
-          item: { ...item, precio_estimado: prod?.precio ?? item.precio_estimado },
-          productoCatalogo: prod || {
-            id: item.id,
-            nombre: item.producto,
-            marca: "Genérico",
-            categoria: "Otros",
-            precio: item.precio_estimado,
-            unidad: item.unidad,
-          },
+        if (encontrados.length === 0) {
+          return [{
+            item: { ...item },
+            productoCatalogo: {
+              id: item.id,
+              nombre: item.producto,
+              marca: "Genérico",
+              categoria: "Otros",
+              precio: item.precio_estimado,
+              unidad: item.unidad,
+            },
+            seleccionado: false,
+          }];
+        }
+        return encontrados.map((prod) => ({
+          item: { ...item, precio_estimado: prod.precio },
+          productoCatalogo: prod,
           seleccionado: false,
-        };
+        }));
       });
 
       setResultados(grilla);
