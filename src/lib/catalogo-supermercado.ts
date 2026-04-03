@@ -249,9 +249,12 @@ export function buscarProductos(termino: string): Producto[] {
   for (const p of catalogoProductos) {
     const nombre = normalize(p.nombre);
     const firstWord = nombre.split(" ")[0];
+    const keywords = (p.keywords || []).map(normalize);
+    const hasExactKeyword = keywords.some((k) => k === t);
+    const endsWithTerm = nombre.endsWith(t);
 
-    // Skip derivatives even in fuzzy
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t)) continue;
+    // Skip derivatives even in fuzzy — bypass for exact keyword or trailing match
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) continue;
 
     const fields = `${nombre} ${(p.keywords || []).map(normalize).join(" ")}`;
     let score = 0;
