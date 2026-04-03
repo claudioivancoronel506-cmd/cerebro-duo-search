@@ -133,6 +133,7 @@ interface ResultadoGrilla {
   item: ItemProducto;
   productoCatalogo: Producto;
   seleccionado: boolean;
+  esMejorPrecio: boolean;
 }
 
 /* ═══════════════════════════════════════════════
