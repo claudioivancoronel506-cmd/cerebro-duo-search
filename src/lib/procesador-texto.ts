@@ -10,7 +10,7 @@ const PALABRAS_RUIDO = new Set([
   "dos", "tres", "cuatro", "cinco", "seis", "un", "una", "uno", "unos", "unas",
   "de", "del", "la", "el", "las", "los", "y", "con", "para", "por",
   "esas", "esos", "esa", "ese", "eso", "algo", "cosa", "cosas",
-  "baratas", "barata", "barato", "baratos", "caras", "cara", "caro", "caros",
+  "baratas", "barata", "baratos", "caras", "cara", "caro", "caros",
   "buenas", "buena", "bueno", "buenos", "mejor", "mejores",
   "también", "tambien", "después", "despues", "primero", "luego",
   "a", "al", "mas", "más", "si", "no", "pero", "que", "como",
