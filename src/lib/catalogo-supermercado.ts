@@ -214,14 +214,15 @@ export function buscarProductos(termino: string): Producto[] {
     const nombre = normalize(p.nombre);
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
+    const hasExactKeyword = keywords.some((k) => k === t);
+    const endsWithTerm = nombre.endsWith(t);
 
-    // Derivative exclusion: if the product name's first word differs
-    // from the search term AND the name is >50% longer, skip it
+    // Derivative exclusion: bypass if term is an exact keyword or appears at end of name
     const nameLenRatio = nombre.length / t.length;
-    if (firstWord !== t && nameLenRatio > 1.5) return false;
+    if (firstWord !== t && nameLenRatio > 1.5 && !hasExactKeyword && !endsWithTerm) return false;
 
-    // Check if term matches first keyword or is contained in name starting position
-    return nombre.includes(t) || keywords[0] === t || keywords.some((k) => k === t);
+    // Check if term matches any keyword or is contained in name
+    return nombre.includes(t) || hasExactKeyword;
   });
   if (keywordStrict.length > 0) return keywordStrict;
 
