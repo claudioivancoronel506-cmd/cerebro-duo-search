@@ -210,10 +210,12 @@ export function buscarProductos(termino: string): Producto[] {
     }
   };
 
-  // 1. Strict match: product name STARTS with the search term
+  // 1. Strict match: product name STARTS with the search term OR full term matches "nombre + marca"
   const startsWith = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
-    return nombre.startsWith(t) || nombre.split(" ")[0] === t;
+    const marca = normalize(p.marca);
+    const nombreCompleto = `${nombre} ${marca}`;
+    return nombre.startsWith(t) || nombre.split(" ")[0] === t || nombreCompleto === t || t.includes(marca) && nombre.startsWith(t.replace(marca, "").trim());
   });
   addUnique(startsWith);
 
