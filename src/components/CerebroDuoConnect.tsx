@@ -645,36 +645,17 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 )}
 
                 <div className="flex-1 overflow-y-auto -mx-4 px-4 space-y-2 pb-28">
-                  {resultados.map((r, i) => {
-                    const isSuggestion = r.item.isSuggestion === true;
-                    return (
+                {resultados.map((r, i) => (
                       <div
                         key={r.item.id}
                         className={`relative flex items-center gap-3 rounded-xl border-2 p-2.5 transition-all cursor-pointer ${
                           r.seleccionado
-                            ? isSuggestion
-                              ? "border-accent bg-accent/10"
-                              : "border-primary bg-primary/5"
-                            : isSuggestion
-                            ? "border-accent/40 bg-accent/5 opacity-80"
+                            ? "border-primary bg-primary/5"
                             : "border-border bg-card opacity-70"
                         }`}
                         onClick={() => toggleSeleccion(i)}
                       >
-                        {isSuggestion && (
-                          <span
-                            className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold z-10"
-                            style={{
-                              background: "linear-gradient(135deg, hsl(var(--sf-gold)), hsl(var(--sf-gold-dark)))",
-                              color: "hsl(0, 0%, 10%)",
-                              boxShadow: "0 1px 4px hsla(var(--sf-gold) / 0.4)",
-                            }}
-                          >
-                            Sugerencia ⚡
-                          </span>
-                        )}
-
-                        {r.esMejorPrecio && !isSuggestion && (
+                        {r.esMejorPrecio && (
                           <span
                             className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold z-10"
                             style={{
@@ -696,12 +677,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                         ) : (
                           <div
                             className="w-14 h-14 rounded-lg flex items-center justify-center text-xl flex-shrink-0"
-                            style={isSuggestion ? {
-                              background: "linear-gradient(135deg, hsla(var(--sf-gold) / 0.25), hsla(var(--sf-purple) / 0.15))",
-                              border: "1px solid hsla(var(--sf-gold) / 0.3)",
-                            } : { backgroundColor: "hsl(var(--muted))" }}
+                            style={{ backgroundColor: "hsl(var(--muted))" }}
                           >
-                            {isSuggestion ? "⚡" : "📦"}
+                            📦
                           </div>
                         )}
 
@@ -721,17 +699,16 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                           {r.seleccionado ? (
                             <span
                               className="w-7 h-7 rounded-full flex items-center justify-center"
-                              style={{ backgroundColor: isSuggestion ? "hsl(var(--sf-gold))" : "hsl(var(--primary))" }}
+                              style={{ backgroundColor: "hsl(var(--primary))" }}
                             >
-                              <Check className="w-4 h-4" style={{ color: isSuggestion ? "hsl(0,0%,10%)" : "hsl(var(--primary-foreground))" }} />
+                              <Check className="w-4 h-4" style={{ color: "hsl(var(--primary-foreground))" }} />
                             </span>
                           ) : (
                             <span className="w-7 h-7 rounded-full border-2 border-muted-foreground/30" />
                           )}
                         </div>
                       </div>
-                    );
-                  })}
+                  ))}
                 </div>
 
                 <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-3 z-10">
