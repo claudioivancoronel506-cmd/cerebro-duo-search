@@ -263,14 +263,16 @@ export function buscarProductos(termino: string): Producto[] {
 
   for (const p of catalogoProductos) {
     const nombre = normalize(p.nombre);
+    const marca = normalize(p.marca);
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
     const hasExactKeyword = keywords.some((k) => k === t);
-    const endsWithTerm = nombre.endsWith(t);
+    const endsWithTerm = nombre.endsWith(t) || marca === t;
+    const marcaMatch = t.includes(marca) && marca.length > 2;
 
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) continue;
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm && !marcaMatch) continue;
 
-    const fields = `${nombre} ${(p.keywords || []).map(normalize).join(" ")}`;
+    const fields = `${nombre} ${marca} ${keywords.join(" ")}`;
     let score = 0;
     for (let len = 3; len <= t.length; len++) {
       for (let i = 0; i <= t.length - len; i++) {
