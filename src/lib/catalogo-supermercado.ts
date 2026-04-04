@@ -138,7 +138,7 @@ export const catalogoProductos: Producto[] = [
     precio: 2200,
     unidad: "500 g",
     imagen: "https://i.ibb.co/BKf1WVcw/image.jpg",
-    keywords: ["yerba", "yerba mate", "mate"],
+    keywords: ["yerba", "yerba mate", "mate", "mañanita", "mananita"],
   },
   {
     id: "202",
@@ -210,41 +210,48 @@ export function buscarProductos(termino: string): Producto[] {
     }
   };
 
-  // 1. Strict match: product name STARTS with the search term
+  // 1. Strict match: product name STARTS with the search term OR full term matches "nombre + marca"
   const startsWith = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
-    return nombre.startsWith(t) || nombre.split(" ")[0] === t;
+    const marca = normalize(p.marca);
+    const nombreCompleto = `${nombre} ${marca}`;
+    return nombre.startsWith(t) || nombre.split(" ")[0] === t || nombreCompleto === t || t.includes(marca) && nombre.startsWith(t.replace(marca, "").trim());
   });
   addUnique(startsWith);
 
-  // 2. Keyword exact match, with derivative exclusion rule
+  // 2. Keyword exact match, with derivative exclusion rule (includes marca)
   const keywordStrict = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
+    const marca = normalize(p.marca);
+    const nombreCompleto = `${nombre} ${marca}`;
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
     const hasExactKeyword = keywords.some((k) => k === t);
-    const endsWithTerm = nombre.endsWith(t);
+    const endsWithTerm = nombre.endsWith(t) || marca === t;
+    const marcaMatch = t.includes(marca) && marca.length > 2;
 
     const nameLenRatio = nombre.length / t.length;
-    if (firstWord !== t && nameLenRatio > 1.5 && !hasExactKeyword && !endsWithTerm) return false;
+    if (firstWord !== t && nameLenRatio > 1.5 && !hasExactKeyword && !endsWithTerm && !marcaMatch) return false;
 
-    return nombre.includes(t) || hasExactKeyword;
+    return nombre.includes(t) || nombreCompleto.includes(t) || hasExactKeyword || marcaMatch;
   });
   addUnique(keywordStrict);
 
   // If we already have results from steps 1-2, return them
   if (results.length > 0) return results;
 
-  // 3. Broad keyword search (any keyword contains term), still with derivative filter
+  // 3. Broad keyword search (includes marca), still with derivative filter
   const broad = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
+    const marca = normalize(p.marca);
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
-    const all = `${nombre} ${keywords.join(" ")}`;
+    const all = `${nombre} ${marca} ${keywords.join(" ")}`;
     const hasExactKeyword = keywords.some((k) => k === t);
-    const endsWithTerm = nombre.endsWith(t);
+    const endsWithTerm = nombre.endsWith(t) || marca === t;
+    const marcaMatch = t.includes(marca) && marca.length > 2;
 
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) return false;
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm && !marcaMatch) return false;
 
     return all.includes(t);
   });
@@ -256,14 +263,16 @@ export function buscarProductos(termino: string): Producto[] {
 
   for (const p of catalogoProductos) {
     const nombre = normalize(p.nombre);
+    const marca = normalize(p.marca);
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
     const hasExactKeyword = keywords.some((k) => k === t);
-    const endsWithTerm = nombre.endsWith(t);
+    const endsWithTerm = nombre.endsWith(t) || marca === t;
+    const marcaMatch = t.includes(marca) && marca.length > 2;
 
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) continue;
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm && !marcaMatch) continue;
 
-    const fields = `${nombre} ${(p.keywords || []).map(normalize).join(" ")}`;
+    const fields = `${nombre} ${marca} ${keywords.join(" ")}`;
     let score = 0;
     for (let len = 3; len <= t.length; len++) {
       for (let i = 0; i <= t.length - len; i++) {
