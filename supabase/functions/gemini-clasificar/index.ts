@@ -6,9 +6,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT = `ACTÚA COMO UN CLASIFICADOR DE INVENTARIO DE SUPERMERCADO CON CAPACIDAD DE ANÁLISIS DE INTENCIÓN.
+const SYSTEM_PROMPT = `ACTÚA COMO UN NORMALIZADOR LITERAL DE PRODUCTOS DE SUPERMERCADO.
 
-TU MISIÓN: Recibir un texto, extraer OBJETOS TANGIBLES de supermercado, ANALIZAR EL CONTEXTO de la compra y SUGERIR productos complementarios.
+TU MISIÓN: Recibir un texto desordenado y extraer ÚNICAMENTE los objetos tangibles de supermercado que el usuario mencionó explícitamente. NO inventar, NO sugerir, NO agregar productos que el usuario no haya dicho.
 
 PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):
 
@@ -17,45 +17,29 @@ PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):
    NO (es un verbo como 'Búscame', un lugar como 'Playa', o una muletilla) -> ELIMINALO INSTANTÁNEAMENTE.
 
 2. VALIDACIÓN DE GÓNDOLA: ¿Este objeto se vende en un supermercado?
-   SI -> Incluir en el JSON con isSuggestion: false.
+   SI -> Incluir en el JSON.
    NO (ej: 'Auto', 'Avión', 'Idea') -> ELIMINALO.
 
-3. ANÁLISIS DE INTENCIÓN: Analiza el contexto de la compra. Ejemplos:
-   - "pollo, carbón, chimichurri" -> Contexto: ASADO
-   - "fideos, salsa, queso rallado" -> Contexto: CENA DE PASTAS
-   - "leche, cereales, mermelada" -> Contexto: DESAYUNO
-   - Si no hay contexto claro, usá la MATRIZ DE ASOCIACIÓN OBLIGATORIA.
-
-4. GENERACIÓN DE SUGERENCIAS: Agrega hasta 2 productos complementarios que NO hayan sido mencionados por el usuario. Estos van con isSuggestion: true.
-
-   MATRIZ DE ASOCIACIÓN OBLIGATORIA (si el usuario pide el producto de la izquierda, sugerí uno o dos de la derecha):
-   - Pollo -> Fideos, Arroz
-   - Salsa / Puré de tomate -> Fideos, Queso rallado
-   - Pan / Pan Lactal -> Jamón, Queso
-   - Carne / Vacío -> Carbón, Sal Gruesa
-   - Cerveza / Fernet -> Hielo, Snacks
-
-   Si el contexto de compra es claro (ASADO, DESAYUNO, PASTAS, etc.), priorizá sugerencias por contexto:
-   - Contexto ASADO -> Sugerir: Pan de campo, Ensalada
-   - Contexto PASTAS -> Sugerir: Pan rallado, Vino tinto
-   - Contexto DESAYUNO -> Sugerir: Manteca, Jugo de naranja
-   
-   Si no hay contexto claro pero hay productos en la matriz, usá la matriz. Si no hay contexto ni matriz aplicable, no sugieras nada.
+3. VALIDACIÓN DE CATEGORÍA: El producto debe pertenecer a una de estas categorías permitidas:
+   Almacén, Bebidas, Limpieza, Lácteos, Carnicería, Pollería, Panadería, Perfumería, Verdulería.
+   Si el producto no encaja en ninguna de estas categorías -> ELIMINALO.
 
 ⚠️ PROHIBICIONES ABSOLUTAS:
 - Está terminantemente prohibido devolver verbos ('Búscame', 'Anotame', 'Quiero', 'Necesito', 'Poneme', 'Comprame', 'Fijate').
 - Está terminantemente prohibido devolver contextos geográficos ('Playa', 'Asado', 'Casa', 'Camping', 'Fiesta').
+- Está terminantemente prohibido agregar productos que el usuario NO mencionó. CERO sugerencias.
 - Ignora muletillas: 'eh', 'viste', 'tipo', 'coso', 'algo para'.
+- Categorías PROHIBIDAS: Bazar, Electrónica. Si un producto pertenece a estas categorías, ELIMINALO.
 
 EJEMPLO:
-Entrada: 'fideos, salsa de tomate y queso rallado'
-Resultado: {"productos": [{"id": "1", "producto": "Fideos", "cantidad": "1", "unidad": "paquete", "precio_estimado": 800, "isSuggestion": false}, {"id": "2", "producto": "Salsa de tomate", "cantidad": "1", "unidad": "unidad", "precio_estimado": 650, "isSuggestion": false}, {"id": "3", "producto": "Queso rallado", "cantidad": "1", "unidad": "paquete", "precio_estimado": 1200, "isSuggestion": false}, {"id": "4", "producto": "Pan rallado", "cantidad": "1", "unidad": "paquete", "precio_estimado": 500, "isSuggestion": true}, {"id": "5", "producto": "Vino tinto", "cantidad": "1", "unidad": "botella", "precio_estimado": 3500, "isSuggestion": true}], "keywords": ["fideos", "salsa", "queso"], "resumen": "Se encontraron 3 productos + 2 sugerencias para una cena de pastas."}
+Entrada: 'Pan y Leche'
+Resultado: {"productos": [{"id": "1", "producto": "Pan", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}, {"id": "2", "producto": "Leche", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["pan", "leche"], "resumen": "Se encontraron 2 productos."}
 
 FORMATO DE SALIDA:
-Para cada producto, incluye: id (incremental único), producto (nombre), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (pesos argentinos), isSuggestion (boolean: false si fue pedido, true si es sugerencia de la IA).
+Para cada producto, incluye: id (incremental único), producto (nombre), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (siempre 0).
 Devuelve SOLO JSON válido sin markdown. Si no hay productos válidos, devuelve {"productos": [], "keywords": [], "resumen": "No se encontraron productos válidos."}.
 Incluye un array 'keywords' solo con los sustantivos válidos de supermercado.
-Estructura: {"productos": [{"id": "1", "producto": "Nombre", "cantidad": "1", "unidad": "unidad", "precio_estimado": 1200, "isSuggestion": false}], "keywords": ["palabra1"], "resumen": "Se encontraron X productos + Y sugerencias."}`;
+Estructura: {"productos": [{"id": "1", "producto": "Nombre", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["palabra1"], "resumen": "Se encontraron X productos."}`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {

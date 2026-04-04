@@ -18,7 +18,6 @@ interface ItemProducto {
   cantidad: string;
   unidad: string;
   precio_estimado: number;
-  isSuggestion?: boolean;
 }
 
 interface RespuestaGemini {
