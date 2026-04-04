@@ -240,16 +240,18 @@ export function buscarProductos(termino: string): Producto[] {
   // If we already have results from steps 1-2, return them
   if (results.length > 0) return results;
 
-  // 3. Broad keyword search (any keyword contains term), still with derivative filter
+  // 3. Broad keyword search (includes marca), still with derivative filter
   const broad = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
+    const marca = normalize(p.marca);
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
-    const all = `${nombre} ${keywords.join(" ")}`;
+    const all = `${nombre} ${marca} ${keywords.join(" ")}`;
     const hasExactKeyword = keywords.some((k) => k === t);
-    const endsWithTerm = nombre.endsWith(t);
+    const endsWithTerm = nombre.endsWith(t) || marca === t;
+    const marcaMatch = t.includes(marca) && marca.length > 2;
 
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm) return false;
+    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm && !marcaMatch) return false;
 
     return all.includes(t);
   });
