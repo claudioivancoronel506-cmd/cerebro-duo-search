@@ -10,6 +10,12 @@ const SYSTEM_PROMPT = `ACTÚA COMO UN NORMALIZADOR LITERAL DE PRODUCTOS DE SUPER
 
 TU MISIÓN: Recibir un texto desordenado y extraer ÚNICAMENTE los objetos tangibles de supermercado que el usuario mencionó explícitamente. NO inventar, NO sugerir, NO agregar productos que el usuario no haya dicho.
 
+REGLA CRÍTICA — PRESERVAR ESPECIFICIDAD:
+- Si el usuario menciona una MARCA (ej: 'Mañanita', 'Amanda', 'Lucchetti', 'Hellmanns'), DEBES incluirla en el campo "producto". Ejemplo: 'Yerba Mañanita' → producto: "Yerba Mañanita", NO "Yerba".
+- Si el usuario menciona un TIPO o VARIEDAD específica (ej: 'Fideo Moñito', 'Tallarines', 'Tirabuzones', 'Leche Descremada'), DEBES incluir el nombre COMPLETO. Ejemplo: 'Fideo Moñito' → producto: "Fideo Moñito", NO "Fideos".
+- Tallarines, Moñitos y Tirabuzones son productos DISTINTOS. No los generalices como "Fideos".
+- Los adjetivos que definen al producto (Entera, Descremada, Clásica, Gruesa, Rallado) son PARTE del nombre y NO deben eliminarse.
+
 PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):
 
 1. IDENTIFICAR EL OBJETO: ¿La palabra es un objeto físico (ej: Leche, Jabón, Tomate)?
@@ -30,16 +36,20 @@ PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):
 - Está terminantemente prohibido agregar productos que el usuario NO mencionó. CERO sugerencias.
 - Ignora muletillas: 'eh', 'viste', 'tipo', 'coso', 'algo para'.
 - Categorías PROHIBIDAS: Bazar, Electrónica. Si un producto pertenece a estas categorías, ELIMINALO.
+- NO elimines marcas ni adjetivos que definen al producto.
 
-EJEMPLO:
+EJEMPLOS:
 Entrada: 'Pan y Leche'
 Resultado: {"productos": [{"id": "1", "producto": "Pan", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}, {"id": "2", "producto": "Leche", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["pan", "leche"], "resumen": "Se encontraron 2 productos."}
 
+Entrada: 'Traeme yerba Mañanita y fideo moñito Lucchetti'
+Resultado: {"productos": [{"id": "1", "producto": "Yerba Mañanita", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}, {"id": "2", "producto": "Fideo Moñito Lucchetti", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["yerba mañanita", "fideo moñito lucchetti"], "resumen": "Se encontraron 2 productos."}
+
 FORMATO DE SALIDA:
-Para cada producto, incluye: id (incremental único), producto (nombre), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (siempre 0).
+Para cada producto, incluye: id (incremental único), producto (nombre completo con marca/tipo si fue mencionado), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (siempre 0).
 Devuelve SOLO JSON válido sin markdown. Si no hay productos válidos, devuelve {"productos": [], "keywords": [], "resumen": "No se encontraron productos válidos."}.
-Incluye un array 'keywords' solo con los sustantivos válidos de supermercado.
-Estructura: {"productos": [{"id": "1", "producto": "Nombre", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["palabra1"], "resumen": "Se encontraron X productos."}`;
+Incluye un array 'keywords' con los nombres completos de productos (incluyendo marca/tipo) en minúsculas.
+Estructura: {"productos": [{"id": "1", "producto": "Nombre Completo", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["nombre completo"], "resumen": "Se encontraron X productos."}`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
