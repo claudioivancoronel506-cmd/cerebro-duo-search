@@ -219,18 +219,21 @@ export function buscarProductos(termino: string): Producto[] {
   });
   addUnique(startsWith);
 
-  // 2. Keyword exact match, with derivative exclusion rule
+  // 2. Keyword exact match, with derivative exclusion rule (includes marca)
   const keywordStrict = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
+    const marca = normalize(p.marca);
+    const nombreCompleto = `${nombre} ${marca}`;
     const firstWord = nombre.split(" ")[0];
     const keywords = (p.keywords || []).map(normalize);
     const hasExactKeyword = keywords.some((k) => k === t);
-    const endsWithTerm = nombre.endsWith(t);
+    const endsWithTerm = nombre.endsWith(t) || marca === t;
+    const marcaMatch = t.includes(marca) && marca.length > 2;
 
     const nameLenRatio = nombre.length / t.length;
-    if (firstWord !== t && nameLenRatio > 1.5 && !hasExactKeyword && !endsWithTerm) return false;
+    if (firstWord !== t && nameLenRatio > 1.5 && !hasExactKeyword && !endsWithTerm && !marcaMatch) return false;
 
-    return nombre.includes(t) || hasExactKeyword;
+    return nombre.includes(t) || nombreCompleto.includes(t) || hasExactKeyword || marcaMatch;
   });
   addUnique(keywordStrict);
 
