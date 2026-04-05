@@ -18,12 +18,14 @@ interface ItemProducto {
   cantidad: string;
   unidad: string;
   precio_estimado: number;
+  sort?: string;
 }
 
 interface RespuestaGemini {
   productos: ItemProducto[];
   keywords: string[];
   resumen: string;
+  global_sort?: string | null;
 }
 
 /* ─── Edge function call ─── */
@@ -45,6 +47,7 @@ async function llamarGemini(texto: string): Promise<RespuestaGemini> {
     productos: data?.productos || [],
     keywords: data?.keywords || [],
     resumen: data?.resumen || "",
+    global_sort: data?.global_sort || null,
   };
 }
 
@@ -191,10 +194,16 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         return;
       }
 
-      // Detect price-sorting voice commands
+      // Use AI-detected sort signals instead of client-side keyword detection
+      const hasGlobalSort = respuesta.global_sort === "price_asc";
+      const hasAnyItemSort = respuesta.productos.some((p) => p.sort === "price_asc");
+      const ordenarPorPrecio = hasGlobalSort || hasAnyItemSort;
+
+      // Also keep legacy client-side detection as fallback
       const textoLower = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      const PRICE_SORT_KEYWORDS = ["barato", "economico", "menor precio", "mas barato", "mas economico"];
-      const ordenarPorPrecio = PRICE_SORT_KEYWORDS.some((kw) => textoLower.includes(kw));
+      const PRICE_SORT_KEYWORDS = ["barato", "barata", "baratos", "baratas", "economico", "economica", "oferta", "menor precio", "mas barato", "mas barata", "mas baratos", "mas baratas", "mas economico", "mas economica", "mejor precio", "mas bajo"];
+      const fallbackSort = PRICE_SORT_KEYWORDS.some((kw) => textoLower.includes(kw));
+      const shouldSort = ordenarPorPrecio || fallbackSort;
 
       const grilla = respuesta.productos.flatMap((item) => {
         const encontrados = buscarProductos(item.producto);
@@ -221,7 +230,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         }));
       });
 
-      if (ordenarPorPrecio) {
+      if (shouldSort) {
         grilla.sort((a, b) => a.productoCatalogo.precio - b.productoCatalogo.precio);
 
         // Mark cheapest per product name group
@@ -230,7 +239,6 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           const groupKey = r.item.producto.toLowerCase();
           if (!seenGroups.has(groupKey)) {
             seenGroups.add(groupKey);
-            // Only mark if there are multiple items in this group
             const groupCount = grilla.filter((g) => g.item.producto.toLowerCase() === groupKey).length;
             if (groupCount > 1) {
               r.esMejorPrecio = true;

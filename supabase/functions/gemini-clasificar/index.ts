@@ -22,11 +22,28 @@ PRIORIDAD SEMÁNTICA:
 - ELIMINAR: verbos ('traeme', 'anotá', 'poneme', 'comprame', 'búscame', 'fijate', 'quiero', 'necesito') y muletillas ('eh', 'viste', 'tipo', 'coso', 'algo para').
 - CONSERVAR: sustantivos, adjetivos descriptivos, marcas comerciales y calificadores de variedad.
 
+═══════════════════════════════════════════
+MÓDULO: DETECCIÓN DE MODIFICADORES DE VALOR
+═══════════════════════════════════════════
+
+DICCIONARIO DE AHORRO — Las siguientes palabras indican "Intención de Barato":
+barato, barata, baratos, baratas, económico, económica, económicos, económicas, oferta, ofertas, mejor precio, más bajo, más barato, más barata, más baratos, más baratas, más económico, más económica.
+
+REGLAS DE EXTRACCIÓN:
+1. Estas palabras NO son parte del nombre del producto. NUNCA incluirlas en el campo "producto".
+2. Si una de estas palabras acompaña a un producto, agregar "sort": "price_asc" en ese objeto.
+   Ejemplo: 'Buscame la harina barata' → {"producto": "Harina", "sort": "price_asc"}
+3. Si la frase de ahorro es GLOBAL (ej: 'buscame los productos más baratos', 'todo barato', 'lo más económico'), agregar "global_sort": "price_asc" en el JSON raíz.
+4. IGNORAR GÉNERO: 'harina barato', 'aceite barata' → normalizar igualmente a sort: price_asc.
+
 VALIDACIÓN INTERNA (el modelo DEBE pasar estos tests):
 - Entrada: 'Queso rallado y un queso cremoso' → [{"producto": "Queso Rallado"}, {"producto": "Queso Cremoso"}] ✅ (NO agrupar como "Queso" ❌)
 - Entrada: 'Fideo tirabuzón y galletitas terrabusi' → [{"producto": "Fideo Tirabuzón"}, {"producto": "Galletitas Terrabusi"}] ✅
 - Entrada: 'Yerba mañanita' → [{"producto": "Yerba Mañanita"}] ✅ (NO devolver "Yerba" ❌)
 - Entrada: 'Traeme leche descremada y mayonesa hellmanns' → [{"producto": "Leche Descremada"}, {"producto": "Mayonesa Hellmanns"}] ✅
+- Entrada: 'Buscame la harina barata' → [{"producto": "Harina", "sort": "price_asc"}] ✅ (NO devolver "Harina Barata" ❌)
+- Entrada: 'Quiero aceite económico y yerba' → [{"producto": "Aceite", "sort": "price_asc"}, {"producto": "Yerba"}] ✅
+- Entrada: 'Dame los productos más baratos' → global_sort: "price_asc" ✅
 
 PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):
 
@@ -48,6 +65,7 @@ PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):
 - Está terminantemente prohibido agregar productos que el usuario NO mencionó. CERO sugerencias.
 - Categorías PROHIBIDAS: Bazar, Electrónica. Si un producto pertenece a estas categorías, ELIMINALO.
 - NUNCA elimines marcas, calificadores ni adjetivos que definen al producto.
+- NUNCA incluyas palabras del Diccionario de Ahorro dentro del campo "producto".
 
 EJEMPLOS DE SALIDA:
 Entrada: 'Pan y Leche'
@@ -56,11 +74,15 @@ Resultado: {"productos": [{"id": "1", "producto": "Pan", "cantidad": "1", "unida
 Entrada: 'Traeme yerba Mañanita y fideo moñito Lucchetti'
 Resultado: {"productos": [{"id": "1", "producto": "Yerba Mañanita", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}, {"id": "2", "producto": "Fideo Moñito Lucchetti", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["yerba mañanita", "fideo moñito lucchetti"], "resumen": "Se encontraron 2 productos."}
 
+Entrada: 'Buscame la harina barata y leche económica'
+Resultado: {"productos": [{"id": "1", "producto": "Harina", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0, "sort": "price_asc"}, {"id": "2", "producto": "Leche", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0, "sort": "price_asc"}], "keywords": ["harina", "leche"], "global_sort": "price_asc", "resumen": "Se encontraron 2 productos."}
+
 FORMATO DE SALIDA:
-Para cada producto, incluye: id (incremental único), producto (nombre completo con marca/calificador/tipo si fue mencionado), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (siempre 0).
+Para cada producto, incluye: id (incremental único), producto (nombre completo con marca/calificador/tipo si fue mencionado, SIN palabras de ahorro), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (siempre 0), y opcionalmente "sort": "price_asc" si el usuario pidió el más barato de ese producto.
 Devuelve SOLO JSON válido sin markdown. Si no hay productos válidos, devuelve {"productos": [], "keywords": [], "resumen": "No se encontraron productos válidos."}.
 Incluye un array 'keywords' con los nombres completos de productos (incluyendo marca/calificador/tipo) en minúsculas.
-Estructura: {"productos": [{"id": "1", "producto": "Nombre Completo", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["nombre completo"], "resumen": "Se encontraron X productos."}`;
+Si el usuario pidió ordenar TODA la lista por precio, incluye "global_sort": "price_asc" en el JSON raíz.
+Estructura: {"productos": [...], "keywords": [...], "global_sort": "price_asc"|null, "resumen": "..."}`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
