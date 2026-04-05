@@ -47,6 +47,7 @@ async function llamarGemini(texto: string): Promise<RespuestaGemini> {
     productos: data?.productos || [],
     keywords: data?.keywords || [],
     resumen: data?.resumen || "",
+    global_sort: data?.global_sort || null,
   };
 }
 
