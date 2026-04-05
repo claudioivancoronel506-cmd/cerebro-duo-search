@@ -24,6 +24,7 @@ interface RespuestaGemini {
   productos: ItemProducto[];
   keywords: string[];
   resumen: string;
+  global_sort?: string | null;
 }
 
 /* ─── Edge function call ─── */
