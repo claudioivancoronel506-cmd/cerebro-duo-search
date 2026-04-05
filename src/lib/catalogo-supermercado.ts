@@ -308,6 +308,9 @@ function normalize(s: string): string {
 
 export function buscarProductos(termino: string): Producto[] {
   const t = normalize(termino);
+  const palabrasTermino = t.split(/\s+/);
+  const esBusquedaSimple = palabrasTermino.length === 1;
+
   const seenIds = new Set<string>();
   const results: Producto[] = [];
 
@@ -320,67 +323,113 @@ export function buscarProductos(termino: string): Producto[] {
     }
   };
 
-  // 1. Strict match: product name STARTS with the search term OR full term matches "nombre + marca"
-  const startsWith = catalogoProductos.filter((p) => {
+  // REGLA DE ORO: El término debe coincidir con la PRIMERA palabra del nombre del producto.
+  // "Leche" → "Leche Entera" ✓, "Dulce de Leche" ✗, "Crema de Leche" ✗
+  const nucleusMatches = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
     const marca = normalize(p.marca);
+    const primeraPalabra = nombre.split(/\s+/)[0];
     const nombreCompleto = `${nombre} ${marca}`;
-    return nombre.startsWith(t) || nombre.split(" ")[0] === t || nombreCompleto === t || t.includes(marca) && nombre.startsWith(t.replace(marca, "").trim());
-  });
-  addUnique(startsWith);
 
-  // 2. Keyword exact match, with derivative exclusion rule (includes marca)
-  const keywordStrict = catalogoProductos.filter((p) => {
+    // Brand match siempre pasa
+    if (marca === t || (t.includes(marca) && marca.length > 2)) return true;
+
+    // El término debe ser la primera palabra o el nombre debe empezar con el término
+    if (esBusquedaSimple) {
+      return primeraPalabra === t || nombre === t;
+    }
+
+    // Multi-word: el nombre debe empezar con el término o coincidir con nombre+marca
+    return nombre.startsWith(t) || nombreCompleto.startsWith(t) || nombreCompleto === t;
+  });
+
+  // PRIORIDAD DE NÚCLEO: Para búsquedas simples, preferir producto base sobre calificados
+  if (esBusquedaSimple && nucleusMatches.length > 0) {
+    // Tier 1: Productos cuyo nombre es esencialmente solo el término (1 palabra significativa)
+    const articulos = new Set(["de", "del", "la", "el", "las", "los", "con", "para", "2x1"]);
+    const base = nucleusMatches.filter((p) => {
+      const palabras = normalize(p.nombre).split(/\s+/).filter((w) => !articulos.has(w));
+      return palabras.length === 1;
+    });
+
+    if (base.length > 0) {
+      // Existe producto base → solo mostrarlo
+      addUnique(base);
+    } else {
+      // No hay producto base → mostrar todas las variantes
+      addUnique(nucleusMatches);
+    }
+  } else {
+    addUnique(nucleusMatches);
+  }
+
+  // 2. Keyword match (respetando regla de núcleo)
+  const keywordMatches = catalogoProductos.filter((p) => {
+    if (seenIds.has(p.id)) return false;
     const nombre = normalize(p.nombre);
     const marca = normalize(p.marca);
-    const nombreCompleto = `${nombre} ${marca}`;
-    const firstWord = nombre.split(" ")[0];
+    const primeraPalabra = nombre.split(/\s+/)[0];
     const keywords = (p.keywords || []).map(normalize);
     const hasExactKeyword = keywords.some((k) => k === t);
-    const endsWithTerm = nombre.endsWith(t) || marca === t;
-    const marcaMatch = t.includes(marca) && marca.length > 2;
+    const marcaMatch = marca === t || (t.includes(marca) && marca.length > 2);
 
-    const nameLenRatio = nombre.length / t.length;
-    if (firstWord !== t && nameLenRatio > 1.5 && !hasExactKeyword && !endsWithTerm && !marcaMatch) return false;
+    // Regla de núcleo: para búsqueda simple, primera palabra debe coincidir
+    if (esBusquedaSimple && primeraPalabra !== t && !marcaMatch) {
+      // Keyword match solo si la primera palabra coincide (evitar "Dulce de Leche" por keyword "leche")
+      return false;
+    }
 
-    return nombre.includes(t) || nombreCompleto.includes(t) || hasExactKeyword || marcaMatch;
+    if (!esBusquedaSimple) {
+      const endsWithTerm = nombre.endsWith(t) || marca === t;
+      const nameLenRatio = nombre.length / t.length;
+      if (primeraPalabra !== palabrasTermino[0] && nameLenRatio > 1.5 && !hasExactKeyword && !endsWithTerm && !marcaMatch) return false;
+    }
+
+    return hasExactKeyword || marcaMatch || nombre.includes(t) || `${nombre} ${marca}`.includes(t);
   });
-  addUnique(keywordStrict);
 
-  // If we already have results from steps 1-2, return them
+  // Aplicar misma regla de prioridad base vs calificados
+  if (esBusquedaSimple && keywordMatches.length > 0 && results.length === 0) {
+    const articulos = new Set(["de", "del", "la", "el", "las", "los", "con", "para", "2x1"]);
+    const base = keywordMatches.filter((p) => {
+      const palabras = normalize(p.nombre).split(/\s+/).filter((w) => !articulos.has(w));
+      return palabras.length === 1;
+    });
+    addUnique(base.length > 0 ? base : keywordMatches);
+  } else {
+    addUnique(keywordMatches);
+  }
+
   if (results.length > 0) return results;
 
-  // 3. Broad keyword search (includes marca), still with derivative filter
+  // 3. Broad search con regla de núcleo
   const broad = catalogoProductos.filter((p) => {
     const nombre = normalize(p.nombre);
     const marca = normalize(p.marca);
-    const firstWord = nombre.split(" ")[0];
+    const primeraPalabra = nombre.split(/\s+/)[0];
     const keywords = (p.keywords || []).map(normalize);
     const all = `${nombre} ${marca} ${keywords.join(" ")}`;
-    const hasExactKeyword = keywords.some((k) => k === t);
-    const endsWithTerm = nombre.endsWith(t) || marca === t;
-    const marcaMatch = t.includes(marca) && marca.length > 2;
+    const marcaMatch = marca === t || (t.includes(marca) && marca.length > 2);
 
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm && !marcaMatch) return false;
+    // Mantener regla de núcleo en broad search
+    if (esBusquedaSimple && primeraPalabra !== t && !marcaMatch) return false;
 
     return all.includes(t);
   });
   if (broad.length > 0) return broad;
 
-  // 4. Fuzzy fallback for typos
+  // 4. Fuzzy fallback para typos
   let bestScore = 0;
   let bestProduct: Producto | null = null;
 
   for (const p of catalogoProductos) {
     const nombre = normalize(p.nombre);
     const marca = normalize(p.marca);
-    const firstWord = nombre.split(" ")[0];
+    const primeraPalabra = nombre.split(/\s+/)[0];
     const keywords = (p.keywords || []).map(normalize);
-    const hasExactKeyword = keywords.some((k) => k === t);
-    const endsWithTerm = nombre.endsWith(t) || marca === t;
-    const marcaMatch = t.includes(marca) && marca.length > 2;
+    const marcaMatch = marca === t || (t.includes(marca) && marca.length > 2);
 
-    if (firstWord !== t && nombre.length / t.length > 1.5 && !nombre.startsWith(t) && !hasExactKeyword && !endsWithTerm && !marcaMatch) continue;
+    if (esBusquedaSimple && primeraPalabra !== t && !marcaMatch) continue;
 
     const fields = `${nombre} ${marca} ${keywords.join(" ")}`;
     let score = 0;
