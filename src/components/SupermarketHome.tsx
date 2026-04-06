@@ -117,6 +117,11 @@ export default function SupermarketHome({ cartCount, onCartClick, onAddProduct }
         </div>
       </section>
 
+      {/* ── Consumo Inmediato ── */}
+      {onAddProduct && (
+        <CarruselConsumoInmediato onAgregar={onAddProduct} />
+      )}
+
       {/* ── Banners secundarios ── */}
       <section className="px-4 pt-5">
         <div className="grid grid-cols-2 gap-3">
