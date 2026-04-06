@@ -247,8 +247,17 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         }
       }
 
-      setResultados(grilla);
-      setKeywords(respuesta.keywords);
+      // Append mode: accumulate results instead of replacing
+      setResultados((prev) => {
+        // Deduplicate by catalog product id
+        const existingIds = new Set(prev.map((r) => r.productoCatalogo.id));
+        const newItems = grilla.filter((r) => !existingIds.has(r.productoCatalogo.id));
+        return [...prev, ...newItems];
+      });
+      setKeywords((prev) => {
+        const existingSet = new Set(prev);
+        return [...prev, ...respuesta.keywords.filter((kw) => !existingSet.has(kw))];
+      });
       setResumen(respuesta.resumen);
       setPaso("resultados");
     } catch {
@@ -285,6 +294,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
   const irAtras = () => {
     if (paso === "resultados") {
+      // Go back to input but KEEP accumulated results
+      setTextoInput("");
+      speech.setTranscript("");
       setPaso("input");
     } else if (paso === "procesando") {
       setPaso("input");
@@ -517,10 +529,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   {resultados.length} productos encontrados
                 </DrawerTitle>
                 <button
-                  onClick={() => resetear()}
+                  onClick={() => {
+                    setTextoInput("");
+                    speech.setTranscript("");
+                    setPaso("input");
+                  }}
                   className="text-xs font-semibold text-primary hover:underline"
                 >
-                  Nuevo
+                  + Agregar más
                 </button>
               </div>
             ) : (
