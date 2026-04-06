@@ -28,7 +28,7 @@ interface SupermarketHomeProps {
   onAddProduct?: (producto: Producto & { cantidadSeleccionada?: number }) => void;
 }
 
-export default function SupermarketHome({ cartCount, onCartClick }: SupermarketHomeProps) {
+export default function SupermarketHome({ cartCount, onCartClick, onAddProduct }: SupermarketHomeProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* ── Header — Store branding (yellow) ── */}
