@@ -529,10 +529,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   {resultados.length} productos encontrados
                 </DrawerTitle>
                 <button
-                  onClick={() => resetear()}
+                  onClick={() => {
+                    setTextoInput("");
+                    speech.setTranscript("");
+                    setPaso("input");
+                  }}
                   className="text-xs font-semibold text-primary hover:underline"
                 >
-                  Nuevo
+                  + Agregar más
                 </button>
               </div>
             ) : (
