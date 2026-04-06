@@ -294,6 +294,9 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
   const irAtras = () => {
     if (paso === "resultados") {
+      // Go back to input but KEEP accumulated results
+      setTextoInput("");
+      speech.setTranscript("");
       setPaso("input");
     } else if (paso === "procesando") {
       setPaso("input");
