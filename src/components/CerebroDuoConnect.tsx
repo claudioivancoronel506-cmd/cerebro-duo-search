@@ -247,8 +247,17 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         }
       }
 
-      setResultados(grilla);
-      setKeywords(respuesta.keywords);
+      // Append mode: accumulate results instead of replacing
+      setResultados((prev) => {
+        // Deduplicate by catalog product id
+        const existingIds = new Set(prev.map((r) => r.productoCatalogo.id));
+        const newItems = grilla.filter((r) => !existingIds.has(r.productoCatalogo.id));
+        return [...prev, ...newItems];
+      });
+      setKeywords((prev) => {
+        const existingSet = new Set(prev);
+        return [...prev, ...respuesta.keywords.filter((kw) => !existingSet.has(kw))];
+      });
       setResumen(respuesta.resumen);
       setPaso("resultados");
     } catch {
