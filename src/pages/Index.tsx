@@ -49,7 +49,6 @@ const Index = () => {
       <SupermarketHome
         cartCount={cartItems.length}
         onCartClick={() => setShowCartJson(true)}
-        onAddProduct={(p) => setCartItems((prev) => [...prev, p])}
       />
 
       {isAssistantActive && (
