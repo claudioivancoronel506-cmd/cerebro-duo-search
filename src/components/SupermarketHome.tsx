@@ -24,10 +24,9 @@ const ofertasFlash = [
 interface SupermarketHomeProps {
   cartCount: number;
   onCartClick?: () => void;
-  onAddProduct?: (producto: Producto & { cantidadSeleccionada?: number }) => void;
 }
 
-export default function SupermarketHome({ cartCount, onCartClick, onAddProduct }: SupermarketHomeProps) {
+export default function SupermarketHome({ cartCount, onCartClick }: SupermarketHomeProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* ── Header — Store branding (yellow) ── */}
