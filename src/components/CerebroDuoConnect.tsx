@@ -229,7 +229,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           }];
         }
         return encontrados.map((prod) => ({
-          item: { ...item, precio_estimado: prod.precio },
+          item: { ...item, sku: prod.sku, precio_estimado: prod.precio },
           productoCatalogo: prod,
           seleccionado: false,
           esMejorPrecio: false,
