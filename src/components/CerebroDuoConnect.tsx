@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Search, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw, Zap } from "lucide-react";
+import CarruselConsumoInmediato from "@/components/CarruselConsumoInmediato";
 import superflashLogo from "@/assets/superflash-logo.png";
 import { buscarProductos, type Producto } from "@/lib/catalogo-supermercado";
 import { supabase } from "@/integrations/supabase/client";
@@ -607,6 +608,12 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
                 {error && <p className="text-xs text-destructive text-center">{error}</p>}
 
+                {/* Carrusel Consumo Inmediato — debajo del mic */}
+                <CarruselConsumoInmediato onAgregar={(prod) => {
+                  const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
+                  onListaSeleccionada([prodWithQty]);
+                }} />
+
                 <button
                   onClick={procesarTexto}
                   disabled={!textoInput.trim()}
@@ -717,6 +724,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                         </div>
                       </div>
                   ))}
+                </div>
+
+                {/* Carrusel Consumo Inmediato — debajo de resultados */}
+                <div className="mt-4 -mx-4">
+                  <CarruselConsumoInmediato onAgregar={(prod) => {
+                    const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
+                    onListaSeleccionada([prodWithQty]);
+                  }} />
                 </div>
 
                 <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-3 z-10">

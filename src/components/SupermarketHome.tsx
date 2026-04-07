@@ -2,8 +2,7 @@ import { Search, ShoppingCart, Menu, Bell, Tag, Truck, Clock, ChevronRight } fro
 import bannerOfertas from "@/assets/banner-ofertas.jpg";
 import bannerCarnes from "@/assets/banner-carnes.jpg";
 import bannerLacteos from "@/assets/banner-lacteos.jpg";
-import CarruselConsumoInmediato from "@/components/CarruselConsumoInmediato";
-import type { Producto } from "@/lib/catalogo-supermercado";
+
 const categorias = [
   { emoji: "🥩", nombre: "Carnes" },
   { emoji: "🥛", nombre: "Lácteos" },
@@ -25,10 +24,9 @@ const ofertasFlash = [
 interface SupermarketHomeProps {
   cartCount: number;
   onCartClick?: () => void;
-  onAddProduct?: (producto: Producto & { cantidadSeleccionada?: number }) => void;
 }
 
-export default function SupermarketHome({ cartCount, onCartClick, onAddProduct }: SupermarketHomeProps) {
+export default function SupermarketHome({ cartCount, onCartClick }: SupermarketHomeProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* ── Header — Store branding (yellow) ── */}
@@ -117,10 +115,6 @@ export default function SupermarketHome({ cartCount, onCartClick, onAddProduct }
         </div>
       </section>
 
-      {/* ── Consumo Inmediato ── */}
-      {onAddProduct && (
-        <CarruselConsumoInmediato onAgregar={onAddProduct} />
-      )}
 
       {/* ── Banners secundarios ── */}
       <section className="px-4 pt-5">
