@@ -78,7 +78,7 @@ Entrada: 'Buscame la harina barata y leche económica'
 Resultado: {"productos": [{"id": "1", "producto": "Harina", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0, "sort": "price_asc"}, {"id": "2", "producto": "Leche", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0, "sort": "price_asc"}], "keywords": ["harina", "leche"], "global_sort": "price_asc", "resumen": "Se encontraron 2 productos."}
 
 FORMATO DE SALIDA:
-Para cada producto, incluye: id (incremental único), producto (nombre completo con marca/calificador/tipo si fue mencionado, SIN palabras de ahorro), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (siempre 0), y opcionalmente "sort": "price_asc" si el usuario pidió el más barato de ese producto.
+Para cada producto, incluye: id (incremental único), sku (string vacío "", el frontend lo resolverá), producto (nombre completo con marca/calificador/tipo si fue mencionado, SIN palabras de ahorro), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (siempre 0), y opcionalmente "sort": "price_asc" si el usuario pidió el más barato de ese producto.
 Devuelve SOLO JSON válido sin markdown. Si no hay productos válidos, devuelve {"productos": [], "keywords": [], "resumen": "No se encontraron productos válidos."}.
 Incluye un array 'keywords' con los nombres completos de productos (incluyendo marca/calificador/tipo) en minúsculas.
 Si el usuario pidió ordenar TODA la lista por precio, incluye "global_sort": "price_asc" en el JSON raíz.
