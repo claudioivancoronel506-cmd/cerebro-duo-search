@@ -2,7 +2,6 @@ import { Search, ShoppingCart, Menu, Bell, Tag, Truck, Clock, ChevronRight } fro
 import bannerOfertas from "@/assets/banner-ofertas.jpg";
 import bannerCarnes from "@/assets/banner-carnes.jpg";
 import bannerLacteos from "@/assets/banner-lacteos.jpg";
-import CarruselConsumoInmediato from "@/components/CarruselConsumoInmediato";
 import type { Producto } from "@/lib/catalogo-supermercado";
 const categorias = [
   { emoji: "🥩", nombre: "Carnes" },
