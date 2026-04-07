@@ -15,6 +15,7 @@ import {
 /* ─── Types ─── */
 interface ItemProducto {
   id: string;
+  sku: string;
   producto: string;
   cantidad: string;
   unidad: string;
