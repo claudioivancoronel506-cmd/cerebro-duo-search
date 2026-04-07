@@ -726,6 +726,15 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   ))}
                 </div>
 
+                {/* Carrusel Consumo Inmediato — debajo de resultados */}
+                <div className="mt-4">
+                  <CarruselConsumoInmediato onAgregar={(prod) => {
+                    const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
+                    onListaSeleccionada([prodWithQty]);
+                  }} />
+                </div>
+                </div>
+
                 <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-3 z-10">
                   <button
                     onClick={confirmarSeleccion}
