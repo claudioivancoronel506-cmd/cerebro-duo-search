@@ -69,13 +69,13 @@ PROTOCOLO DE FILTRADO OBLIGATORIO (PASO A PASO):
 
 EJEMPLOS DE SALIDA:
 Entrada: 'Pan y Leche'
-Resultado: {"productos": [{"id": "1", "producto": "Pan", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}, {"id": "2", "producto": "Leche", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["pan", "leche"], "resumen": "Se encontraron 2 productos."}
+Resultado: {"productos": [{"id": "1", "sku": "", "producto": "Pan", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}, {"id": "2", "sku": "", "producto": "Leche", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["pan", "leche"], "resumen": "Se encontraron 2 productos."}
 
 Entrada: 'Traeme yerba Mañanita y fideo moñito Lucchetti'
-Resultado: {"productos": [{"id": "1", "producto": "Yerba Mañanita", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}, {"id": "2", "producto": "Fideo Moñito Lucchetti", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["yerba mañanita", "fideo moñito lucchetti"], "resumen": "Se encontraron 2 productos."}
+Resultado: {"productos": [{"id": "1", "sku": "", "producto": "Yerba Mañanita", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}, {"id": "2", "sku": "", "producto": "Fideo Moñito Lucchetti", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0}], "keywords": ["yerba mañanita", "fideo moñito lucchetti"], "resumen": "Se encontraron 2 productos."}
 
 Entrada: 'Buscame la harina barata y leche económica'
-Resultado: {"productos": [{"id": "1", "producto": "Harina", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0, "sort": "price_asc"}, {"id": "2", "producto": "Leche", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0, "sort": "price_asc"}], "keywords": ["harina", "leche"], "global_sort": "price_asc", "resumen": "Se encontraron 2 productos."}
+Resultado: {"productos": [{"id": "1", "sku": "", "producto": "Harina", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0, "sort": "price_asc"}, {"id": "2", "sku": "", "producto": "Leche", "cantidad": "1", "unidad": "unidad", "precio_estimado": 0, "sort": "price_asc"}], "keywords": ["harina", "leche"], "global_sort": "price_asc", "resumen": "Se encontraron 2 productos."}
 
 FORMATO DE SALIDA:
 Para cada producto, incluye: id (incremental único), sku (string vacío "", el frontend lo resolverá), producto (nombre completo con marca/calificador/tipo si fue mencionado, SIN palabras de ahorro), cantidad (default 1), unidad (kg/litro/paquete/unidad/etc), precio_estimado (siempre 0), y opcionalmente "sort": "price_asc" si el usuario pidió el más barato de ese producto.
