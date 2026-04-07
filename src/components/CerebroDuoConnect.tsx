@@ -608,6 +608,12 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
                 {error && <p className="text-xs text-destructive text-center">{error}</p>}
 
+                {/* Carrusel Consumo Inmediato — debajo del mic */}
+                <CarruselConsumoInmediato onAgregar={(prod) => {
+                  const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
+                  onListaSeleccionada([prodWithQty]);
+                }} />
+
                 <button
                   onClick={procesarTexto}
                   disabled={!textoInput.trim()}
