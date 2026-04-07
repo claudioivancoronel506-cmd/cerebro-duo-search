@@ -15,6 +15,7 @@ import {
 /* ─── Types ─── */
 interface ItemProducto {
   id: string;
+  sku: string;
   producto: string;
   cantidad: string;
   unidad: string;
@@ -213,10 +214,14 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             item: { ...item },
             productoCatalogo: {
               id: item.id,
+              sku: "000000000",
               nombre: item.producto,
               marca: "Genérico",
               categoria: "Otros",
               precio: item.precio_estimado,
+              original_price: item.precio_estimado,
+              stock_actual: 0,
+              expiration_date: "",
               unidad: item.unidad,
             },
             seleccionado: false,
@@ -224,7 +229,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           }];
         }
         return encontrados.map((prod) => ({
-          item: { ...item, precio_estimado: prod.precio },
+          item: { ...item, sku: prod.sku, precio_estimado: prod.precio },
           productoCatalogo: prod,
           seleccionado: false,
           esMejorPrecio: false,
