@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Search, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw, Zap } from "lucide-react";
+import CarruselConsumoInmediato from "@/components/CarruselConsumoInmediato";
 import superflashLogo from "@/assets/superflash-logo.png";
 import { buscarProductos, type Producto } from "@/lib/catalogo-supermercado";
 import { supabase } from "@/integrations/supabase/client";
