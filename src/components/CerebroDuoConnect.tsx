@@ -152,6 +152,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   const [resumen, setResumen] = useState("");
   const [error, setError] = useState("");
   const processingRef = useRef(false);
+  const [carouselAddedSkus, setCarouselAddedSkus] = useState<Set<string>>(new Set());
 
   // Draggable state
   const [position, setPosition] = useState({ x: 0, y: 0 });
