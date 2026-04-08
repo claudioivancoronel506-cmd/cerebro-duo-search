@@ -29,10 +29,14 @@ const Index = () => {
   }, []);
 
   const cartData = cartItems.map((p) => ({
+    sku: p.sku,
     name: p.nombre,
     brand: p.marca,
     quantity: p.cantidadSeleccionada ?? 1,
     unit_price: p.precio,
+    stock_actual: p.stock_actual,
+    expiration_date: p.expiration_date,
+    discount_price: (p as any).precioOferta ?? p.discount_price,
     subtotal: (p.cantidadSeleccionada ?? 1) * p.precio,
   }));
 

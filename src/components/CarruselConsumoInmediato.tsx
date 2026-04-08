@@ -19,7 +19,8 @@ interface Props {
   addedSkus?: Set<string>;
 }
 
-export default function CarruselConsumoInmediato({ onAgregar }: Props) {
+export default function CarruselConsumoInmediato({ onAgregar, addedSkus }: Props) {
+  const [animatingSku, setAnimatingSku] = useState<string | null>(null);
   const productos = useMemo(() => {
     const seleccion = shuffleAndPick(
       catalogoProductos.filter((p) => p.imagen),

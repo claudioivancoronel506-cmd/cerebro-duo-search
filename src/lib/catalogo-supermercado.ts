@@ -6,6 +6,7 @@ export interface Producto {
   categoria: string;
   precio: number;
   original_price: number;
+  discount_price: number;
   stock_actual: number;
   expiration_date: string;
   unidad: string;
