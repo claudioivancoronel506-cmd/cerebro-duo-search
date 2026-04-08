@@ -220,6 +220,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
               categoria: "Otros",
               precio: item.precio_estimado,
               original_price: item.precio_estimado,
+              discount_price: Math.round(item.precio_estimado * 0.7),
               stock_actual: 0,
               expiration_date: "",
               unidad: item.unidad,
