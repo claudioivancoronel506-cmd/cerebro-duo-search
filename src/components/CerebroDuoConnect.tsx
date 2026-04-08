@@ -618,7 +618,8 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <CarruselConsumoInmediato onAgregar={(prod) => {
                   const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
                   onListaSeleccionada([prodWithQty]);
-                }} />
+                  setCarouselAddedSkus(prev => new Set(prev).add(prod.sku));
+                }} addedSkus={carouselAddedSkus} />
 
                 <button
                   onClick={procesarTexto}
