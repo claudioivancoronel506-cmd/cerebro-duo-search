@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { Plus, Clock } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Plus, Clock, Check } from "lucide-react";
 import { catalogoProductos, type Producto } from "@/lib/catalogo-supermercado";
 import { Badge } from "@/components/ui/badge";
 
@@ -16,6 +16,7 @@ function shuffleAndPick<T>(arr: T[], n: number): T[] {
 
 interface Props {
   onAgregar: (producto: Producto & { cantidadSeleccionada?: number; precioOferta?: number }) => void;
+  addedSkus?: Set<string>;
 }
 
 export default function CarruselConsumoInmediato({ onAgregar }: Props) {
