@@ -732,15 +732,15 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                         </div>
                       </div>
                   ))}
-                </div>
 
-                {/* Carrusel Consumo Inmediato — inside scroll area, after results */}
-                <div className="mt-4 -mx-4">
-                  <CarruselConsumoInmediato onAgregar={(prod) => {
-                    const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
-                    onListaSeleccionada([prodWithQty]);
-                    setCarouselAddedSkus(prev => new Set(prev).add(prod.sku));
-                  }} addedSkus={carouselAddedSkus} />
+                  {/* Carrusel Consumo Inmediato — at bottom of scroll area */}
+                  <div className="mt-4">
+                    <CarruselConsumoInmediato onAgregar={(prod) => {
+                      const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
+                      onListaSeleccionada([prodWithQty]);
+                      setCarouselAddedSkus(prev => new Set(prev).add(prod.sku));
+                    }} addedSkus={carouselAddedSkus} />
+                  </div>
                 </div>
 
                 <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-3 z-10">
