@@ -152,6 +152,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   const [resumen, setResumen] = useState("");
   const [error, setError] = useState("");
   const processingRef = useRef(false);
+  const [carouselAddedSkus, setCarouselAddedSkus] = useState<Set<string>>(new Set());
 
   // Draggable state
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -220,6 +221,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
               categoria: "Otros",
               precio: item.precio_estimado,
               original_price: item.precio_estimado,
+              discount_price: Math.round(item.precio_estimado * 0.7),
               stock_actual: 0,
               expiration_date: "",
               unidad: item.unidad,
@@ -617,7 +619,8 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 <CarruselConsumoInmediato onAgregar={(prod) => {
                   const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
                   onListaSeleccionada([prodWithQty]);
-                }} />
+                  setCarouselAddedSkus(prev => new Set(prev).add(prod.sku));
+                }} addedSkus={carouselAddedSkus} />
 
                 <button
                   onClick={procesarTexto}
@@ -729,14 +732,15 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                         </div>
                       </div>
                   ))}
-                </div>
 
-                {/* Carrusel Consumo Inmediato — debajo de resultados */}
-                <div className="mt-4 -mx-4">
-                  <CarruselConsumoInmediato onAgregar={(prod) => {
-                    const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
-                    onListaSeleccionada([prodWithQty]);
-                  }} />
+                  {/* Carrusel Consumo Inmediato — at bottom of scroll area */}
+                  <div className="mt-4">
+                    <CarruselConsumoInmediato onAgregar={(prod) => {
+                      const prodWithQty = { ...prod, cantidadSeleccionada: 1 };
+                      onListaSeleccionada([prodWithQty]);
+                      setCarouselAddedSkus(prev => new Set(prev).add(prod.sku));
+                    }} addedSkus={carouselAddedSkus} />
+                  </div>
                 </div>
 
                 <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-3 z-10">

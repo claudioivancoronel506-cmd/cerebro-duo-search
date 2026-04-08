@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { Plus, Clock } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Plus, Clock, Check } from "lucide-react";
 import { catalogoProductos, type Producto } from "@/lib/catalogo-supermercado";
 import { Badge } from "@/components/ui/badge";
 
@@ -16,9 +16,11 @@ function shuffleAndPick<T>(arr: T[], n: number): T[] {
 
 interface Props {
   onAgregar: (producto: Producto & { cantidadSeleccionada?: number; precioOferta?: number }) => void;
+  addedSkus?: Set<string>;
 }
 
-export default function CarruselConsumoInmediato({ onAgregar }: Props) {
+export default function CarruselConsumoInmediato({ onAgregar, addedSkus }: Props) {
+  const [animatingSku, setAnimatingSku] = useState<string | null>(null);
   const productos = useMemo(() => {
     const seleccion = shuffleAndPick(
       catalogoProductos.filter((p) => p.imagen),
@@ -99,34 +101,50 @@ export default function CarruselConsumoInmediato({ onAgregar }: Props) {
               </p>
               <p className="text-[10px] text-muted-foreground truncate">{prod.marca} · {prod.unidad}</p>
 
-              <div className="flex items-center justify-between pt-1">
-                <div>
-                  <span className="text-sm font-bold text-card-foreground">
-                    ${prod.precioOferta.toLocaleString("es-AR")}
-                  </span>
-                  <span className="block text-[10px] text-muted-foreground line-through">
-                    ${prod.precio.toLocaleString("es-AR")}
-                  </span>
+                <div className="flex items-center justify-between pt-1">
+                  <div>
+                    <span className="text-sm font-bold text-card-foreground">
+                      ${prod.precioOferta.toLocaleString("es-AR")}
+                    </span>
+                    <span className="block text-[10px] text-muted-foreground line-through">
+                      ${prod.precio.toLocaleString("es-AR")}
+                    </span>
+                  </div>
+                  {addedSkus?.has(prod.sku) ? (
+                    <span
+                      className="w-8 h-8 rounded-full flex items-center justify-center animate-scale-in"
+                      style={{
+                        background: "hsl(var(--success, 142 71% 45%))",
+                        color: "hsl(0, 0%, 100%)",
+                      }}
+                    >
+                      <Check className="w-4 h-4" />
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setAnimatingSku(prod.sku);
+                        onAgregar({
+                          ...prod,
+                          precio: prod.precioOferta,
+                          cantidadSeleccionada: 1,
+                          precioOferta: prod.precioOferta,
+                        });
+                        setTimeout(() => setAnimatingSku(null), 400);
+                      }}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-transform ${
+                        animatingSku === prod.sku ? "scale-125" : "active:scale-90"
+                      }`}
+                      style={{
+                        background: "hsl(var(--store-secondary))",
+                        color: "hsl(var(--store-secondary-foreground))",
+                      }}
+                      aria-label={`Agregar ${prod.nombre}`}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
-                <button
-                  onClick={() =>
-                    onAgregar({
-                      ...prod,
-                      precio: prod.precioOferta,
-                      cantidadSeleccionada: 1,
-                      precioOferta: prod.precioOferta,
-                    })
-                  }
-                  className="w-8 h-8 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-                  style={{
-                    background: "hsl(var(--store-secondary))",
-                    color: "hsl(var(--store-secondary-foreground))",
-                  }}
-                  aria-label={`Agregar ${prod.nombre}`}
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
             </div>
           </div>
         ))}
