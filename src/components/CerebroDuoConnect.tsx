@@ -684,17 +684,33 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                 )}
 
                 <div className="flex-1 overflow-y-auto -mx-4 px-4 space-y-2 pb-28">
-                {resultados.map((r, i) => (
+                {resultados.map((r, i) => {
+                  const agotado = isAgotadoOnline(r.productoCatalogo);
+                  const disponibles = getDisponibleApp(r.productoCatalogo);
+                  return (
                       <div
                         key={r.item.id}
-                        className={`relative flex items-center gap-3 rounded-xl border-2 p-2.5 transition-all cursor-pointer ${
-                          r.seleccionado
-                            ? "border-primary bg-primary/5"
-                            : "border-border bg-card opacity-70"
+                        className={`relative flex items-center gap-3 rounded-xl border-2 p-2.5 transition-all ${
+                          agotado
+                            ? "border-border bg-muted/30 opacity-60 cursor-not-allowed"
+                            : r.seleccionado
+                            ? "border-primary bg-primary/5 cursor-pointer"
+                            : "border-border bg-card opacity-70 cursor-pointer"
                         }`}
-                        onClick={() => toggleSeleccion(i)}
+                        onClick={() => !agotado && toggleSeleccion(i)}
                       >
-                        {r.esMejorPrecio && (
+                        {agotado && (
+                          <span
+                            className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold z-10"
+                            style={{
+                              background: "hsl(var(--destructive))",
+                              color: "hsl(var(--destructive-foreground))",
+                            }}
+                          >
+                            Sin stock online
+                          </span>
+                        )}
+                        {!agotado && r.esMejorPrecio && (
                           <span
                             className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold z-10"
                             style={{
@@ -729,13 +745,20 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                           <p className="text-xs text-muted-foreground mt-0.5">
                             {r.productoCatalogo.marca} · {r.item.cantidad} {r.item.unidad}
                           </p>
+                          <p className="text-[10px] font-semibold mt-0.5" style={{ color: agotado ? "hsl(var(--destructive))" : "hsl(var(--muted-foreground))" }}>
+                            {agotado ? "Agotado online" : `${disponibles} disp. online`}
+                          </p>
                         </div>
 
                         <div className="flex items-center gap-2 flex-shrink-0">
                           <span className="text-sm font-black text-card-foreground">
                             ${r.productoCatalogo.precio.toLocaleString("es-AR")}
                           </span>
-                          {r.seleccionado ? (
+                          {agotado ? (
+                            <span className="w-7 h-7 rounded-full border-2 border-destructive/40 flex items-center justify-center">
+                              <span className="text-destructive text-xs font-black">×</span>
+                            </span>
+                          ) : r.seleccionado ? (
                             <span
                               className="w-7 h-7 rounded-full flex items-center justify-center"
                               style={{ backgroundColor: "hsl(var(--primary))" }}
@@ -747,7 +770,8 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                           )}
                         </div>
                       </div>
-                  ))}
+                  );
+                })}
 
                   {/* Carrusel Consumo Inmediato — at bottom of scroll area */}
                   <div className="mt-4">
