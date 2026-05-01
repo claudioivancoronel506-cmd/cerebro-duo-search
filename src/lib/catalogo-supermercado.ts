@@ -1,5 +1,32 @@
 export type TipoProducto = "normal" | "merma";
 
+/**
+ * Buffer de seguridad GLOBAL.
+ * Stock físico real reservado para venta presencial — NO se vende online.
+ * Unidades_Disponibles_App = stock_actual - STOCK_SAFETY_BUFFER
+ */
+export const STOCK_SAFETY_BUFFER = 10;
+
+/** Unidades realmente disponibles para venta online. Nunca negativo. */
+export function getDisponibleApp(p: Pick<Producto, "stock_actual">): number {
+  return Math.max(0, p.stock_actual - STOCK_SAFETY_BUFFER);
+}
+
+/** True si el producto está bloqueado para venta online por buffer de seguridad. */
+export function isAgotadoOnline(p: Pick<Producto, "stock_actual">): boolean {
+  return p.stock_actual <= STOCK_SAFETY_BUFFER;
+}
+
+/** Recorta una cantidad solicitada al máximo permitido por el buffer. */
+export function capCantidadPorBuffer(
+  p: Pick<Producto, "stock_actual">,
+  cantidadSolicitada: number
+): number {
+  const disp = getDisponibleApp(p);
+  if (disp <= 0) return 0;
+  return Math.max(0, Math.min(cantidadSolicitada, disp));
+}
+
 export interface Producto {
   id: string;
   sku: string;
