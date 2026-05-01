@@ -225,6 +225,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
               stock_actual: 0,
               expiration_date: "",
               unidad: item.unidad,
+              tipo: "normal" as const,
             },
             seleccionado: false,
             esMejorPrecio: false,
