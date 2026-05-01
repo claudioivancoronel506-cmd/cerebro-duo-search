@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Search, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw, Zap } from "lucide-react";
 import CarruselConsumoInmediato from "@/components/CarruselConsumoInmediato";
 import superflashLogo from "@/assets/superflash-logo.png";
-import { buscarProductos, type Producto } from "@/lib/catalogo-supermercado";
+import { buscarProductos, capCantidadPorBuffer, getDisponibleApp, isAgotadoOnline, type Producto } from "@/lib/catalogo-supermercado";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Drawer,
@@ -302,7 +302,12 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
   const toggleSeleccion = (idx: number) => {
     setResultados((prev) =>
-      prev.map((r, i) => (i === idx ? { ...r, seleccionado: !r.seleccionado } : r))
+      prev.map((r, i) => {
+        if (i !== idx) return r;
+        // Bloqueo por buffer de seguridad: agotado online no se selecciona
+        if (isAgotadoOnline(r.productoCatalogo)) return r;
+        return { ...r, seleccionado: !r.seleccionado };
+      })
     );
   };
 
@@ -320,10 +325,20 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
 
   const confirmarSeleccion = () => {
     if (speech.isListening) speech.stopListening();
-    const prods = seleccionados.map((r) => ({
-      ...r.productoCatalogo,
-      cantidadSeleccionada: Number(r.item.cantidad || 1),
-    }));
+    // Validación final del buffer: capear cantidad y descartar agotados
+    const prods = seleccionados
+      .map((r) => {
+        const solicitada = Number(r.item.cantidad || 1);
+        const permitida = capCantidadPorBuffer(r.productoCatalogo, solicitada);
+        if (permitida <= 0) return null;
+        return {
+          ...r.productoCatalogo,
+          cantidadSeleccionada: permitida,
+        };
+      })
+      .filter((p): p is NonNullable<typeof p> => p !== null);
+
+    if (prods.length === 0) return;
     onListaSeleccionada(prods);
     setPaso("confirmacion");
     setTimeout(() => {
