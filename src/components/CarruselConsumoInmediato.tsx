@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { Plus, Clock, Check } from "lucide-react";
-import { catalogoMerma, type Producto } from "@/lib/catalogo-supermercado";
+import { Plus, Clock, Check, Ban } from "lucide-react";
+import { catalogoMerma, getDisponibleApp, isAgotadoOnline, type Producto } from "@/lib/catalogo-supermercado";
 import { Badge } from "@/components/ui/badge";
 
 interface Props {
@@ -94,10 +94,21 @@ export default function CarruselConsumoInmediato({ onAgregar, addedSkus }: Props
                       ${prod.precioOferta.toLocaleString("es-AR")}
                     </span>
                     <span className="block text-[10px] text-muted-foreground line-through">
-                      ${prod.precio.toLocaleString("es-AR")}
+                      ${prod.original_price.toLocaleString("es-AR")}
                     </span>
                   </div>
-                  {addedSkus?.has(prod.sku) ? (
+                  {isAgotadoOnline(prod) ? (
+                    <span
+                      className="w-8 h-8 rounded-full flex items-center justify-center"
+                      style={{
+                        background: "hsl(var(--muted))",
+                        color: "hsl(var(--muted-foreground))",
+                      }}
+                      title="Sin stock online"
+                    >
+                      <Ban className="w-4 h-4" />
+                    </span>
+                  ) : addedSkus?.has(prod.sku) ? (
                     <span
                       className="w-8 h-8 rounded-full flex items-center justify-center animate-scale-in"
                       style={{
@@ -132,6 +143,9 @@ export default function CarruselConsumoInmediato({ onAgregar, addedSkus }: Props
                     </button>
                   )}
                 </div>
+                <p className="text-[9px] font-semibold mt-0.5" style={{ color: isAgotadoOnline(prod) ? "hsl(var(--destructive))" : "hsl(var(--muted-foreground))" }}>
+                  {isAgotadoOnline(prod) ? "Sin stock online" : `${getDisponibleApp(prod)} disp.`}
+                </p>
             </div>
           </div>
         ))}
