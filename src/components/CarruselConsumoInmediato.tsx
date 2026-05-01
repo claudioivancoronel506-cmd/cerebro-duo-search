@@ -1,18 +1,7 @@
 import { useMemo, useState } from "react";
 import { Plus, Clock, Check } from "lucide-react";
-import { catalogoProductos, type Producto } from "@/lib/catalogo-supermercado";
+import { catalogoMerma, type Producto } from "@/lib/catalogo-supermercado";
 import { Badge } from "@/components/ui/badge";
-
-const DESCUENTOS = [20, 30, 40, 50, 60];
-
-function shuffleAndPick<T>(arr: T[], n: number): T[] {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy.slice(0, n);
-}
 
 interface Props {
   onAgregar: (producto: Producto & { cantidadSeleccionada?: number; precioOferta?: number }) => void;
@@ -22,15 +11,13 @@ interface Props {
 export default function CarruselConsumoInmediato({ onAgregar, addedSkus }: Props) {
   const [animatingSku, setAnimatingSku] = useState<string | null>(null);
   const productos = useMemo(() => {
-    const seleccion = shuffleAndPick(
-      catalogoProductos.filter((p) => p.imagen),
-      5
-    );
-    return seleccion.map((p) => {
-      const descuento = DESCUENTOS[Math.floor(Math.random() * DESCUENTOS.length)];
-      const precioOferta = Math.round(p.precio * (1 - descuento / 100));
-      return { ...p, descuento, precioOferta };
-    });
+    // Solo productos con tipo "merma" (filtro defensivo aunque catalogoMerma ya lo cumple)
+    return catalogoMerma
+      .filter((p) => p.tipo === "merma")
+      .map((p) => {
+        const descuento = Math.round(((p.original_price - p.precio) / p.original_price) * 100);
+        return { ...p, descuento, precioOferta: p.precio };
+      });
   }, []);
 
   return (
