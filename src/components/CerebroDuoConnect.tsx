@@ -166,6 +166,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   const [bubbleVisible, setBubbleVisible] = useState(true);
   const bubbleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Deep-link state: true cuando los términos vienen de ?search= en la URL
+  const [fromUrl, setFromUrl] = useState(false);
+  const deepLinkAppliedRef = useRef(false);
+
   const showBubbleTemporarily = useCallback(() => {
     setBubbleVisible(true);
     if (bubbleTimerRef.current) clearTimeout(bubbleTimerRef.current);
