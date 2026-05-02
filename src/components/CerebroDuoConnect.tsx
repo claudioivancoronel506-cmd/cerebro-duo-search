@@ -284,6 +284,33 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     if (speech.transcript) setTextoInput(speech.transcript);
   }, [speech.transcript]);
 
+  // ── Deep linking: leer ?search= de la URL, abrir el widget y procesar ──
+  useEffect(() => {
+    if (deepLinkAppliedRef.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get("search");
+    if (!raw || !raw.trim()) return;
+
+    deepLinkAppliedRef.current = true;
+    const terms = raw
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    if (terms.length === 0) return;
+
+    const texto = terms.join(", ");
+    setTextoInput(texto);
+    setFromUrl(true);
+    setIsOpen(true);
+    // Procesar automáticamente con la lógica existente del asistente
+    procesarTextoFromRef(texto);
+
+    // Limpiar el parámetro de la URL para no re-disparar
+    const url = new URL(window.location.href);
+    url.searchParams.delete("search");
+    window.history.replaceState({}, "", url.toString());
+  }, [procesarTextoFromRef]);
+
   const resetear = useCallback(() => {
     setPaso("input");
     setTextoInput("");
