@@ -702,6 +702,21 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             {/* ── PASO: RESULTADOS ── */}
             {paso === "resultados" && (
               <div className="flex flex-col h-full animate-fade-in">
+                {fromUrl && (
+                  <div className="mb-2">
+                    <div
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-semibold"
+                      style={{
+                        background: "hsl(var(--sf-purple) / 0.08)",
+                        borderColor: "hsl(var(--sf-purple) / 0.35)",
+                        color: "hsl(var(--sf-purple))",
+                      }}
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      <span>Sugerencias del Asistente desde la URL</span>
+                    </div>
+                  </div>
+                )}
                 {keywords.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {keywords.map((kw, i) => (
