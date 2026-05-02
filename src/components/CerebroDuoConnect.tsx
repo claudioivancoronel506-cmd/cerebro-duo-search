@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Search, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw, Zap } from "lucide-react";
+import { Search, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw, Zap, Sparkles } from "lucide-react";
 import CarruselConsumoInmediato from "@/components/CarruselConsumoInmediato";
 import superflashLogo from "@/assets/superflash-logo.png";
 import { buscarProductos, capCantidadPorBuffer, getDisponibleApp, isAgotadoOnline, type Producto } from "@/lib/catalogo-supermercado";
@@ -166,6 +166,10 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   const [bubbleVisible, setBubbleVisible] = useState(true);
   const bubbleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Deep-link state: true cuando los términos vienen de ?search= en la URL
+  const [fromUrl, setFromUrl] = useState(false);
+  const deepLinkAppliedRef = useRef(false);
+
   const showBubbleTemporarily = useCallback(() => {
     setBubbleVisible(true);
     if (bubbleTimerRef.current) clearTimeout(bubbleTimerRef.current);
@@ -280,6 +284,33 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     if (speech.transcript) setTextoInput(speech.transcript);
   }, [speech.transcript]);
 
+  // ── Deep linking: leer ?search= de la URL, abrir el widget y procesar ──
+  useEffect(() => {
+    if (deepLinkAppliedRef.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get("search");
+    if (!raw || !raw.trim()) return;
+
+    deepLinkAppliedRef.current = true;
+    const terms = raw
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    if (terms.length === 0) return;
+
+    const texto = terms.join(", ");
+    setTextoInput(texto);
+    setFromUrl(true);
+    setIsOpen(true);
+    // Procesar automáticamente con la lógica existente del asistente
+    procesarTextoFromRef(texto);
+
+    // Limpiar el parámetro de la URL para no re-disparar
+    const url = new URL(window.location.href);
+    url.searchParams.delete("search");
+    window.history.replaceState({}, "", url.toString());
+  }, [procesarTextoFromRef]);
+
   const resetear = useCallback(() => {
     setPaso("input");
     setTextoInput("");
@@ -287,6 +318,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     setKeywords([]);
     setResumen("");
     setError("");
+    setFromUrl(false);
     speech.setTranscript("");
   }, [speech]);
 
@@ -670,6 +702,21 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             {/* ── PASO: RESULTADOS ── */}
             {paso === "resultados" && (
               <div className="flex flex-col h-full animate-fade-in">
+                {fromUrl && (
+                  <div className="mb-2">
+                    <div
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-semibold"
+                      style={{
+                        background: "hsl(var(--sf-purple) / 0.08)",
+                        borderColor: "hsl(var(--sf-purple) / 0.35)",
+                        color: "hsl(var(--sf-purple))",
+                      }}
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      <span>Sugerencias del Asistente desde la URL</span>
+                    </div>
+                  </div>
+                )}
                 {keywords.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {keywords.map((kw, i) => (
