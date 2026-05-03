@@ -547,20 +547,23 @@ export function buscarProductos(termino: string): Producto[] {
     }
   };
 
-  // REGLA DE ORO: El término debe coincidir con la PRIMERA palabra del nombre del producto.
+  // REGLA DE ORO: El término debe coincidir con la PRIMERA palabra del nombre del producto
+  // O con un keyword exacto del producto (case-insensitive, trim aplicado).
   const nucleusMatches = fuente.filter((p) => {
     const nombre = normalize(p.nombre);
     const marca = normalize(p.marca);
     const primeraPalabra = nombre.split(/\s+/)[0];
     const nombreCompleto = `${nombre} ${marca}`;
+    const keywords = (p.keywords || []).map((k) => normalize(k.trim()));
+    const exactKeywordMatch = keywords.some((k) => k === t);
 
     if (marca === t || (t.includes(marca) && marca.length > 2)) return true;
 
     if (esBusquedaSimple) {
-      return primeraPalabra === t || nombre === t;
+      return primeraPalabra === t || nombre === t || exactKeywordMatch;
     }
 
-    return nombre.startsWith(t) || nombreCompleto.startsWith(t) || nombreCompleto === t;
+    return nombre.startsWith(t) || nombreCompleto.startsWith(t) || nombreCompleto === t || exactKeywordMatch;
   });
 
   if (esBusquedaSimple && nucleusMatches.length > 0) {
