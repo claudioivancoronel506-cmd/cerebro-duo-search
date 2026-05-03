@@ -313,7 +313,7 @@ export const catalogoProductos: Producto[] = [
   },
   {
     id: "304", sku: "AA6KQ8N5", tipo: "normal",
-    nombre: "Asado Achuras", marca: "Genérico", categoria: "Carnes",
+    nombre: "Achuras", marca: "Genérico", categoria: "Carnes",
     precio: 8800, original_price: 8800, discount_price: 7480, stock_actual: 15, expiration_date: "2026-05-10",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/Sw7MFnWB/image.jpg",
