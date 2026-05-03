@@ -528,7 +528,7 @@ function normalize(s: string): string {
 }
 
 export function buscarProductos(termino: string): Producto[] {
-  const t = normalize(termino);
+  const t = normalize(termino.trim());
   const palabrasTermino = t.split(/\s+/);
   const esBusquedaSimple = palabrasTermino.length === 1;
 
