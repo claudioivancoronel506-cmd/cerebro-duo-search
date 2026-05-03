@@ -284,7 +284,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Vacío de Novillo", marca: "Genérico", categoria: "Carnes",
     precio: 28500, original_price: 28500, discount_price: 24230, stock_actual: 18, expiration_date: "2026-05-15",
     unidad: "1 kg",
-    imagen: "https://ibb.co/4gp4yKsw",
+    imagen: "https://i.ibb.co/4gp4yKsw/image.jpg",
     keywords: ["vacio", "vacío", "novillo", "carne", "asado", "parrilla"],
   },
   {
@@ -292,7 +292,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Sal Gruesa", marca: "Celusal", categoria: "Almacén",
     precio: 1850, original_price: 1850, discount_price: 1570, stock_actual: 20, expiration_date: "",
     unidad: "1 kg",
-    imagen: "https://ibb.co/mr8dqmrr",
+    imagen: "https://i.ibb.co/mr8dqmrr/image.jpg",
     keywords: ["sal", "sal gruesa", "celusal", "parrilla"],
   },
   {
@@ -300,7 +300,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Carbón Vegetal", marca: "Genérico", categoria: "Almacén",
     precio: 9400, original_price: 9400, discount_price: 7990, stock_actual: 17, expiration_date: "",
     unidad: "4 kg",
-    imagen: "https://ibb.co/JRxpGm6D",
+    imagen: "https://i.ibb.co/JRxpGm6D/image.jpg",
     keywords: ["carbon", "carbón", "carbon vegetal", "parrilla", "asado"],
   },
   {
@@ -308,7 +308,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Chorizo", marca: "Genérico", categoria: "Carnes",
     precio: 8200, original_price: 8200, discount_price: 6970, stock_actual: 16, expiration_date: "2026-05-12",
     unidad: "1 kg",
-    imagen: "https://ibb.co/99XbZ8d9",
+    imagen: "https://i.ibb.co/99XbZ8d9/image.jpg",
     keywords: ["chorizo", "embutido", "parrilla", "asado"],
   },
   {
@@ -316,7 +316,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Asado Achuras", marca: "Genérico", categoria: "Carnes",
     precio: 8800, original_price: 8800, discount_price: 7480, stock_actual: 15, expiration_date: "2026-05-10",
     unidad: "1 kg",
-    imagen: "https://ibb.co/Sw7MFnWB",
+    imagen: "https://i.ibb.co/Sw7MFnWB/image.jpg",
     keywords: ["achuras", "asado", "parrilla", "menudencias"],
   },
   {
@@ -324,7 +324,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Asado en Tiras", marca: "Genérico", categoria: "Carnes",
     precio: 24500, original_price: 24500, discount_price: 20830, stock_actual: 19, expiration_date: "2026-05-14",
     unidad: "1 kg",
-    imagen: "https://ibb.co/Kj8T5Y70",
+    imagen: "https://i.ibb.co/Kj8T5Y70/image.jpg",
     keywords: ["asado", "asado tira", "asado en tiras", "tira", "parrilla", "carne"],
   },
   {
@@ -332,7 +332,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Provenzal", marca: "Genérico", categoria: "Almacén",
     precio: 1200, original_price: 1200, discount_price: 1020, stock_actual: 18, expiration_date: "",
     unidad: "23 g",
-    imagen: "https://ibb.co/BHHkGrhb",
+    imagen: "https://i.ibb.co/BHHkGrhb/image.jpg",
     keywords: ["provenzal", "condimento", "especias"],
   },
   {
@@ -340,7 +340,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Ajo Triturado", marca: "Alicante", categoria: "Almacén",
     precio: 1510, original_price: 1510, discount_price: 1280, stock_actual: 17, expiration_date: "",
     unidad: "50 g",
-    imagen: "https://ibb.co/x823pf35",
+    imagen: "https://i.ibb.co/x823pf35/image.jpg",
     keywords: ["ajo", "ajo triturado", "alicante", "condimento"],
   },
   {
@@ -348,7 +348,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Aceite de Oliva", marca: "Genérico", categoria: "Almacén",
     precio: 15000, original_price: 15000, discount_price: 12750, stock_actual: 16, expiration_date: "",
     unidad: "500 ml",
-    imagen: "https://ibb.co/MD2FhQr3",
+    imagen: "https://i.ibb.co/MD2FhQr3/image.jpg",
     keywords: ["aceite", "aceite de oliva", "oliva"],
   },
   {
@@ -356,7 +356,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Aceite de Oliva", marca: "Genérico", categoria: "Almacén",
     precio: 15000, original_price: 15000, discount_price: 12750, stock_actual: 18, expiration_date: "",
     unidad: "500 ml",
-    imagen: "https://ibb.co/xkdLdFR",
+    imagen: "https://i.ibb.co/xkdLdFR/image.jpg",
     keywords: ["aceite", "aceite de oliva", "oliva"],
   },
   {
@@ -364,7 +364,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Vino Tinto", marca: "Estancia Mendoza", categoria: "Bebidas",
     precio: 7900, original_price: 7900, discount_price: 6720, stock_actual: 19, expiration_date: "",
     unidad: "750 ml",
-    imagen: "https://ibb.co/Rkzwsk9R",
+    imagen: "https://i.ibb.co/Rkzwsk9R/image.jpg",
     keywords: ["vino", "vino tinto", "estancia mendoza", "mendoza", "bebida"],
   },
   {
@@ -372,7 +372,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Vino Tinto", marca: "Genérico", categoria: "Bebidas",
     precio: 6500, original_price: 6500, discount_price: 5530, stock_actual: 20, expiration_date: "",
     unidad: "750 ml",
-    imagen: "https://ibb.co/JRkbBHwM",
+    imagen: "https://i.ibb.co/JRkbBHwM/image.jpg",
     keywords: ["vino", "vino tinto", "bebida"],
   },
   {
@@ -380,7 +380,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Zanahoria", marca: "Genérico", categoria: "Verdulería",
     precio: 1100, original_price: 1100, discount_price: 940, stock_actual: 17, expiration_date: "2026-05-15",
     unidad: "1 kg",
-    imagen: "https://ibb.co/7tqzgJST",
+    imagen: "https://i.ibb.co/7tqzgJST/image.jpg",
     keywords: ["zanahoria", "verdura", "verduleria"],
   },
   {
@@ -388,7 +388,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Carne Molida", marca: "Genérico", categoria: "Carnes",
     precio: 12900, original_price: 12900, discount_price: 10970, stock_actual: 16, expiration_date: "2026-05-08",
     unidad: "1 kg",
-    imagen: "https://ibb.co/Kc5Fx9Xv",
+    imagen: "https://i.ibb.co/Kc5Fx9Xv/image.jpg",
     keywords: ["carne", "carne molida", "molida", "picada"],
   },
   {
@@ -396,7 +396,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Pimientos Rojos", marca: "Genérico", categoria: "Verdulería",
     precio: 4100, original_price: 4100, discount_price: 3490, stock_actual: 15, expiration_date: "2026-05-13",
     unidad: "1 kg",
-    imagen: "https://ibb.co/4wSnLwnn",
+    imagen: "https://i.ibb.co/4wSnLwnn/image.jpg",
     keywords: ["pimiento", "pimientos", "morron", "morrón", "verdura"],
   },
   {
@@ -404,7 +404,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Pimientos Rojos", marca: "Genérico", categoria: "Verdulería",
     precio: 4100, original_price: 4100, discount_price: 3490, stock_actual: 18, expiration_date: "2026-05-14",
     unidad: "1 kg",
-    imagen: "https://ibb.co/mVtHhjQF",
+    imagen: "https://i.ibb.co/mVtHhjQF/image.jpg",
     keywords: ["pimiento", "pimientos", "morron", "morrón", "verdura"],
   },
   {
@@ -412,7 +412,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Cebolla de Verdeo", marca: "Genérico", categoria: "Verdulería",
     precio: 660, original_price: 660, discount_price: 560, stock_actual: 19, expiration_date: "2026-05-09",
     unidad: "100 g",
-    imagen: "https://ibb.co/xSGm4K51",
+    imagen: "https://i.ibb.co/xSGm4K51/image.jpg",
     keywords: ["cebolla", "verdeo", "cebolla de verdeo", "verdura"],
   },
   {
@@ -420,7 +420,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Cebolla", marca: "Genérico", categoria: "Verdulería",
     precio: 1200, original_price: 1200, discount_price: 1020, stock_actual: 20, expiration_date: "2026-05-15",
     unidad: "1 kg",
-    imagen: "https://ibb.co/0VdJhSNQ",
+    imagen: "https://i.ibb.co/0VdJhSNQ/image.jpg",
     keywords: ["cebolla", "verdura"],
   },
   {
@@ -428,7 +428,7 @@ export const catalogoProductos: Producto[] = [
     nombre: "Cebolla", marca: "Genérico", categoria: "Verdulería",
     precio: 1200, original_price: 1200, discount_price: 1020, stock_actual: 17, expiration_date: "2026-05-15",
     unidad: "1 kg",
-    imagen: "https://ibb.co/nMsfG8JT",
+    imagen: "https://i.ibb.co/nMsfG8JT/image.jpg",
     keywords: ["cebolla", "verdura"],
   },
 ];
