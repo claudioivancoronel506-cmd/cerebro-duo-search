@@ -150,6 +150,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
   const [resultados, setResultados] = useState<ResultadoGrilla[]>([]);
   const [keywords, setKeywords] = useState<string[]>([]);
   const [resumen, setResumen] = useState("");
+  const [noEncontrados, setNoEncontrados] = useState<string[]>([]);
   const [error, setError] = useState("");
   const processingRef = useRef(false);
   const [carouselAddedSkus, setCarouselAddedSkus] = useState<Set<string>>(new Set());
