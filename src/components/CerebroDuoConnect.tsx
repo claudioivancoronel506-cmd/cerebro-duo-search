@@ -738,6 +738,20 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   </div>
                 )}
 
+                {noEncontrados.length > 0 && (
+                  <div
+                    className="mb-2 p-2.5 rounded-lg border text-[11px] leading-snug"
+                    style={{
+                      background: "hsl(var(--destructive) / 0.08)",
+                      borderColor: "hsl(var(--destructive) / 0.3)",
+                      color: "hsl(var(--destructive))",
+                    }}
+                  >
+                    <span className="font-bold">Fuera de catálogo: </span>
+                    {noEncontrados.join(", ")}
+                  </div>
+                )}
+
                 <div className="flex-1 overflow-y-auto -mx-4 px-4 space-y-2 pb-28">
                 {resultados.map((r, i) => {
                   const agotado = isAgotadoOnline(r.productoCatalogo);
