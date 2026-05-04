@@ -68,7 +68,7 @@ export const catalogoProductos: Producto[] = [
     precio: 1200, original_price: 1200, discount_price: 840, stock_actual: 20, expiration_date: "",
     unidad: "500 g",
     imagen: "https://i.ibb.co/mrmhpK39/344963-800-auto.jpg",
-    keywords: ["pan", "pan lactal", "pan blanco", "pan de molde"],
+    keywords: ["pan lactal", "pan blanco", "pan de molde"],
   },
   {
     id: "4", sku: "779100004", tipo: "normal",
@@ -108,7 +108,7 @@ export const catalogoProductos: Producto[] = [
     precio: 2800, original_price: 2800, discount_price: 1960, stock_actual: 16, expiration_date: "",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/yBM5kqTf/image.png",
-    keywords: ["queso", "queso cremoso", "queso rallado"],
+    keywords: ["queso", "queso cremoso"],
   },
   {
     id: "9", sku: "779100009", tipo: "normal",
@@ -124,7 +124,7 @@ export const catalogoProductos: Producto[] = [
     precio: 1800, original_price: 1800, discount_price: 1260, stock_actual: 17, expiration_date: "",
     unidad: "2 litros",
     imagen: "https://i.ibb.co/whBDWMmC/images-6.jpg",
-    keywords: ["leche", "leche entera", "leche descremada", "lacteo", "2x1"],
+    keywords: ["leche", "leche entera", "leche en caja", "lacteo", "2x1"],
   },
   {
     id: "11", sku: "779100011", tipo: "normal",
@@ -156,7 +156,7 @@ export const catalogoProductos: Producto[] = [
     precio: 2500, original_price: 2500, discount_price: 1750, stock_actual: 16, expiration_date: "",
     unidad: "500 g",
     imagen: "https://i.ibb.co/8wvMJ8x/image.jpg",
-    keywords: ["yerba", "yerba mate", "mate", "amanda"],
+    keywords: ["yerba", "hierba mate", "mate", "amanda"],
   },
   {
     id: "203", sku: "779200004", tipo: "normal",
@@ -485,7 +485,7 @@ export const catalogoProductos: Producto[] = [
     precio: 4200, original_price: 4200, discount_price: 3570, stock_actual: 20, expiration_date: "2026-05-18",
     unidad: "170 g",
     imagen: "https://i.ibb.co/whmLJYt9/image.jpg",
-    keywords: ["atun", "conserva", "lata"],
+    keywords: ["atun en lata", "atún", "lata"],
   },
   {
     id: "407", sku: "SF-008", tipo: "normal",
@@ -493,7 +493,7 @@ export const catalogoProductos: Producto[] = [
     precio: 1550, original_price: 1550, discount_price: 1318, stock_actual: 18, expiration_date: "2026-05-19",
     unidad: "500 g",
     imagen: "https://i.ibb.co/gL2HxZRB/image.jpg",
-    keywords: ["mostaza", "aderezo", "salsa"],
+    keywords: ["mostaza", "aderezo"],
   },
   {
     id: "408", sku: "SF-009", tipo: "normal",
@@ -517,7 +517,7 @@ export const catalogoProductos: Producto[] = [
     precio: 3100, original_price: 3100, discount_price: 2635, stock_actual: 16, expiration_date: "2026-05-14",
     unidad: "250 g",
     imagen: "https://i.ibb.co/SDqgJg2h/image.jpg",
-    keywords: ["champiñones", "champinones", "hongos"],
+    keywords: ["champiñones", "champignones", "hongos"],
   },
   {
     id: "411", sku: "SF-012", tipo: "normal",
@@ -525,7 +525,7 @@ export const catalogoProductos: Producto[] = [
     precio: 2850, original_price: 2850, discount_price: 2423, stock_actual: 16, expiration_date: "2026-05-14",
     unidad: "284 g",
     imagen: "https://i.ibb.co/wZGRgFH2/image.jpg",
-    keywords: ["champiñones", "champinones", "hongos"],
+    keywords: ["champiñones", "champignones", "hongos"],
   },
   {
     id: "412", sku: "SF-013", tipo: "normal",
@@ -569,7 +569,7 @@ export const catalogoProductos: Producto[] = [
   },
   {
     id: "417", sku: "SF-018", tipo: "normal",
-    nombre: "Morcilla", marca: "Genérica", categoria: "Carnes",
+    nombre: "Morcillas", marca: "Genérica", categoria: "Carnes",
     precio: 4800, original_price: 4800, discount_price: 4080, stock_actual: 16, expiration_date: "2026-05-13",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/PqK2jgs/image.jpg",
@@ -581,7 +581,7 @@ export const catalogoProductos: Producto[] = [
     precio: 3400, original_price: 3400, discount_price: 2890, stock_actual: 18, expiration_date: "2026-05-15",
     unidad: "1 unidad",
     imagen: "https://i.ibb.co/rgDkjWh/image.jpg",
-    keywords: ["provoleta", "queso", "provolone", "parrilla"],
+    keywords: ["provoleta", "provolone", "parrilla"],
   },
   {
     id: "419", sku: "SF-020", tipo: "normal",
@@ -597,7 +597,7 @@ export const catalogoProductos: Producto[] = [
     precio: 1100, original_price: 1100, discount_price: 935, stock_actual: 25, expiration_date: "2026-05-19",
     unidad: "6 cubos",
     imagen: "https://i.ibb.co/C39tx22y/image.jpg",
-    keywords: ["caldo", "caldo gallina", "cubo", "knorr"],
+    keywords: ["caldo de pollo", "caldo gallina", "cubo", "knorr"],
   },
 ];
 
@@ -623,7 +623,7 @@ export const catalogoMerma: Producto[] = [
     precio: 600, original_price: 1200, discount_price: 600, stock_actual: 17, expiration_date: "2026-05-17",
     unidad: "500 g",
     imagen: "https://i.ibb.co/mrmhpK39/344963-800-auto.jpg",
-    keywords: ["pan", "pan lactal"],
+    keywords: ["pan de molde", "pan lactal"],
   },
   {
     id: "m-4", sku: "779100004", tipo: "merma",
@@ -639,7 +639,7 @@ export const catalogoMerma: Producto[] = [
     precio: 2100, original_price: 4200, discount_price: 2100, stock_actual: 16, expiration_date: "2026-05-19",
     unidad: "1 unidad",
     imagen: "https://i.ibb.co/4ZJ1tgys/49d594341598b4eb2820d6ea40459fc6.jpg",
-    keywords: ["pollo", "ave", "carne"],
+    keywords: ["pollo", "ave", "pechuga de pollo"],
   },
   {
     id: "m-8", sku: "779100008", tipo: "merma",
