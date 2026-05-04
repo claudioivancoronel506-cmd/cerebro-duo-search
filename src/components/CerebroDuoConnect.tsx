@@ -324,6 +324,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
     setResultados([]);
     setKeywords([]);
     setResumen("");
+    setNoEncontrados([]);
     setError("");
     setFromUrl(false);
     speech.setTranscript("");
