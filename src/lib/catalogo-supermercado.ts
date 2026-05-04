@@ -84,7 +84,7 @@ export const catalogoProductos: Producto[] = [
     precio: 4200, original_price: 4200, discount_price: 2940, stock_actual: 15, expiration_date: "",
     unidad: "1 unidad",
     imagen: "https://i.ibb.co/4ZJ1tgys/49d594341598b4eb2820d6ea40459fc6.jpg",
-    keywords: ["pollo", "pollo entero", "ave", "carne"],
+    keywords: ["pollo", "pollo entero", "ave"],
   },
   {
     id: "6", sku: "779100006", tipo: "normal",
@@ -485,7 +485,7 @@ export const catalogoProductos: Producto[] = [
     precio: 4200, original_price: 4200, discount_price: 3570, stock_actual: 20, expiration_date: "2026-05-18",
     unidad: "170 g",
     imagen: "https://i.ibb.co/whmLJYt9/image.jpg",
-    keywords: ["atun en lata", "atún", "lata"],
+    keywords: ["atun en lata", "atun", "lata"],
   },
   {
     id: "407", sku: "SF-008", tipo: "normal",
