@@ -213,28 +213,21 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
       const fallbackSort = PRICE_SORT_KEYWORDS.some((kw) => textoLower.includes(kw));
       const shouldSort = ordenarPorPrecio || fallbackSort;
 
+      // ──────────────────────────────────────────────────────────────
+      // RESTRICCIÓN DE INTEGRIDAD DE DATOS
+      // Solo se renderizan productos que existen explícitamente en el
+      // catálogo (catalogoProductos). Si Gemini extrae un término que
+      // NO matchea ningún SKU real, NO se crea producto ficticio:
+      // se reporta como "no encontrado" para que el usuario lo sepa.
+      // ──────────────────────────────────────────────────────────────
+      const itemsNoEncontrados: string[] = [];
       const grilla = respuesta.productos.flatMap((item) => {
-        const encontrados = buscarProductos(item.producto);
+        const encontrados = buscarProductos(item.producto).filter(
+          (p) => p && p.sku && p.sku.trim().length > 0
+        );
         if (encontrados.length === 0) {
-          return [{
-            item: { ...item },
-            productoCatalogo: {
-              id: item.id,
-              sku: "000000000",
-              nombre: item.producto,
-              marca: "Genérico",
-              categoria: "Otros",
-              precio: item.precio_estimado,
-              original_price: item.precio_estimado,
-              discount_price: Math.round(item.precio_estimado * 0.7),
-              stock_actual: 0,
-              expiration_date: "",
-              unidad: item.unidad,
-              tipo: "normal" as const,
-            },
-            seleccionado: false,
-            esMejorPrecio: false,
-          }];
+          itemsNoEncontrados.push(item.producto);
+          return [];
         }
         return encontrados.map((prod) => ({
           item: { ...item, sku: prod.sku, precio_estimado: prod.precio },
