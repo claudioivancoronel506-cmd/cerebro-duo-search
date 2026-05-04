@@ -257,6 +257,19 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
       setResultados(grilla);
       setKeywords(respuesta.keywords);
       setResumen(respuesta.resumen);
+      setNoEncontrados(itemsNoEncontrados);
+
+      // Si NINGÚN producto matchea con el catálogo real, no abrimos resultados.
+      if (grilla.length === 0) {
+        setError(
+          itemsNoEncontrados.length > 0
+            ? `No tenemos en stock: ${itemsNoEncontrados.join(", ")}.`
+            : "No encontramos productos en el catálogo."
+        );
+        setPaso("input");
+        processingRef.current = false;
+        return;
+      }
       setPaso("resultados");
     } catch {
       setError("Error al procesar. Verificá tu conexión.");
