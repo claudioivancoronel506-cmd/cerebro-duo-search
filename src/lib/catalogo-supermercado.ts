@@ -715,6 +715,22 @@ export function buscarProductos(termino: string): Producto[] {
     }
   };
 
+  // PRIORIDAD MÁXIMA: tokenización — todas las palabras del término aparecen en el
+  // nombre/marca/keywords del producto (sin importar el orden). Ej: "tira de asado" ↔ "asado de tira".
+  const articulosToken = new Set(["de", "del", "la", "el", "las", "los", "con", "para", "y", "a"]);
+  const tokens = palabrasTermino.filter((w) => w.length > 0 && !articulosToken.has(w));
+
+  if (tokens.length > 1) {
+    const tokenMatches = fuente.filter((p) => {
+      const nombre = normalize(p.nombre);
+      const marca = normalize(p.marca);
+      const keywords = (p.keywords || []).map(normalize).join(" ");
+      const haystack = `${nombre} ${marca} ${keywords}`;
+      return tokens.every((tok) => haystack.includes(tok));
+    });
+    addUnique(tokenMatches);
+  }
+
   // REGLA DE ORO: El término debe coincidir con la PRIMERA palabra del nombre del producto
   // O con un keyword exacto del producto (case-insensitive, trim aplicado).
   const nucleusMatches = fuente.filter((p) => {
