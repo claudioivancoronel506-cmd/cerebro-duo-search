@@ -321,7 +321,7 @@ export const catalogoProductos: Producto[] = [
   },
   {
     id: "305", sku: "AT9KP2H6", tipo: "normal",
-    nombre: "Asado en Tiras", marca: "Genérico", categoria: "Carnes",
+    nombre: "Asado de Tira", marca: "Genérico", categoria: "Carnes",
     precio: 24500, original_price: 24500, discount_price: 20830, stock_actual: 19, expiration_date: "2026-05-14",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/Kj8T5Y70/image.jpg",
