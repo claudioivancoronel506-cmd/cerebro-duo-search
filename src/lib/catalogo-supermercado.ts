@@ -815,14 +815,12 @@ export function buscarProductos(termino: string): Producto[] {
   });
   if (broad.length > 0) return broad;
 
-  // Fuzzy fallback ESTRICTO: solo retorna un producto si hay un match
-  // sustancial (≥60% del término aparece como substring de algún campo).
-  // Evita "alucinaciones" donde 3 letras random matcheaban cualquier cosa.
-  if (t.length < 4) return [];
+  // Fuzzy fallback RELAJADO: mínimo 3 letras, threshold ~40% del término.
+  if (t.length < 3) return [];
 
   let bestScore = 0;
   let bestProduct: Producto | null = null;
-  const minScoreRequired = Math.max(t.length * 2, 8);
+  const minScoreRequired = Math.max(Math.ceil(t.length * 1.2), 4);
 
   for (const p of fuente) {
     const nombre = normalize(p.nombre);
@@ -835,7 +833,7 @@ export function buscarProductos(termino: string): Producto[] {
 
     const fields = `${nombre} ${marca} ${keywords.join(" ")}`;
     let score = 0;
-    for (let len = Math.max(4, Math.floor(t.length * 0.6)); len <= t.length; len++) {
+    for (let len = Math.max(3, Math.floor(t.length * 0.4)); len <= t.length; len++) {
       for (let i = 0; i <= t.length - len; i++) {
         if (fields.includes(t.substring(i, i + len))) score += len;
       }
