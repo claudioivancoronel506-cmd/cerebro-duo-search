@@ -31,28 +31,50 @@ interface RespuestaGemini {
   global_sort?: string | null;
 }
 
-/* ─── Edge function call ─── */
-async function llamarGemini(texto: string): Promise<RespuestaGemini> {
-  const { data, error } = await supabase.functions.invoke("gemini-clasificar", {
-    body: { texto },
-  });
-
-  if (error) {
-    console.error("Edge function error:", error);
-    throw new Error("Error al conectar con el clasificador");
-  }
-
-  if (data?.error) {
-    throw new Error(data.error);
-  }
-
+/* ─── Fallback local: procesador-texto.ts ─── */
+function fallbackLocal(texto: string): RespuestaGemini {
+  const terminos = procesarTextoDesordenado(texto);
+  const productos: ItemProducto[] = terminos.map((t, i) => ({
+    id: String(i + 1),
+    sku: "",
+    producto: t,
+    cantidad: "1",
+    unidad: "unidad",
+    precio_estimado: 0,
+  }));
   return {
-    productos: data?.productos || [],
-    keywords: data?.keywords || [],
-    resumen: data?.resumen || "",
-    global_sort: data?.global_sort || null,
+    productos,
+    keywords: terminos.map((t) => t.toLowerCase()),
+    resumen:
+      productos.length > 0
+        ? `Se encontraron ${productos.length} productos (modo local).`
+        : "No se encontraron productos válidos (modo local).",
+    global_sort: null,
   };
 }
+
+/* ─── Edge function call con fallback automático ─── */
+async function llamarGemini(texto: string): Promise<RespuestaGemini> {
+  try {
+    const { data, error } = await supabase.functions.invoke("gemini-clasificar", {
+      body: { texto },
+    });
+
+    if (error) throw new Error("Error al conectar con el clasificador");
+    if (data?.error) throw new Error(data.error);
+
+    return {
+      productos: data?.productos || [],
+      keywords: data?.keywords || [],
+      resumen: data?.resumen || "",
+      global_sort: data?.global_sort || null,
+    };
+  } catch (err) {
+    console.warn("[Superflash] Gemini falló, usando fallback local:", err);
+    return fallbackLocal(texto);
+  }
+}
+
 
 /* ─── Web Speech API hook with silence detection ─── */
 function useSpeechRecognition(onSilenceDetected: () => void) {
