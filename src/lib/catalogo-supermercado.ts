@@ -325,7 +325,7 @@ export const catalogoProductos: Producto[] = [
     precio: 24500, original_price: 24500, discount_price: 20830, stock_actual: 19, expiration_date: "2026-05-14",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/Kj8T5Y70/image.jpg",
-    keywords: ["asado", "asado tira", "asado en tiras", "tira", "parrilla", "carne"],
+    keywords: ["asado", "asado de tira", "asado en tiras", "tira", "parrilla", "carne"],
   },
   {
     id: "306", sku: "PR2GK7T7", tipo: "normal",
