@@ -4,6 +4,7 @@ import CarruselConsumoInmediato from "@/components/CarruselConsumoInmediato";
 import superflashLogo from "@/assets/superflash-logo.png";
 import { buscarProductos, capCantidadPorBuffer, getDisponibleApp, isAgotadoOnline, type Producto } from "@/lib/catalogo-supermercado";
 import { supabase } from "@/integrations/supabase/client";
+import { procesarTextoDesordenado } from "@/lib/procesador-texto";
 import {
   Drawer,
   DrawerContent,
