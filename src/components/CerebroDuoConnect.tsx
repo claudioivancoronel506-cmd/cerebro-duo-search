@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Search, ShoppingCart, Check, Loader2, MicOff, ArrowLeft, RefreshCw, Zap, Sparkles } from "lucide-react";
 import CarruselConsumoInmediato from "@/components/CarruselConsumoInmediato";
 import superflashLogo from "@/assets/superflash-logo.png";
-import { buscarProductos, capCantidadPorBuffer, getDisponibleApp, isAgotadoOnline, type Producto } from "@/lib/catalogo-supermercado";
+import { buscarProductos, capCantidadPorBuffer, catalogoMerma, getDisponibleApp, isAgotadoOnline, type Producto } from "@/lib/catalogo-supermercado";
 import { supabase } from "@/integrations/supabase/client";
 import { procesarTextoDesordenado } from "@/lib/procesador-texto";
 import {
@@ -161,6 +161,34 @@ interface ResultadoGrilla {
   productoCatalogo: Producto;
   seleccionado: boolean;
   esMejorPrecio: boolean;
+  esOportunidad: boolean;
+}
+
+/* ─── Bingo sound (AudioContext) ─── */
+function playBingoSound() {
+  try {
+    const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const now = ctx.currentTime;
+    const notes = [880, 1318.5, 1760]; // A5, E6, A6 — bright "ping"
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now + i * 0.08);
+      gain.gain.setValueAtTime(0, now + i * 0.08);
+      gain.gain.linearRampToValueAtTime(0.18, now + i * 0.08 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + i * 0.08);
+      osc.stop(now + i * 0.08 + 0.26);
+    });
+    setTimeout(() => ctx.close().catch(() => {}), 800);
+  } catch {
+    // silent fail
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -244,7 +272,8 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
       // se reporta como "no encontrado" para que el usuario lo sepa.
       // ──────────────────────────────────────────────────────────────
       const itemsNoEncontrados: string[] = [];
-      const grilla = respuesta.productos.flatMap((item) => {
+      const mermaSkus = new Set(catalogoMerma.map((m) => m.sku));
+      const grilla: ResultadoGrilla[] = respuesta.productos.flatMap((item) => {
         const encontrados = buscarProductos(item.producto).filter(
           (p) => p && p.sku && p.sku.trim().length > 0
         );
@@ -257,6 +286,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           productoCatalogo: prod,
           seleccionado: false,
           esMejorPrecio: false,
+          esOportunidad: mermaSkus.has(prod.sku),
         }));
       });
 
@@ -275,6 +305,15 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             }
           }
         }
+      }
+
+      // Oportunidades primero (estables)
+      grilla.sort((a, b) => Number(b.esOportunidad) - Number(a.esOportunidad));
+
+      const hayOportunidad = grilla.some((g) => g.esOportunidad);
+      if (hayOportunidad) {
+        // Sonido único por búsqueda
+        playBingoSound();
       }
 
       setResultados(grilla);
@@ -783,12 +822,26 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       <div
                         key={r.item.id}
                         className={`relative flex items-center gap-3 rounded-xl border-2 p-2.5 transition-all ${
+                          r.esOportunidad ? "animate-scale-in" : ""
+                        } ${
                           agotado
                             ? "border-border bg-muted/30 opacity-60 cursor-not-allowed"
+                            : r.esOportunidad
+                            ? "cursor-pointer"
                             : r.seleccionado
                             ? "border-primary bg-primary/5 cursor-pointer"
                             : "border-border bg-card opacity-70 cursor-pointer"
                         }`}
+                        style={
+                          !agotado && r.esOportunidad
+                            ? {
+                                borderColor: "hsl(var(--sf-gold))",
+                                background:
+                                  "linear-gradient(135deg, hsl(var(--sf-gold) / 0.10), hsl(var(--sf-purple) / 0.06))",
+                                boxShadow: "0 2px 12px hsl(var(--sf-gold) / 0.25)",
+                              }
+                            : undefined
+                        }
                         onClick={() => !agotado && toggleSeleccion(i)}
                       >
                         {agotado && (
@@ -802,7 +855,19 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                             Sin stock online
                           </span>
                         )}
-                        {!agotado && r.esMejorPrecio && (
+                        {!agotado && r.esOportunidad && (
+                          <span
+                            className="absolute -top-2.5 left-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black z-10 uppercase tracking-wide"
+                            style={{
+                              background: "linear-gradient(135deg, hsl(var(--sf-gold)), hsl(var(--sf-gold-dark)))",
+                              color: "hsl(0, 0%, 10%)",
+                              boxShadow: "0 1px 6px hsl(var(--sf-gold) / 0.5)",
+                            }}
+                          >
+                            ⚡ Oportunidad
+                          </span>
+                        )}
+                        {!agotado && !r.esOportunidad && r.esMejorPrecio && (
                           <span
                             className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold z-10"
                             style={{
