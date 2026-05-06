@@ -272,7 +272,8 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
       // se reporta como "no encontrado" para que el usuario lo sepa.
       // ──────────────────────────────────────────────────────────────
       const itemsNoEncontrados: string[] = [];
-      const grilla = respuesta.productos.flatMap((item) => {
+      const mermaSkus = new Set(catalogoMerma.map((m) => m.sku));
+      const grilla: ResultadoGrilla[] = respuesta.productos.flatMap((item) => {
         const encontrados = buscarProductos(item.producto).filter(
           (p) => p && p.sku && p.sku.trim().length > 0
         );
@@ -285,6 +286,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
           productoCatalogo: prod,
           seleccionado: false,
           esMejorPrecio: false,
+          esOportunidad: mermaSkus.has(prod.sku),
         }));
       });
 
@@ -303,6 +305,15 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
             }
           }
         }
+      }
+
+      // Oportunidades primero (estables)
+      grilla.sort((a, b) => Number(b.esOportunidad) - Number(a.esOportunidad));
+
+      const hayOportunidad = grilla.some((g) => g.esOportunidad);
+      if (hayOportunidad) {
+        // Sonido único por búsqueda
+        playBingoSound();
       }
 
       setResultados(grilla);
