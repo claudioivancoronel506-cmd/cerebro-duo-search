@@ -822,12 +822,26 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                       <div
                         key={r.item.id}
                         className={`relative flex items-center gap-3 rounded-xl border-2 p-2.5 transition-all ${
+                          r.esOportunidad ? "animate-scale-in" : ""
+                        } ${
                           agotado
                             ? "border-border bg-muted/30 opacity-60 cursor-not-allowed"
+                            : r.esOportunidad
+                            ? "cursor-pointer"
                             : r.seleccionado
                             ? "border-primary bg-primary/5 cursor-pointer"
                             : "border-border bg-card opacity-70 cursor-pointer"
                         }`}
+                        style={
+                          !agotado && r.esOportunidad
+                            ? {
+                                borderColor: "hsl(var(--sf-gold))",
+                                background:
+                                  "linear-gradient(135deg, hsl(var(--sf-gold) / 0.10), hsl(var(--sf-purple) / 0.06))",
+                                boxShadow: "0 2px 12px hsl(var(--sf-gold) / 0.25)",
+                              }
+                            : undefined
+                        }
                         onClick={() => !agotado && toggleSeleccion(i)}
                       >
                         {agotado && (
@@ -841,7 +855,19 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                             Sin stock online
                           </span>
                         )}
-                        {!agotado && r.esMejorPrecio && (
+                        {!agotado && r.esOportunidad && (
+                          <span
+                            className="absolute -top-2.5 left-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black z-10 uppercase tracking-wide"
+                            style={{
+                              background: "linear-gradient(135deg, hsl(var(--sf-gold)), hsl(var(--sf-gold-dark)))",
+                              color: "hsl(0, 0%, 10%)",
+                              boxShadow: "0 1px 6px hsl(var(--sf-gold) / 0.5)",
+                            }}
+                          >
+                            ⚡ Oportunidad
+                          </span>
+                        )}
+                        {!agotado && !r.esOportunidad && r.esMejorPrecio && (
                           <span
                             className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold z-10"
                             style={{
