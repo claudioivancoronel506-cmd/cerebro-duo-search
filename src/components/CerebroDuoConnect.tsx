@@ -290,6 +290,18 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
         }));
       });
 
+      // Filtro estricto de unicidad: mismo SKU no puede repetirse como tarjeta.
+      // Variantes/marcas distintas (SKUs distintos) sí se mantienen.
+      const skusVistos = new Set<string>();
+      const grillaUnica: ResultadoGrilla[] = [];
+      for (const r of grilla) {
+        if (skusVistos.has(r.productoCatalogo.sku)) continue;
+        skusVistos.add(r.productoCatalogo.sku);
+        grillaUnica.push(r);
+      }
+      grilla.length = 0;
+      grilla.push(...grillaUnica);
+
       if (shouldSort) {
         grilla.sort((a, b) => a.productoCatalogo.precio - b.productoCatalogo.precio);
 
