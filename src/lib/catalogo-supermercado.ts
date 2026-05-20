@@ -282,7 +282,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "300", sku: "VC8KQ2X1", tipo: "normal",
     nombre: "Vacío de Novillo", marca: "Genérico", categoria: "Carnes",
-    precio: 28500, original_price: 28500, discount_price: 24230, stock_actual: 18, expiration_date: "2026-05-15",
+    precio: 28500, original_price: 28500, discount_price: 24230, stock_actual: 18, expiration_date: "2027-05-15",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/4gp4yKsw/image.jpg",
     keywords: ["vacio", "vacío", "novillo", "carne", "asado", "parrilla"],
@@ -306,7 +306,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "303", sku: "CH5KG1B4", tipo: "normal",
     nombre: "Chorizo", marca: "Genérico", categoria: "Carnes",
-    precio: 8200, original_price: 8200, discount_price: 6970, stock_actual: 16, expiration_date: "2026-05-12",
+    precio: 8200, original_price: 8200, discount_price: 6970, stock_actual: 16, expiration_date: "2027-05-12",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/99XbZ8d9/image.jpg",
     keywords: ["chorizo", "embutido", "parrilla", "asado"],
@@ -314,7 +314,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "304", sku: "AA6KQ8N5", tipo: "normal",
     nombre: "Achuras", marca: "Genérico", categoria: "Carnes",
-    precio: 8800, original_price: 8800, discount_price: 7480, stock_actual: 15, expiration_date: "2026-05-10",
+    precio: 8800, original_price: 8800, discount_price: 7480, stock_actual: 15, expiration_date: "2027-05-10",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/Sw7MFnWB/image.jpg",
     keywords: ["achuras", "asado", "parrilla", "menudencias"],
@@ -322,7 +322,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "305", sku: "AT9KP2H6", tipo: "normal",
     nombre: "Asado de Tira", marca: "Genérico", categoria: "Carnes",
-    precio: 24500, original_price: 24500, discount_price: 20830, stock_actual: 19, expiration_date: "2026-05-14",
+    precio: 24500, original_price: 24500, discount_price: 20830, stock_actual: 19, expiration_date: "2027-05-14",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/Kj8T5Y70/image.jpg",
     keywords: ["asado", "asado de tira", "asado en tiras", "tira", "parrilla", "carne"],
@@ -378,7 +378,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "312", sku: "ZH8KG5F4", tipo: "normal",
     nombre: "Zanahoria", marca: "Genérico", categoria: "Verdulería",
-    precio: 1100, original_price: 1100, discount_price: 940, stock_actual: 17, expiration_date: "2026-05-15",
+    precio: 1100, original_price: 1100, discount_price: 940, stock_actual: 17, expiration_date: "2027-05-15",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/7tqzgJST/image.jpg",
     keywords: ["zanahoria", "verdura", "verduleria"],
@@ -386,7 +386,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "313", sku: "CM9KG3G5", tipo: "normal",
     nombre: "Carne Molida", marca: "Genérico", categoria: "Carnes",
-    precio: 12900, original_price: 12900, discount_price: 10970, stock_actual: 16, expiration_date: "2026-05-08",
+    precio: 12900, original_price: 12900, discount_price: 10970, stock_actual: 16, expiration_date: "2027-05-08",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/Kc5Fx9Xv/image.jpg",
     keywords: ["carne", "carne molida", "molida", "picada"],
@@ -394,7 +394,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "314", sku: "PR1KG7H6", tipo: "normal",
     nombre: "Pimientos Rojos", marca: "Genérico", categoria: "Verdulería",
-    precio: 4100, original_price: 4100, discount_price: 3490, stock_actual: 15, expiration_date: "2026-05-13",
+    precio: 4100, original_price: 4100, discount_price: 3490, stock_actual: 15, expiration_date: "2027-05-13",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/4wSnLwnn/image.jpg",
     keywords: ["pimiento", "pimientos", "morron", "morrón", "verdura"],
@@ -402,7 +402,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "315", sku: "PR2KG4I7", tipo: "normal",
     nombre: "Pimientos Rojos", marca: "Genérico", categoria: "Verdulería",
-    precio: 4100, original_price: 4100, discount_price: 3490, stock_actual: 18, expiration_date: "2026-05-14",
+    precio: 4100, original_price: 4100, discount_price: 3490, stock_actual: 18, expiration_date: "2027-05-14",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/mVtHhjQF/image.jpg",
     keywords: ["pimiento", "pimientos", "morron", "morrón", "verdura"],
@@ -410,7 +410,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "316", sku: "CV3GR9J8", tipo: "normal",
     nombre: "Cebolla de Verdeo", marca: "Genérico", categoria: "Verdulería",
-    precio: 660, original_price: 660, discount_price: 560, stock_actual: 19, expiration_date: "2026-05-09",
+    precio: 660, original_price: 660, discount_price: 560, stock_actual: 19, expiration_date: "2027-05-09",
     unidad: "100 g",
     imagen: "https://i.ibb.co/xSGm4K51/image.jpg",
     keywords: ["cebolla", "verdeo", "cebolla de verdeo", "verdura"],
@@ -418,7 +418,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "317", sku: "CB4KG6K9", tipo: "normal",
     nombre: "Cebolla", marca: "Genérico", categoria: "Verdulería",
-    precio: 1200, original_price: 1200, discount_price: 1020, stock_actual: 20, expiration_date: "2026-05-15",
+    precio: 1200, original_price: 1200, discount_price: 1020, stock_actual: 20, expiration_date: "2027-05-15",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/0VdJhSNQ/image.jpg",
     keywords: ["cebolla", "verdura"],
@@ -426,7 +426,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "318", sku: "CB5KG8L1", tipo: "normal",
     nombre: "Cebolla", marca: "Genérico", categoria: "Verdulería",
-    precio: 1200, original_price: 1200, discount_price: 1020, stock_actual: 17, expiration_date: "2026-05-15",
+    precio: 1200, original_price: 1200, discount_price: 1020, stock_actual: 17, expiration_date: "2027-05-15",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/nMsfG8JT/image.jpg",
     keywords: ["cebolla", "verdura"],
@@ -434,7 +434,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "400", sku: "SF-001", tipo: "normal",
     nombre: "Pan para Pancho", marca: "Bimbo", categoria: "Panadería",
-    precio: 1850, original_price: 1850, discount_price: 1573, stock_actual: 20, expiration_date: "2026-05-15",
+    precio: 1850, original_price: 1850, discount_price: 1573, stock_actual: 20, expiration_date: "2027-05-15",
     unidad: "6 u.",
     imagen: "https://i.ibb.co/DSq8B3n/image.jpg",
     keywords: ["pan pancho", "pancho", "pan para pancho", "pan de pancho", "panchos"],
@@ -442,7 +442,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "401", sku: "SF-002", tipo: "normal",
     nombre: "Salchicha", marca: "66", categoria: "Fiambres",
-    precio: 950, original_price: 950, discount_price: 808, stock_actual: 22, expiration_date: "2026-05-16",
+    precio: 950, original_price: 950, discount_price: 808, stock_actual: 22, expiration_date: "2027-05-16",
     unidad: "6 u.",
     imagen: "https://i.ibb.co/nM18gz4W/image.jpg",
     keywords: ["salchicha", "salchichas", "pancho"],
@@ -450,7 +450,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "402", sku: "SF-003", tipo: "normal",
     nombre: "Salchicha", marca: "Paladini", categoria: "Fiambres",
-    precio: 1650, original_price: 1650, discount_price: 1403, stock_actual: 20, expiration_date: "2026-05-17",
+    precio: 1650, original_price: 1650, discount_price: 1403, stock_actual: 20, expiration_date: "2027-05-17",
     unidad: "6 u.",
     imagen: "https://i.ibb.co/fV73p3xJ/image.jpg",
     keywords: ["salchicha", "salchichas", "pancho"],
@@ -458,7 +458,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "403", sku: "SF-004", tipo: "normal",
     nombre: "Ravioles", marca: "Paladini", categoria: "Pastas",
-    precio: 2400, original_price: 2400, discount_price: 2040, stock_actual: 18, expiration_date: "2026-05-12",
+    precio: 2400, original_price: 2400, discount_price: 2040, stock_actual: 18, expiration_date: "2027-05-12",
     unidad: "500 g",
     imagen: "https://i.ibb.co/7dFJCz79/image.jpg",
     keywords: ["ravioles", "raviol", "pasta"],
@@ -466,7 +466,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "404", sku: "SF-005", tipo: "normal",
     nombre: "Ravioles 4 Quesos", marca: "La Salteña", categoria: "Pastas",
-    precio: 2950, original_price: 2950, discount_price: 2508, stock_actual: 16, expiration_date: "2026-05-13",
+    precio: 2950, original_price: 2950, discount_price: 2508, stock_actual: 16, expiration_date: "2027-05-13",
     unidad: "500 g",
     imagen: "https://i.ibb.co/LztSvvm3/image.jpg",
     keywords: ["ravioles", "raviol", "pasta", "4 quesos", "cuatro quesos"],
@@ -474,7 +474,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "405", sku: "SF-006", tipo: "normal",
     nombre: "Perejil", marca: "Genérica", categoria: "Verdulería",
-    precio: 450, original_price: 450, discount_price: 383, stock_actual: 25, expiration_date: "2026-05-09",
+    precio: 450, original_price: 450, discount_price: 383, stock_actual: 25, expiration_date: "2027-05-09",
     unidad: "100 g",
     imagen: "https://i.ibb.co/0RDK5RNb/image.jpg",
     keywords: ["perejil", "hierba", "verdura"],
@@ -482,7 +482,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "406", sku: "SF-007", tipo: "normal",
     nombre: "Atún", marca: "La Campagnola", categoria: "Conservas",
-    precio: 4200, original_price: 4200, discount_price: 3570, stock_actual: 20, expiration_date: "2026-05-18",
+    precio: 4200, original_price: 4200, discount_price: 3570, stock_actual: 20, expiration_date: "2027-05-18",
     unidad: "170 g",
     imagen: "https://i.ibb.co/whmLJYt9/image.jpg",
     keywords: ["atun en lata", "atun", "lata"],
@@ -490,7 +490,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "407", sku: "SF-008", tipo: "normal",
     nombre: "Mostaza", marca: "Natura", categoria: "Aderezos",
-    precio: 1550, original_price: 1550, discount_price: 1318, stock_actual: 18, expiration_date: "2026-05-19",
+    precio: 1550, original_price: 1550, discount_price: 1318, stock_actual: 18, expiration_date: "2027-05-19",
     unidad: "500 g",
     imagen: "https://i.ibb.co/gL2HxZRB/image.jpg",
     keywords: ["mostaza", "aderezo"],
@@ -498,7 +498,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "408", sku: "SF-009", tipo: "normal",
     nombre: "Peceto de novillo", marca: "Novillo", categoria: "Carnes",
-    precio: 22800, original_price: 22800, discount_price: 19380, stock_actual: 14, expiration_date: "2026-05-11",
+    precio: 22800, original_price: 22800, discount_price: 19380, stock_actual: 14, expiration_date: "2027-05-11",
     unidad: "2 kg",
     imagen: "https://i.ibb.co/8LTXqzVw/image.jpg",
     keywords: ["peceto", "novillo", "carne", "vacio"],
@@ -506,7 +506,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "409", sku: "SF-010", tipo: "normal",
     nombre: "Ketchup", marca: "Hellmann's", categoria: "Aderezos",
-    precio: 1950, original_price: 1950, discount_price: 1658, stock_actual: 20, expiration_date: "2026-05-19",
+    precio: 1950, original_price: 1950, discount_price: 1658, stock_actual: 20, expiration_date: "2027-05-19",
     unidad: "500 g",
     imagen: "https://i.ibb.co/XfhwTPKS/image.jpg",
     keywords: ["ketchup", "salsa", "aderezo", "tomate"],
@@ -514,7 +514,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "410", sku: "SF-011", tipo: "normal",
     nombre: "Champiñones", marca: "Inca", categoria: "Conservas",
-    precio: 3100, original_price: 3100, discount_price: 2635, stock_actual: 16, expiration_date: "2026-05-14",
+    precio: 3100, original_price: 3100, discount_price: 2635, stock_actual: 16, expiration_date: "2027-05-14",
     unidad: "250 g",
     imagen: "https://i.ibb.co/SDqgJg2h/image.jpg",
     keywords: ["champiñones", "champignones", "hongos"],
@@ -522,7 +522,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "411", sku: "SF-012", tipo: "normal",
     nombre: "Champiñones", marca: "Cumana", categoria: "Conservas",
-    precio: 2850, original_price: 2850, discount_price: 2423, stock_actual: 16, expiration_date: "2026-05-14",
+    precio: 2850, original_price: 2850, discount_price: 2423, stock_actual: 16, expiration_date: "2027-05-14",
     unidad: "284 g",
     imagen: "https://i.ibb.co/wZGRgFH2/image.jpg",
     keywords: ["champiñones", "champignones", "hongos"],
@@ -530,7 +530,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "412", sku: "SF-013", tipo: "normal",
     nombre: "Tomates", marca: "Genérica", categoria: "Verdulería",
-    precio: 1900, original_price: 1900, discount_price: 1615, stock_actual: 25, expiration_date: "2026-05-12",
+    precio: 1900, original_price: 1900, discount_price: 1615, stock_actual: 25, expiration_date: "2027-05-12",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/21DhN71L/image.jpg",
     keywords: ["tomate", "tomates", "verdura", "fruta"],
@@ -538,7 +538,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "413", sku: "SF-014", tipo: "normal",
     nombre: "Papas", marca: "Genérica", categoria: "Verdulería",
-    precio: 1100, original_price: 1100, discount_price: 935, stock_actual: 30, expiration_date: "2026-05-18",
+    precio: 1100, original_price: 1100, discount_price: 935, stock_actual: 30, expiration_date: "2027-05-18",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/CKJhVj58/image.jpg",
     keywords: ["papa", "papas", "patata", "verdura"],
@@ -546,7 +546,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "414", sku: "SF-015", tipo: "normal",
     nombre: "Nuez moscada", marca: "Alicante", categoria: "Especias",
-    precio: 1250, original_price: 1250, discount_price: 1063, stock_actual: 18, expiration_date: "2026-05-19",
+    precio: 1250, original_price: 1250, discount_price: 1063, stock_actual: 18, expiration_date: "2027-05-19",
     unidad: "25 g",
     imagen: "https://i.ibb.co/Pz9y9JgC/image.jpg",
     keywords: ["nuez moscada", "especia", "condimento"],
@@ -554,7 +554,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "415", sku: "SF-016", tipo: "normal",
     nombre: "Pimienta Blanca", marca: "La Campagnola", categoria: "Especias",
-    precio: 1450, original_price: 1450, discount_price: 1233, stock_actual: 18, expiration_date: "2026-05-19",
+    precio: 1450, original_price: 1450, discount_price: 1233, stock_actual: 18, expiration_date: "2027-05-19",
     unidad: "23 g",
     imagen: "https://i.ibb.co/XxH1Pf28/image.jpg",
     keywords: ["pimienta", "pimienta blanca", "especia", "condimento"],
@@ -562,7 +562,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "416", sku: "SF-017", tipo: "normal",
     nombre: "Apio", marca: "Genérica", categoria: "Verdulería",
-    precio: 550, original_price: 550, discount_price: 468, stock_actual: 20, expiration_date: "2026-05-10",
+    precio: 550, original_price: 550, discount_price: 468, stock_actual: 20, expiration_date: "2027-05-10",
     unidad: "100 g",
     imagen: "https://i.ibb.co/Z1SVC0Km/image.jpg",
     keywords: ["apio", "verdura"],
@@ -570,7 +570,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "417", sku: "SF-018", tipo: "normal",
     nombre: "Morcillas", marca: "Genérica", categoria: "Carnes",
-    precio: 4800, original_price: 4800, discount_price: 4080, stock_actual: 16, expiration_date: "2026-05-13",
+    precio: 4800, original_price: 4800, discount_price: 4080, stock_actual: 16, expiration_date: "2027-05-13",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/PqK2jgs/image.jpg",
     keywords: ["morcilla", "embutido", "achura", "achuras", "parrilla"],
@@ -578,7 +578,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "418", sku: "SF-019", tipo: "normal",
     nombre: "Provoleta", marca: "La Blanqueada", categoria: "Lácteos",
-    precio: 3400, original_price: 3400, discount_price: 2890, stock_actual: 18, expiration_date: "2026-05-15",
+    precio: 3400, original_price: 3400, discount_price: 2890, stock_actual: 18, expiration_date: "2027-05-15",
     unidad: "1 unidad",
     imagen: "https://i.ibb.co/rgDkjWh/image.jpg",
     keywords: ["provoleta", "provolone", "parrilla"],
@@ -586,7 +586,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "419", sku: "SF-020", tipo: "normal",
     nombre: "Chimichurri", marca: "Alicante", categoria: "Aderezos",
-    precio: 1150, original_price: 1150, discount_price: 978, stock_actual: 20, expiration_date: "2026-05-19",
+    precio: 1150, original_price: 1150, discount_price: 978, stock_actual: 20, expiration_date: "2027-05-19",
     unidad: "25 g",
     imagen: "https://i.ibb.co/0pbzSjmW/image.jpg",
     keywords: ["chimichurri", "aderezo", "condimento", "parrilla"],
@@ -594,7 +594,7 @@ export const catalogoProductos: Producto[] = [
   {
     id: "420", sku: "SF-021", tipo: "normal",
     nombre: "Caldo sabor gallina", marca: "Knorr", categoria: "Almacén",
-    precio: 1100, original_price: 1100, discount_price: 935, stock_actual: 25, expiration_date: "2026-05-19",
+    precio: 1100, original_price: 1100, discount_price: 935, stock_actual: 25, expiration_date: "2027-05-19",
     unidad: "6 cubos",
     imagen: "https://i.ibb.co/C39tx22y/image.jpg",
     keywords: ["caldo de pollo", "caldo gallina", "cubo", "knorr"],
@@ -612,7 +612,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-2", sku: "779100002", tipo: "merma",
     nombre: "Manteca", marca: "La Serenísima", categoria: "Lácteos",
-    precio: 725, original_price: 1450, discount_price: 725, stock_actual: 15, expiration_date: "2026-05-16",
+    precio: 725, original_price: 1450, discount_price: 725, stock_actual: 15, expiration_date: "2027-05-16",
     unidad: "200 g",
     imagen: "https://i.ibb.co/Cp79HfnR/whatsapp-image-2020-04-14-at-21-56-181-8d534ba3f2cd57d1fb15869129951510-480-0.jpg",
     keywords: ["manteca", "mantequilla"],
@@ -620,7 +620,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-3", sku: "779100003", tipo: "merma",
     nombre: "Pan Lactal", marca: "Bimbo", categoria: "Pan",
-    precio: 600, original_price: 1200, discount_price: 600, stock_actual: 17, expiration_date: "2026-05-17",
+    precio: 600, original_price: 1200, discount_price: 600, stock_actual: 17, expiration_date: "2027-05-17",
     unidad: "500 g",
     imagen: "https://i.ibb.co/mrmhpK39/344963-800-auto.jpg",
     keywords: ["pan de molde", "pan lactal"],
@@ -628,7 +628,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-4", sku: "779100004", tipo: "merma",
     nombre: "Yogur", marca: "Milkaut", categoria: "Lácteos",
-    precio: 540, original_price: 980, discount_price: 540, stock_actual: 19, expiration_date: "2026-05-18",
+    precio: 540, original_price: 980, discount_price: 540, stock_actual: 19, expiration_date: "2027-05-18",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/k6zG0974/193002-800-auto.jpg",
     keywords: ["yogur", "yogurt"],
@@ -636,7 +636,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-5", sku: "779100005", tipo: "merma",
     nombre: "Pollo Entero", marca: "Granja del Sol", categoria: "Carnes",
-    precio: 2100, original_price: 4200, discount_price: 2100, stock_actual: 16, expiration_date: "2026-05-19",
+    precio: 2100, original_price: 4200, discount_price: 2100, stock_actual: 16, expiration_date: "2027-05-19",
     unidad: "1 unidad",
     imagen: "https://i.ibb.co/4ZJ1tgys/49d594341598b4eb2820d6ea40459fc6.jpg",
     keywords: ["pollo", "ave", "pechuga de pollo"],
@@ -644,7 +644,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-8", sku: "779100008", tipo: "merma",
     nombre: "Queso Cremoso", marca: "La Paulina", categoria: "Lácteos",
-    precio: 1540, original_price: 2800, discount_price: 1540, stock_actual: 18, expiration_date: "2026-05-20",
+    precio: 1540, original_price: 2800, discount_price: 1540, stock_actual: 18, expiration_date: "2027-05-20",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/yBM5kqTf/image.png",
     keywords: ["queso", "queso cremoso"],
@@ -652,7 +652,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-10", sku: "779100010", tipo: "merma",
     nombre: "LECHE 2X1", marca: "La Serenísima", categoria: "Lácteos",
-    precio: 900, original_price: 1800, discount_price: 900, stock_actual: 20, expiration_date: "2026-05-21",
+    precio: 900, original_price: 1800, discount_price: 900, stock_actual: 20, expiration_date: "2027-05-21",
     unidad: "2 litros",
     imagen: "https://i.ibb.co/whBDWMmC/images-6.jpg",
     keywords: ["leche", "leche entera"],
@@ -660,7 +660,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-206", sku: "779200007", tipo: "merma",
     nombre: "Leche Entera", marca: "Tregar", categoria: "Lácteos",
-    precio: 605, original_price: 1100, discount_price: 605, stock_actual: 15, expiration_date: "2026-05-16",
+    precio: 605, original_price: 1100, discount_price: 605, stock_actual: 15, expiration_date: "2027-05-16",
     unidad: "1 L",
     imagen: "https://i.ibb.co/hFrDBs8T/image.jpg",
     keywords: ["leche", "leche entera"],
@@ -668,7 +668,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-211", sku: "779200012", tipo: "merma",
     nombre: "Huevos", marca: "Check", categoria: "Frescos",
-    precio: 660, original_price: 1200, discount_price: 660, stock_actual: 17, expiration_date: "2026-05-18",
+    precio: 660, original_price: 1200, discount_price: 660, stock_actual: 17, expiration_date: "2027-05-18",
     unidad: "6 unidades",
     imagen: "https://i.ibb.co/Dd7FTvw/image.jpg",
     keywords: ["huevos", "huevo"],
@@ -676,7 +676,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-212", sku: "779200013", tipo: "merma",
     nombre: "Crema de Leche", marca: "Tregar", categoria: "Lácteos",
-    precio: 825, original_price: 1650, discount_price: 825, stock_actual: 19, expiration_date: "2026-05-20",
+    precio: 825, original_price: 1650, discount_price: 825, stock_actual: 19, expiration_date: "2027-05-20",
     unidad: "200 cc",
     imagen: "https://i.ibb.co/KzxJk2Gt/image.jpg",
     keywords: ["crema", "crema de leche"],
@@ -684,7 +684,7 @@ export const catalogoMerma: Producto[] = [
   {
     id: "m-215", sku: "779200016", tipo: "merma",
     nombre: "Pan Francés", marca: "Panadería", categoria: "Panadería",
-    precio: 1100, original_price: 2200, discount_price: 1100, stock_actual: 16, expiration_date: "2026-05-21",
+    precio: 1100, original_price: 2200, discount_price: 1100, stock_actual: 16, expiration_date: "2027-05-21",
     unidad: "1 kg",
     imagen: "https://i.ibb.co/KzVRzqgH/image.jpg",
     keywords: ["pan", "pan frances"],
