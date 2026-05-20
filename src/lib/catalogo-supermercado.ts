@@ -17,6 +17,16 @@ export function isAgotadoOnline(p: Pick<Producto, "stock_actual">): boolean {
   return p.stock_actual <= STOCK_SAFETY_BUFFER;
 }
 
+/** True si el producto tiene fecha de vencimiento y ya pasó (comparación por día). */
+export function isVencido(p: Pick<Producto, "expiration_date">): boolean {
+  if (!p.expiration_date) return false;
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const venc = new Date(p.expiration_date);
+  if (isNaN(venc.getTime())) return false;
+  return venc < hoy;
+}
+
 /** Recorta una cantidad solicitada al máximo permitido por el buffer. */
 export function capCantidadPorBuffer(
   p: Pick<Producto, "stock_actual">,
