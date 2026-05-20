@@ -618,7 +618,7 @@ const catalogoProductosRaw: Producto[] = [
 //  - tipo: "merma"
 //  - 40-50% de descuento sobre original_price
 //  - expiration_date entre 15 y 20 días desde hoy
-export const catalogoMerma: Producto[] = [
+const catalogoMermaRaw: Producto[] = [
   {
     id: "m-2", sku: "779100002", tipo: "merma",
     nombre: "Manteca", marca: "La Serenísima", categoria: "Lácteos",
