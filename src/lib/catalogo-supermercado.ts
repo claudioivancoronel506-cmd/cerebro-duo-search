@@ -55,7 +55,7 @@ export interface Producto {
 }
 
 // ───────────── GÓNDOLA NORMAL (sin fecha de vencimiento) ─────────────
-export const catalogoProductos: Producto[] = [
+const catalogoProductosRaw: Producto[] = [
   {
     id: "1", sku: "779100001", tipo: "normal",
     nombre: "Fiambres Surtidos", marca: "Paladini", categoria: "Fiambres",
