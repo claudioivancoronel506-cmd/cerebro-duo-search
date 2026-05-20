@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Helmet } from "react-helmet-async";
 import CerebroDuoConnect from "@/components/CerebroDuoConnect";
 import SupermarketHome from "@/components/SupermarketHome";
 import type { Producto } from "@/lib/catalogo-supermercado";
@@ -50,6 +51,19 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Superflash — Asistente inteligente de compras</title>
+        <meta name="description" content="Superflash: tu asistente de compras con inteligencia artificial" />
+        <meta property="og:title" content="Superflash" />
+        <meta property="og:description" content="Asistente inteligente de compras para supermercados" />
+        <meta property="og:url" content="https://www.xn--doasistente-4gb.com.ar/" />
+        <meta property="og:image" content="https://www.xn--doasistente-4gb.com.ar/og-superflash.jpg" />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_AR" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.xn--doasistente-4gb.com.ar/og-superflash.jpg" />
+        <link rel="canonical" href="https://www.xn--doasistente-4gb.com.ar/" />
+      </Helmet>
       <SupermarketHome
         cartCount={cartItems.length}
         onCartClick={() => setShowCartJson(true)}
