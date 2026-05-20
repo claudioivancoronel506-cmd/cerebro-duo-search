@@ -794,7 +794,7 @@ export default function CerebroDuoConnect({ onListaSeleccionada, onDismiss }: Ce
                   </div>
                 )}
 
-                <div className="flex-1 overflow-y-auto -mx-4 px-4 space-y-2 pb-28">
+                <div className="flex-1 overflow-y-auto overflow-x-visible -mx-4 px-4 pt-4 space-y-3 pb-28">
                 {resultados.map((r, i) => {
                   const agotado = isAgotadoOnline(r.productoCatalogo);
                   const disponibles = getDisponibleApp(r.productoCatalogo);
