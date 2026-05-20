@@ -701,6 +701,10 @@ const catalogoMermaRaw: Producto[] = [
   },
 ];
 
+// Productos visibles para el cliente — filtra los vencidos.
+export const catalogoProductos: Producto[] = catalogoProductosRaw.filter((p) => !isVencido(p));
+export const catalogoMerma: Producto[] = catalogoMermaRaw.filter((p) => !isVencido(p));
+
 function normalize(s: string): string {
   return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
